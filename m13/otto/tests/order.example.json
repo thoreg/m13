@@ -1,0 +1,103 @@
+{
+    "deliveryAddress": {
+        "addition": null,
+        "city": "Hainburg",
+        "countryCode": "DEU",
+        "firstName": "Zinajda",
+        "houseNumber": "26",
+        "lastName": "Heidig",
+        "salutation": "MS",
+        "street": "Waldstr.",
+        "title": null,
+        "zipCode": "63512"
+    },
+    "initialDeliveryFees": [
+        {
+            "deliveryFeeAmount": {
+                "amount": 3.95,
+                "currency": "EUR"
+            },
+            "name": "DELIVERY_FEE_STANDARD",
+            "positionItemIds": [
+                "fb917e1e-13a1-4549-a606-e47faea891a8",
+                "31f53b49-caad-4b55-b925-706fe638ee8c"
+            ],
+            "vatRate": 19
+        }
+    ],
+    "invoiceAddress": {
+        "addition": null,
+        "city": "Hainburg",
+        "countryCode": "DEU",
+        "firstName": "Zinajda",
+        "houseNumber": "26",
+        "lastName": "Heidig",
+        "salutation": "MS",
+        "street": "Waldstr.",
+        "title": null,
+        "zipCode": "63512"
+    },
+    "lastModifiedDate": "2021-07-22T11:33:48.123+0000",
+    "links": [
+        {
+            "href": "/v4/orders/8caf792f-7941-4d12-bc33-16db7199c42c",
+            "rel": "self"
+        }
+    ],
+    "orderDate": "2021-07-21T09:39:23.847+0000",
+    "orderLifecycleInformation": {
+        "lifecycleChangeDate": "2021-07-22T11:33:48.123+0000"
+    },
+    "orderNumber": "bzzphthys2",
+    "positionItems": [
+        {
+            "cancellationDate": null,
+            "expectedDeliveryDate": "2021-07-24T10:00:00.000+0000",
+            "fulfillmentStatus": "SENT",
+            "itemValueGrossPrice": {
+                "amount": 49.95,
+                "currency": "EUR"
+            },
+            "positionItemId": "fb917e1e-13a1-4549-a606-e47faea891a8",
+            "product": {
+                "articleNumber": "S011P0GIVANP2",
+                "ean": "0781491970156",
+                "productTitle": "Manufaktur13 Blousonjacke »Women Bomberjacke - Übergangsjacke« Waffle Stretch",
+                "sku": "women-bom-vi-m",
+                "vatRate": 19
+            },
+            "returnedDate": null,
+            "sentDate": "2021-07-22T11:33:47.871+0000",
+            "trackingInfo": {
+                "carrier": "HERMES",
+                "carrierServiceCode": null,
+                "trackingNumber": "04203149001198"
+            }
+        },
+        {
+            "cancellationDate": null,
+            "expectedDeliveryDate": "2021-07-24T10:00:00.000+0000",
+            "fulfillmentStatus": "SENT",
+            "itemValueGrossPrice": {
+                "amount": 49.95,
+                "currency": "EUR"
+            },
+            "positionItemId": "31f53b49-caad-4b55-b925-706fe638ee8c",
+            "product": {
+                "articleNumber": "S011P0GIE31P2",
+                "ean": "0781491969990",
+                "productTitle": "Manufaktur13 Blousonjacke »Women Bomberjacke - Übergangsjacke« Waffle Stretch",
+                "sku": "women-bom-da-l",
+                "vatRate": 19
+            },
+            "returnedDate": null,
+            "sentDate": "2021-07-22T11:33:47.871+0000",
+            "trackingInfo": {
+                "carrier": "HERMES",
+                "carrierServiceCode": null,
+                "trackingNumber": "04203149001198"
+            }
+        }
+    ],
+    "salesOrderId": "8caf792f-7941-4d12-bc33-16db7199c42c"
+}
