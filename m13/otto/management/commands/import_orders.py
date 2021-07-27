@@ -5,6 +5,8 @@ import requests
 import json
 from requests.auth import HTTPBasicAuth
 from django.core.management.base import BaseCommand, CommandError
+from otto.models import Order, Address, OrderItem
+from functools import reduce
 
 
 TOKEN_URL = "https://api.otto.market/v1/token"
@@ -18,6 +20,16 @@ token = ""
 if not all([USERNAME, PASSWORD]):
     print("\nyou need to define username and password\n")
     sys.exit(1)
+
+
+def safenget(dct, key, default=None):
+    """Get nested dict items safely."""
+    try:
+        return reduce(dict.__getitem__, key.split('.'), dct)
+    # KeyError is for key not available, TypeError is for nested item not
+    # subscriptable, e.g. getting a.b.c, but a.b is None or an int.
+    except (KeyError, TypeError):
+        return default
 
 
 class Command(BaseCommand):
@@ -56,9 +68,70 @@ class Command(BaseCommand):
         response = r.json()
         print(response)
 
-        for order in response.get("resources", []):
-            import ipdb
+        for entry in response.get("resources", []):
+            marketplace_order_id = entry.get('salesOrderId')
+            delivery_address, _created = Address.objects.get_or_create(
+                addition=entry.get('deliveryAddress').get('addition'),
+                city=entry.get('deliveryAddress').get('city'),
+                country_code=entry.get('deliveryAddress').get('countryCode'),
+                first_name=entry.get('deliveryAddress').get('firstName'),
+                house_number=entry.get('deliveryAddress').get('houseNumber'),
+                last_name=entry.get('deliveryAddress').get('lastName'),
+                street=entry.get('deliveryAddress').get('street'),
+                title=entry.get('deliveryAddress').get('title'),
+                zip_code=entry.get('deliveryAddress').get('zipCode'),
+            )
+            invoice_address, _created = Address.objects.get_or_create(
+                addition=entry.get('deliveryAddress').get('addition'),
+                city=entry.get('deliveryAddress').get('city'),
+                country_code=entry.get('deliveryAddress').get('countryCode'),
+                first_name=entry.get('deliveryAddress').get('firstName'),
+                house_number=entry.get('deliveryAddress').get('houseNumber'),
+                last_name=entry.get('deliveryAddress').get('lastName'),
+                street=entry.get('deliveryAddress').get('street'),
+                title=entry.get('deliveryAddress').get('title'),
+                zip_code=entry.get('deliveryAddress').get('zipCode'),
+            )
 
-            ipdb.set_trace()
-
-        self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % 999))
+            order, created = Order.objects.get_or_create(
+                marketplace_order_id=marketplace_order_id,
+                defaults={
+                    'delivery_address': delivery_address,
+                    'delivery_fee': entry.get('initialDeliveryFees'),
+                    'invoice_address': invoice_address,
+                    'last_modified_date': entry.get('lastModifiedDate'),
+                    'marketplace_order_number': entry.get('orderNumber'),
+                    'order_date': entry.get('orderDate'),
+                }
+            )
+            if created:
+                self.stdout.write(self.style.SUCCESS(
+                    f'Order {marketplace_order_id} imported'
+                ))
+            else:
+                self.stdout.write(self.style.WARNING(
+                    f'Order {marketplace_order_id} already known'
+                ))
+            for oi in entry.get('positionItems'):
+                order_item, created = OrderItem.objects.get_or_create(
+                    order=order,
+                    position_item_id=oi.get('positionItemId'),
+                    defaults={
+                        'cancellation_date': oi.get('cancellationDate'),
+                        'expected_delivery_date': oi.get('expectedDeliveryDate'),
+                        'fulfillment_status': oi.get('fulfillmentStatus'),
+                        'price_in_cent': int(
+                            oi.get('itemValueGrossPrice').get('amount')) * 100,
+                        'currency': oi.get('itemValueGrossPrice').get('currency'),
+                        'article_number': oi.get('product').get('articleNumber'),
+                        'ean': oi.get('product').get('ean'),
+                        'product_title': oi.get('product').get('productTitle'),
+                        'sku': oi.get('product').get('sku'),
+                        'vat_rate': int(oi.get('product').get('vatRate')),
+                        'returned_date': oi.get('returnedDate'),
+                        'sent_date': oi.get('sentDate'),
+                        'carrier': safenget(oi, 'trackingInfo.carrier'),
+                        'carrier_service_code': safenget(oi, 'trackingInfo.carrierServiceCode'),
+                        'tracking_number': safenget(oi, 'trackingInfo.trackingNumber'),
+                    }
+                )

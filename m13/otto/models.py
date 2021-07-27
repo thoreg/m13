@@ -8,22 +8,12 @@ class Address(TimeStampedModel):
 
     No customer id - no email
     """
-
-    class Salutation(models.TextChoices):
-        MR = "MR", "Mister"
-        MS = "MS", "Miss"
-        MRS = "MRS", "Misses"
-
     addition = models.CharField(max_length=128, null=True, blank=True)
     city = models.CharField(max_length=128)
     country_code = models.CharField(max_length=32)
     first_name = models.CharField(max_length=128)
     house_number = models.CharField(max_length=16)
     last_name = models.CharField(max_length=128)
-    salutation = models.CharField(
-        max_length=3,
-        choices=Salutation.choices,
-    )
     street = models.CharField(max_length=128)
     title = models.CharField(max_length=32, null=True, blank=True)
     zip_code = models.CharField(max_length=32)
@@ -67,16 +57,16 @@ class OrderItem(TimeStampedModel):
     price_in_cent = models.PositiveIntegerField()
     currency = models.CharField(max_length=8)
 
-    position_item_iId = models.CharField(max_length=36)
+    position_item_id = models.CharField(max_length=36)
     article_number = models.CharField(max_length=36)
     ean = models.CharField(max_length=16)
     product_title = models.CharField(max_length=256)
     sku = models.CharField(max_length=36)
-    vatRate = models.PositiveSmallIntegerField()
+    vat_rate = models.PositiveSmallIntegerField()
 
-    return_date = models.DateTimeField(null=True, blank=True)
-    sent_date = models.DateTimeField()
+    returned_date = models.DateTimeField(null=True, blank=True)
+    sent_date = models.DateTimeField(null=True, blank=True)
 
-    carrier = models.CharField(max_length=32)
+    carrier = models.CharField(max_length=32, null=True, blank=True)
     carrier_service_code = models.CharField(max_length=128, null=True, blank=True)
-    tracking_number = models.CharField(max_length=128)
+    tracking_number = models.CharField(max_length=128, null=True, blank=True)
