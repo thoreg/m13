@@ -7,6 +7,7 @@ from requests.auth import HTTPBasicAuth
 from django.core.management.base import BaseCommand, CommandError
 from otto.models import Order, Address, OrderItem
 from functools import reduce
+import pprint
 
 
 TOKEN_URL = "https://api.otto.market/v1/token"
@@ -64,12 +65,39 @@ class Command(BaseCommand):
             ORDERS_URL,
             headers=headers,
         )
-        print(f"response_status_code: {r.status_code}")
+        print(f"get_orders() response_status_code: {r.status_code}")
         response = r.json()
-        print(response)
+
+        announced_orders = {}
 
         for entry in response.get("resources", []):
             marketplace_order_id = entry.get('salesOrderId')
+            delivery_address = entry.get('deliveryAddress')
+
+            # Orders with internal order status ANNOUNCED do not have a delivery
+            # address set yet - just track these in a dict
+            if not delivery_address:
+                self.stdout.write(self.style.WARNING(
+                    f'Order {marketplace_order_id} has no delivery address'
+                ))
+                for item in entry.get('positionItems'):
+                    sku = item['product'].get('sku')
+                    fulfillment_status = item.get('fulfillmentStatus')
+                    self.stdout.write(self.style.WARNING(
+                        f'   {sku} fulfillmentStatus {fulfillment_status}'
+                    ))
+
+                    if sku not in announced_orders:
+                        announced_orders[sku] = {
+                            'title': item['product'].get('productTitle'),
+                            'sku': sku,
+                            'number': 1
+                        }
+                    else:
+                        announced_orders[sku]['number'] += 1
+
+                continue
+
             delivery_address, _created = Address.objects.get_or_create(
                 addition=entry.get('deliveryAddress').get('addition'),
                 city=entry.get('deliveryAddress').get('city'),
@@ -135,3 +163,6 @@ class Command(BaseCommand):
                         'tracking_number': safenget(oi, 'trackingInfo.trackingNumber'),
                     }
                 )
+
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(announced_orders)
