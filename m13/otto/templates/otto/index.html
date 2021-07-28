@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>M13 - Otto - OrderItems</title>
+    {% comment %} <link rel="stylesheet" href="css/main.css" /> {% endcomment %}
+    {% comment %} <link rel="icon" href="images/favicon.png" /> {% endcomment %}
+
+    <link rel="stylesheet" type="text/css" href="{% static '/css/m13.css' %}">
+
+</head>
+<body>
+    {% comment %} /api/otto/orderitems/ {% endcomment %}
+    <input type="button" value="CSV" class="download-csv-btn">
+    <table>
+        <thead>
+            <th>sku</th>
+            <th>status</th>
+            <th>expected delivery date</th>
+            <th>title</th>
+        </thead>
+        <tbody>
+        {% for oi in order_items %}
+            <tr>
+                <td>{{ oi.sku }}</td>
+                <td>{{ oi.fulfillment_status }}</td>
+                <td>{{ oi.expected_delivery_date|date:"c" }}</td>
+                <td>{{ oi.product_title }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script type="text/javascript" src="{% static '/js/jquery-3.6.0.min.js' %}">
+  </body>
+</html>
+
+

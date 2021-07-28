@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from django.conf import settings
+from django.conf.urls.static import static
 
 from otto.viewsets import OrderItemViewSet as OttoOrderItemsViewSet
 
@@ -26,5 +28,6 @@ router.register(r'otto/orderitems', OttoOrderItemsViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls'))
-]
+    path('api-auth/', include('rest_framework.urls')),
+    path('otto/', include('otto.urls'))
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
