@@ -15,7 +15,9 @@
 </head>
 <body>
     {% comment %} /api/otto/orderitems/ {% endcomment %}
-    <input type="button" value="CSV" id="download-csv-btn">
+    <form action="/otto/csv/" method="get">
+        <button type="submit" id="download-csv-btn">CSV</button>
+    </form>
     <table>
         <thead>
             <th>order_number</th>
