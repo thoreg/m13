@@ -1,11 +1,13 @@
-from django.shortcuts import render
-from datetime import datetime
-from django.http import HttpResponse
 import csv
-from pprint import pformat
 from copy import deepcopy
+from datetime import datetime
+from pprint import pformat
+
+from django.http import HttpResponse
+from django.shortcuts import render
 
 from .models import OrderItem
+
 
 def index(request):
     order_items = (OrderItem.objects

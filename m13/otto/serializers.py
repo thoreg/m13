@@ -1,5 +1,6 @@
-from otto.models import OrderItem
 from rest_framework import serializers
+
+from otto.models import OrderItem
 
 
 class OrderItemSerializer(serializers.HyperlinkedModelSerializer):

@@ -1,6 +1,5 @@
-from pathlib import Path
 import os
-
+from pathlib import Path
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-9$y#rs))=6kywmqa$6#$3=)x(8-*0$y!le@*ne#+(j*c$f(g=i'

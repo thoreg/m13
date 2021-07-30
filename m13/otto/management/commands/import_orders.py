@@ -1,14 +1,16 @@
-import os
-import sys
-from fastapi import FastAPI
-import requests
 import json
-from requests.auth import HTTPBasicAuth
-from django.core.management.base import BaseCommand, CommandError
-from otto.models import Order, Address, OrderItem
-from functools import reduce
+import os
 import pprint
+import sys
+from functools import reduce
+from pprint import pformat
 
+import requests
+from django.core.management.base import BaseCommand, CommandError
+from fastapi import FastAPI
+from requests.auth import HTTPBasicAuth
+
+from otto.models import Address, Order, OrderItem
 
 TOKEN_URL = "https://api.otto.market/v1/token"
 ORDERS_URL = "https://api.otto.market/v4/orders"

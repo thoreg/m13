@@ -1,8 +1,9 @@
-from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
-from rest_framework import permissions
-from .serializers import OrderItemSerializer
+from django.contrib.auth.models import Group, User
+from rest_framework import permissions, viewsets
+
 from otto.models import OrderItem
+
+from .serializers import OrderItemSerializer
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
