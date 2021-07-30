@@ -10,7 +10,7 @@ td {
     border-width: 1px;
     border-style: dotted;
 }
-.download-csv-btn {
+#download-csv-btn {
     margin: 10px 0;
     padding: 10px;
     font-family: monospace;

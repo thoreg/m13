@@ -15,27 +15,44 @@
 </head>
 <body>
     {% comment %} /api/otto/orderitems/ {% endcomment %}
-    <input type="button" value="CSV" class="download-csv-btn">
+    <input type="button" value="CSV" id="download-csv-btn">
     <table>
         <thead>
+            <th>order_number</th>
             <th>sku</th>
             <th>status</th>
             <th>expected delivery date</th>
-            <th>title</th>
+            <th>product title</th>
+            <th>customer name</th>
+            <th>customer address</th>
         </thead>
         <tbody>
         {% for oi in order_items %}
             <tr>
+                <td>{{ oi.order.marketplace_order_number }}</td>
                 <td>{{ oi.sku }}</td>
                 <td>{{ oi.fulfillment_status }}</td>
-                <td>{{ oi.expected_delivery_date|date:"c" }}</td>
+                <td>{{ oi.expected_delivery_date|date:"Y-m-d" }}</td>
                 <td>{{ oi.product_title }}</td>
+                <td>
+                    {{ oi.order.delivery_address.first_name }}
+                    {{ oi.order.delivery_address.last_name }}
+                </td>
+                <td>
+                    {{ oi.order.delivery_address.street }}
+                    {{ oi.order.delivery_address.house_number }}
+                    {{ oi.order.delivery_address.zip_code }}
+                    {{ oi.order.delivery_address.city }}
+                    {{ oi.order.delivery_address.country_code }}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
+    <script type="text/javascript" src="{% static '/js/m13.js' %}">
     <script type="text/javascript" src="{% static '/js/jquery-3.6.0.min.js' %}">
+
   </body>
 </html>
 

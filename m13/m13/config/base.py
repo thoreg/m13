@@ -1,14 +1,18 @@
 from pathlib import Path
 import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-9$y#rs))=6kywmqa$6#$3=)x(8-*0$y!le@*ne#+(j*c$f(g=i'
 
-DEBUG = False
 
 ALLOWED_HOSTS = []
+APPEND_SLASH = True
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+DEBUG = False
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -74,7 +78,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Berlin'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
