@@ -165,6 +165,9 @@ class Command(BaseCommand):
                         'tracking_number': safenget(oi, 'trackingInfo.trackingNumber'),
                     }
                 )
+                if not created:
+                    order_item.fulfillment_status = oi.get('fulfillmentStatus')
+                    order_item.save()
 
         pp = pprint.PrettyPrinter(indent=2)
         pp.pprint(announced_orders)
