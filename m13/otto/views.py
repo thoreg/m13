@@ -18,6 +18,25 @@ def index(request):
     return render(request, 'otto/index.html', context)
 
 
+def _get_delivery_info(name):
+    """Return something human readable for delivery information."""
+    MAP = {
+        'DELIVERY_FEE_STANDARD': 'Hermes S'
+    }
+    return MAP.get(name, name)
+
+
+def _get_country_information(country_code):
+    """..."""
+    MAP = {
+        'AUT': 'Österreich',
+        'CHE': 'Schweiz',
+        'DEU': 'Deutschland',
+
+    }
+    return MAP.get(country_code, country_code)
+
+
 def orderitems_csv(request):
     """Return all processible orderitems as csv.
 
@@ -32,6 +51,7 @@ def orderitems_csv(request):
             'Content-Disposition': f'attachment; filename="{now_as_str}.csv"'},
     )
 
+    response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response, delimiter=';')
     writer.writerow([
         'Bestellnummer',
@@ -45,7 +65,8 @@ def orderitems_csv(request):
         'Artikelname',
         'Preis (Brutto)',
         'Menge',
-        'Positionstyp'
+        'Positionstyp',
+        'Anmerkung'
     ])
 
     orderitems = (OrderItem.objects
@@ -69,12 +90,13 @@ def orderitems_csv(request):
                 f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}' ,
                 current_order.delivery_address.zip_code,
                 current_order.delivery_address.city,
-                current_order.delivery_address.country_code,
+                _get_country_information(current_order.delivery_address.country_code),
                 ' ',
-                current_order.delivery_fee[0]['name'],
+                _get_delivery_info(current_order.delivery_fee[0]['name']),
                 price,
                 1,
-                'Versandposition'
+                'Versandposition',
+                f'OTTO {current_order.marketplace_order_id}'
             ])
 
         price = '%0.2f' % round(oi.price_in_cent / 100, 2)
@@ -87,33 +109,36 @@ def orderitems_csv(request):
             f'{oi.order.delivery_address.street} {oi.order.delivery_address.house_number}' ,
             oi.order.delivery_address.zip_code,
             oi.order.delivery_address.city,
-            oi.order.delivery_address.country_code,
+            _get_country_information(oi.order.delivery_address.country_code),
             oi.sku,
             oi.product_title,
             price,
             1,
-            'Artikel'
+            'Artikel',
+            f'OTTO {oi.order.marketplace_order_id}'
         ])
 
         current_order_id = oi.order.marketplace_order_number
         current_order = deepcopy(oi.order)
 
-    # extra locke for the last shipping position
-    price = '%0.2f' % current_order.delivery_fee[0]['deliveryFeeAmount']['amount']
-    price = price.replace('.', ',')
-    writer.writerow([
-        current_order.marketplace_order_number,
-        current_order.delivery_address.first_name,
-        current_order.delivery_address.last_name,
-        f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}' ,
-        current_order.delivery_address.zip_code,
-        current_order.delivery_address.city,
-        current_order.delivery_address.country_code,
-        ' ',
-        current_order.delivery_fee[0]['name'],
-        price,
-        1,
-        'Versandposition'
-    ])
+    if current_order:
+        # extra locke for the last shipping position
+        price = '%0.2f' % current_order.delivery_fee[0]['deliveryFeeAmount']['amount']
+        price = price.replace('.', ',')
+        writer.writerow([
+            current_order.marketplace_order_number,
+            current_order.delivery_address.first_name,
+            current_order.delivery_address.last_name,
+            f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}' ,
+            current_order.delivery_address.zip_code,
+            current_order.delivery_address.city,
+            _get_country_information(current_order.delivery_address.country_code),
+            ' ',
+            _get_delivery_info(current_order.delivery_fee[0]['name']),
+            price,
+            1,
+            'Versandposition',
+            f'OTTO {current_order.marketplace_order_id}'
+        ])
 
     return response

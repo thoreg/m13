@@ -150,8 +150,8 @@ class Command(BaseCommand):
                         'cancellation_date': oi.get('cancellationDate'),
                         'expected_delivery_date': oi.get('expectedDeliveryDate'),
                         'fulfillment_status': oi.get('fulfillmentStatus'),
-                        'price_in_cent': int(
-                            oi.get('itemValueGrossPrice').get('amount')) * 100,
+                        'price_in_cent':
+                            oi.get('itemValueGrossPrice').get('amount') * 100,
                         'currency': oi.get('itemValueGrossPrice').get('currency'),
                         'article_number': oi.get('product').get('articleNumber'),
                         'ean': oi.get('product').get('ean'),
