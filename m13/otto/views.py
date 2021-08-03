@@ -3,12 +3,14 @@ from copy import deepcopy
 from datetime import datetime
 from pprint import pformat
 
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 
 from .models import OrderItem
 
 
+@login_required
 def index(request):
     order_items = (OrderItem.objects
         .all()
@@ -37,6 +39,7 @@ def _get_country_information(country_code):
     return MAP.get(country_code, country_code)
 
 
+@login_required
 def orderitems_csv(request):
     """Return all processible orderitems as csv.
 
