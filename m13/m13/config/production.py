@@ -2,10 +2,7 @@ import os
 
 from .base import *
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-]
+ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
@@ -14,9 +11,11 @@ DATABASES = {
         'USER': os.getenv('PSQL_USER'),
         'PASSWORD': os.getenv('PSQL_PASSWORD'),
         'HOST': os.getenv('PSQL_HOST'),
-        'PORT': os.getenv('PSQL_PORT'),
+        'PORT': int(os.getenv('PSQL_PORT')),
     }
 }
 
 DEBUG = False
 SECRET_KEY = os.getenv('M13_PRODUCTION_DJANGO_SECRET')
+
+STATIC_ROOT = os.getenv('STATIC_ROOT')
