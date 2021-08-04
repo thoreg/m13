@@ -26,7 +26,7 @@ router.register(r'otto/orderitems', OttoOrderItemsViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('admin/', admin.site.urls),
+    path('addi/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('otto/', include('otto.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
