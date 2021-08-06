@@ -27,6 +27,7 @@
             <th>product title</th>
             <th>customer name</th>
             <th>customer address</th>
+            <th>created</th>
         </thead>
         <tbody>
         {% for oi in order_items %}
@@ -46,6 +47,9 @@
                     {{ oi.order.delivery_address.zip_code }}
                     {{ oi.order.delivery_address.city }}
                     {{ oi.order.delivery_address.country_code }}
+                </td>
+                <td>
+                    {{ oi.created | date:"c" }}
                 </td>
             </tr>
         {% endfor %}
