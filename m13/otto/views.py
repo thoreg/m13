@@ -23,7 +23,8 @@ def index(request):
 def _get_delivery_info(name):
     """Return something human readable for delivery information."""
     MAP = {
-        'DELIVERY_FEE_STANDARD': 'Hermes S'
+        # 'DELIVERY_FEE_STANDARD': 'Hermes S',
+        'DELIVERY_FEE_STANDARD': 'DHL Paket',
     }
     return MAP.get(name, name)
 
