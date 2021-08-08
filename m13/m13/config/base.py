@@ -95,3 +95,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
+
+FROM_EMAIL_ADDRESS = os.getenv('M13_FROM_EMAIL_ADDRESS')
+
+OTTO_ORDER_CSV_RECEIVER_LIST = os.getenv('M13_OTTO_ORDER_CSV_RECEIVER_LIST')

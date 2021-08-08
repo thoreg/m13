@@ -1,11 +1,12 @@
 import csv
 from copy import deepcopy
 from datetime import datetime
-from pprint import pformat
 
+from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.conf import settings
 
 from .models import OrderItem
 
@@ -42,10 +43,7 @@ def _get_country_information(country_code):
 
 @login_required
 def orderitems_csv(request):
-    """Return all processible orderitems as csv.
-
-    todo: Versandkacka
-    """
+    """Return all processible orderitems as csv."""
     now = datetime.now()
     now_as_str = now.strftime('%Y-%m-%dT%H_%M_%S')
     # Create the HttpResponse object with the appropriate CSV header.
@@ -80,6 +78,7 @@ def orderitems_csv(request):
     )
     print(f'Found {len(orderitems)} orderitems')
 
+    current_order = None
     current_order_id = None
     for oi in orderitems:
 
@@ -144,5 +143,24 @@ def orderitems_csv(request):
             'Versandposition',
             f'OTTO {current_order.marketplace_order_id}'
         ])
+
+    email = request.GET.get('email')
+    if email:
+        if not settings.FROM_EMAIL_ADDRESS:
+            print('settings.FROM_EMAIL_ADDRESS needs to be defined')
+            return response
+
+        if not settings.OTTO_ORDER_CSV_RECEIVER_LIST:
+            print('settings.OTTO_ORDER_CSV_RECEIVER_LIST needs to be defined')
+            return response
+
+        message = EmailMessage(
+            f'OTTO Bestellungen - {now.strftime("%Y/%m/%d")}',
+            'OTTO Bestellungen als csv - Frohes Schaffen!!',
+            settings.FROM_EMAIL_ADDRESS,
+            [settings.OTTO_ORDER_CSV_RECEIVER_LIST],
+        )
+        message.attach('invoice.csv', response.getvalue(), 'text/csv')
+        message.send()
 
     return response
