@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
+from django.core import management
 
 from .models import OrderItem
 
@@ -172,3 +173,10 @@ def orderitems_csv(request):
         LOG.info(f'{number_of_messages} send')
 
     return response
+
+
+@login_required
+def import_orders(request):
+    """Import orders from OTTO via button click"""
+    management.call_command('import_orders', verbosity=2)
+    return index(request)

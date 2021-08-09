@@ -10,12 +10,16 @@ td {
     border-width: 1px;
     border-style: dotted;
 }
-#download-csv-btn {
-    margin: 10px 0;
-    padding: 10px;
-    font-family: monospace;
-}
 img.center {
     display: block;
     margin: 0 auto;
+}
+.m13-btn {
+    margin: 10px 10px 10px 0;
+    padding: 10px;
+    font-family: monospace;
+    display: inline;
+}
+body > header > form {
+    display: inline;
 }

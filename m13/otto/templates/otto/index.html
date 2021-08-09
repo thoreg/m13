@@ -14,47 +14,57 @@
 
 </head>
 <body>
-    {% comment %} /api/otto/orderitems/ {% endcomment %}
-    <form action="/otto/csv/" method="get">
-        <button type="submit" id="download-csv-btn">CSV</button>
-    </form>
-    <table>
-        <thead>
-            <th>order_number</th>
-            <th>sku</th>
-            <th>status</th>
-            <th>expected delivery date</th>
-            <th>product title</th>
-            <th>customer name</th>
-            <th>customer address</th>
-            <th>created</th>
-        </thead>
-        <tbody>
-        {% for oi in order_items %}
-            <tr>
-                <td>{{ oi.order.marketplace_order_number }}</td>
-                <td>{{ oi.sku }}</td>
-                <td>{{ oi.fulfillment_status }}</td>
-                <td>{{ oi.expected_delivery_date|date:"Y-m-d" }}</td>
-                <td>{{ oi.product_title }}</td>
-                <td>
-                    {{ oi.order.delivery_address.first_name }}
-                    {{ oi.order.delivery_address.last_name }}
-                </td>
-                <td>
-                    {{ oi.order.delivery_address.street }}
-                    {{ oi.order.delivery_address.house_number }}
-                    {{ oi.order.delivery_address.zip_code }}
-                    {{ oi.order.delivery_address.city }}
-                    {{ oi.order.delivery_address.country_code }}
-                </td>
-                <td>
-                    {{ oi.created | date:"c" }}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <header>
+        <form action={% url 'otto_import_orders' %}>
+            <button type="submit" class="m13-btn">
+                IMPORT
+            </button>
+        </form>
+        <form action={% url 'otto_orderitems_csv' %}>
+            <button type="submit" class="m13-btn">
+                CSV
+            </button>
+        </form>
+    </header>
+    <div class="main">
+        <table>
+            <thead>
+                <th>order_number</th>
+                <th>sku</th>
+                <th>status</th>
+                <th>expected delivery date</th>
+                <th>product title</th>
+                <th>customer name</th>
+                <th>customer address</th>
+                <th>created</th>
+            </thead>
+            <tbody>
+            {% for oi in order_items %}
+                <tr>
+                    <td>{{ oi.order.marketplace_order_number }}</td>
+                    <td>{{ oi.sku }}</td>
+                    <td>{{ oi.fulfillment_status }}</td>
+                    <td>{{ oi.expected_delivery_date|date:"Y-m-d" }}</td>
+                    <td>{{ oi.product_title }}</td>
+                    <td>
+                        {{ oi.order.delivery_address.first_name }}
+                        {{ oi.order.delivery_address.last_name }}
+                    </td>
+                    <td>
+                        {{ oi.order.delivery_address.street }}
+                        {{ oi.order.delivery_address.house_number }}
+                        {{ oi.order.delivery_address.zip_code }}
+                        {{ oi.order.delivery_address.city }}
+                        {{ oi.order.delivery_address.country_code }}
+                    </td>
+                    <td>
+                        {{ oi.created | date:"c" }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <script type="text/javascript" src="{% static '/js/m13.js' %}">
     <script type="text/javascript" src="{% static '/js/jquery-3.6.0.min.js' %}">
