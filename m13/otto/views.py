@@ -1,4 +1,5 @@
 import csv
+import logging
 from copy import deepcopy
 from datetime import datetime
 
@@ -9,6 +10,8 @@ from django.shortcuts import render
 from django.conf import settings
 
 from .models import OrderItem
+
+LOG = logging.getLogger(__name__)
 
 
 @login_required
@@ -146,21 +149,26 @@ def orderitems_csv(request):
 
     email = request.GET.get('email')
     if email:
+        LOG.info('Houston we got to send an email')
         if not settings.FROM_EMAIL_ADDRESS:
-            print('settings.FROM_EMAIL_ADDRESS needs to be defined')
+            LOG.error('settings.FROM_EMAIL_ADDRESS needs to be defined')
             return response
 
         if not settings.OTTO_ORDER_CSV_RECEIVER_LIST:
-            print('settings.OTTO_ORDER_CSV_RECEIVER_LIST needs to be defined')
+            LOG.error('settings.OTTO_ORDER_CSV_RECEIVER_LIST needs to be defined')
             return response
+
+        LOG.info(f'settings.FROM_EMAIL_ADDRESS: {settings.FROM_EMAIL_ADDRESS}')
+        LOG.info(f'settings.OTTO_ORDER_CSV_RECEIVER_LIST: {settings.OTTO_ORDER_CSV_RECEIVER_LIST}')
 
         message = EmailMessage(
             f'OTTO Bestellungen - {now.strftime("%Y/%m/%d")}',
             'OTTO Bestellungen als csv - Frohes Schaffen!!',
             settings.FROM_EMAIL_ADDRESS,
-            [settings.OTTO_ORDER_CSV_RECEIVER_LIST],
+            settings.OTTO_ORDER_CSV_RECEIVER_LIST,
         )
-        message.attach('invoice.csv', response.getvalue(), 'text/csv')
-        message.send()
+        message.attach(f'{now.strftime("%Y/%m/%d")}_otto_bestellungen.csv', response.getvalue(), 'text/csv')
+        r = message.send()
+        LOG.info(r.__dict__)
 
     return response

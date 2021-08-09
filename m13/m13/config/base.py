@@ -98,4 +98,7 @@ REST_FRAMEWORK = {
 
 FROM_EMAIL_ADDRESS = os.getenv('M13_FROM_EMAIL_ADDRESS')
 
-OTTO_ORDER_CSV_RECEIVER_LIST = os.getenv('M13_OTTO_ORDER_CSV_RECEIVER_LIST')
+OTTO_ORDER_CSV_RECEIVER_LIST = [
+    'thoreg@gmail.com',
+    'custom.art.berlin@googlemail.com',
+]
