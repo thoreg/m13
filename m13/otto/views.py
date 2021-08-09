@@ -168,7 +168,7 @@ def orderitems_csv(request):
             settings.OTTO_ORDER_CSV_RECEIVER_LIST,
         )
         message.attach(f'{now.strftime("%Y/%m/%d")}_otto_bestellungen.csv', response.getvalue(), 'text/csv')
-        r = message.send()
-        LOG.info(r.__dict__)
+        number_of_messages = message.send()
+        LOG.info(f'{number_of_messages} send')
 
     return response
