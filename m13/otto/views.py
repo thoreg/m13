@@ -180,3 +180,8 @@ def import_orders(request):
     """Import orders from OTTO via button click"""
     management.call_command('import_orders', verbosity=2)
     return index(request)
+
+
+@login_required
+def upload_tracking_codes(request):
+    return index(request)
