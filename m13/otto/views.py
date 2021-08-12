@@ -3,14 +3,18 @@ import logging
 from copy import deepcopy
 from datetime import datetime
 
+from django.http import HttpResponseRedirect
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
 from django.core import management
+from django.urls import reverse
 
 from .models import OrderItem
+from .forms import UploadFileForm
+from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)
 
@@ -168,7 +172,10 @@ def orderitems_csv(request):
             settings.FROM_EMAIL_ADDRESS,
             settings.OTTO_ORDER_CSV_RECEIVER_LIST,
         )
-        message.attach(f'{now.strftime("%Y/%m/%d")}_otto_bestellungen.csv', response.getvalue(), 'text/csv')
+        message.attach(
+            f'{now.strftime("%Y/%m/%d")}_otto_bestellungen.csv',
+            response.getvalue(),
+            'text/csv')
         number_of_messages = message.send()
         LOG.info(f'{number_of_messages} send')
 
@@ -184,4 +191,17 @@ def import_orders(request):
 
 @login_required
 def upload_tracking_codes(request):
-    return index(request)
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+            return HttpResponseRedirect(reverse('otto_upload_tracking_codes_success'))
+    else:
+        form = UploadFileForm()
+    return render(request, 'otto/upload_tracking_codes.html', {'form': form})
+
+
+@login_required
+def upload_tracking_codes_success(request):
+    ctx = {}
+    return render(request, 'otto/upload_tracking_codes_success.html', {'ctx': ctx})

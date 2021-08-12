@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div id="main">
+  <h1 class='warning'>🚧 !!! BAUSTELLE !!! FUNKTIONIERT NOCH NICHT !!! 🏗️</h1>
+  <h2>CSV mit Tracking Codes zu OTTO hochladen</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="file">
+    <button type="submit">Upload</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'otto/footer.html' %}
+{% endblock %}

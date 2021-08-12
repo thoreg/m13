@@ -4,6 +4,9 @@ body {
     background-color: #fff;
     min-height: 75rem;
 }
+footer {
+  margin-left: 180px;
+}
 
 table {
     background-color: #fff;
@@ -92,4 +95,10 @@ img.center {
 @media screen and (max-height: 450px) {
   .sidebar {padding-top: 15px;}
   .sidebar a {font-size: 18px;}
+}
+
+.warning {
+  font-size: 40px;
+  font-weight: bold;
+  color: darkred;
 }
