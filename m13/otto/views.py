@@ -184,7 +184,10 @@ def orderitems_csv(request):
 @login_required
 def import_orders(request):
     """Import orders from OTTO via button click"""
-    management.call_command('import_orders', verbosity=2)
+    management.call_command('import_orders', status='PROCESSABLE', verbosity=2)
+    management.call_command('import_orders', status='SENT', verbosity=2)
+    management.call_command('import_orders', status='RETURNED', verbosity=2)
+
     return index(request)
 
 
