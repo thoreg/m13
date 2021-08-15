@@ -22,6 +22,8 @@ import json
 import logging
 import os
 import sys
+import urllib.parse
+from datetime import datetime, timedelta
 from functools import reduce
 from pprint import pformat
 
@@ -57,6 +59,10 @@ if not all([USERNAME, PASSWORD]):
     sys.exit(1)
 
 
+class InvalidStatus(Exception):
+    pass
+
+
 def safenget(dct, key, default=None):
     """Get nested dict items safely."""
     try:
@@ -88,17 +94,111 @@ def get_auth_token():
     return r.json().get("access_token")
 
 
-def fetch_orders(token, status, from_order_date):
+def fetch_orders(token, status, from_order_date=None):
     token = get_auth_token()
     headers = {
         "Authorization": f"Bearer {token}",
     }
     r = requests.get(
-        ORDERS_URL,
+        get_url(status, from_order_date),
         headers=headers,
     )
     LOG.info(f"get_orders() response_status_code: {r.status_code}")
     return r.json()
+
+
+def save_orders(orders_as_json):
+    """Fetch all orders with given status newer than the specified date."""
+    for entry in orders_as_json.get("resources", []):
+        marketplace_order_id = entry.get('salesOrderId')
+        delivery_address = entry.get('deliveryAddress')
+
+        # Orders with internal order status ANNOUNCED do not have a delivery
+        # address set yet - just track these in a dict
+        if not delivery_address:
+            print(Fore.YELLOW + f'Order {marketplace_order_id} has no delivery address')
+            for item in entry.get('positionItems'):
+                sku = item['product'].get('sku')
+                fulfillment_status = item.get('fulfillmentStatus')
+                print(Fore.YELLOW + f'   {sku} fulfillmentStatus {fulfillment_status}')
+
+                if sku not in announced_orders:
+                    announced_orders[sku] = {
+                        'title': item['product'].get('productTitle'),
+                        'sku': sku,
+                        'number': 1
+                    }
+                else:
+                    announced_orders[sku]['number'] += 1
+
+            continue
+
+        delivery_address, _created = Address.objects.get_or_create(
+            addition=entry.get('deliveryAddress').get('addition'),
+            city=entry.get('deliveryAddress').get('city'),
+            country_code=entry.get('deliveryAddress').get('countryCode'),
+            first_name=entry.get('deliveryAddress').get('firstName'),
+            house_number=entry.get('deliveryAddress').get('houseNumber'),
+            last_name=entry.get('deliveryAddress').get('lastName'),
+            street=entry.get('deliveryAddress').get('street'),
+            title=entry.get('deliveryAddress').get('title'),
+            zip_code=entry.get('deliveryAddress').get('zipCode'),
+        )
+        invoice_address, _created = Address.objects.get_or_create(
+            addition=entry.get('deliveryAddress').get('addition'),
+            city=entry.get('deliveryAddress').get('city'),
+            country_code=entry.get('deliveryAddress').get('countryCode'),
+            first_name=entry.get('deliveryAddress').get('firstName'),
+            house_number=entry.get('deliveryAddress').get('houseNumber'),
+            last_name=entry.get('deliveryAddress').get('lastName'),
+            street=entry.get('deliveryAddress').get('street'),
+            title=entry.get('deliveryAddress').get('title'),
+            zip_code=entry.get('deliveryAddress').get('zipCode'),
+        )
+
+        order, created = Order.objects.get_or_create(
+            marketplace_order_id=marketplace_order_id,
+            defaults={
+                'delivery_address': delivery_address,
+                'delivery_fee': entry.get('initialDeliveryFees'),
+                'invoice_address': invoice_address,
+                'last_modified_date': entry.get('lastModifiedDate'),
+                'marketplace_order_number': entry.get('orderNumber'),
+                'order_date': entry.get('orderDate'),
+            }
+        )
+        if created:
+            print(Fore.GREEN + f'Order {marketplace_order_id} imported')
+        else:
+            print(Fore.YELLOW + f'Order {marketplace_order_id} already known')
+
+        for oi in entry.get('positionItems'):
+            order_item, created = OrderItem.objects.get_or_create(
+                order=order,
+                position_item_id=oi.get('positionItemId'),
+                defaults={
+                    'cancellation_date': oi.get('cancellationDate'),
+                    'expected_delivery_date': oi.get('expectedDeliveryDate'),
+                    'fulfillment_status': oi.get('fulfillmentStatus'),
+                    'price_in_cent':
+                        oi.get('itemValueGrossPrice').get('amount') * 100,
+                    'currency': oi.get('itemValueGrossPrice').get('currency'),
+                    'article_number': oi.get('product').get('articleNumber'),
+                    'ean': oi.get('product').get('ean'),
+                    'product_title': oi.get('product').get('productTitle'),
+                    'sku': oi.get('product').get('sku'),
+                    'vat_rate': int(oi.get('product').get('vatRate')),
+                    'returned_date': oi.get('returnedDate'),
+                    'sent_date': oi.get('sentDate'),
+                    'carrier': safenget(oi, 'trackingInfo.carrier'),
+                    'carrier_service_code': safenget(oi, 'trackingInfo.carrierServiceCode'),
+                    'tracking_number': safenget(oi, 'trackingInfo.trackingNumber'),
+                }
+            )
+            if not created:
+                order_item.fulfillment_status = oi.get('fulfillmentStatus')
+                order_item.save()
+
 
 
 def get_orders(status, from_order_date):
@@ -209,3 +309,23 @@ def get_orders(status, from_order_date):
             if not created:
                 order_item.fulfillment_status = oi.get('fulfillmentStatus')
                 order_item.save()
+
+
+def get_url(status, datum=None):
+    """Return url to fetch all orders by status.
+
+    Orders newer than datum specified (ISO 8601) will be returned when the
+    url is called. Default: last 5 days
+    """
+    if status not in ORDER_STATUS_LIST:
+        raise InvalidStatus(f'Invalid status {status}')
+
+    if datum:
+        datum = datetime.strptime(datum, "%Y-%m-%d")
+    else:
+        now = datetime.now()
+        datum = now - timedelta(days=5)
+
+    fod = datum.astimezone().replace(microsecond=0).isoformat()
+
+    return f'{ORDERS_URL}?fulfillmentStatus={status}&fromOrderDate={urllib.parse.quote_plus(fod)}'
