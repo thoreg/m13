@@ -45,10 +45,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         """Pull (fetch+merge) orders from marketplace."""
-        status = kwargs.get('status')
-        if not status:
-            raise CommandError('No status given')
-
+        status = kwargs.get('status', 'PROCESSABLE')
         datum = kwargs.get('datum')
 
         token = get_auth_token()
