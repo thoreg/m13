@@ -1,0 +1,185 @@
+{
+    "resources": [
+        {
+            "salesOrderId": "239a3067-011f-4a5e-9a6c-7ddf4b2ff680",
+            "orderNumber": "bzyrxkr8mz",
+            "orderDate": "2021-07-20T08:50:48.280+0000",
+            "lastModifiedDate": "2021-07-21T07:15:08.198+0000",
+            "positionItems": [
+                {
+                    "positionItemId": "36c49130-759d-4e88-92d2-d14af26250a4",
+                    "fulfillmentStatus": "RETURNED",
+                    "itemValueGrossPrice": {
+                        "amount": 49.95,
+                        "currency": "EUR"
+                    },
+                    "product": {
+                        "sku": "women-bom-da-xs",
+                        "productTitle": "Manufaktur13 Blousonjacke »Women Bomberjacke - Übergangsjacke« Waffle Stretch",
+                        "articleNumber": "S011P0GIE31P2",
+                        "ean": "0781491970163",
+                        "vatRate": 19
+                    },
+                    "trackingInfo": {
+                        "carrier": "HERMES",
+                        "carrierServiceCode": null,
+                        "trackingNumber": "04201117001999"
+                    },
+                    "expectedDeliveryDate": "2021-07-23T10:00:00.000+0000",
+                    "sentDate": "2021-07-20T10:22:24.323+0000",
+                    "returnedDate": "2021-07-21T07:15:06.861+0000",
+                    "cancellationDate": null
+                }
+            ],
+            "orderLifecycleInformation": {
+                "lifecycleChangeDate": "2021-07-21T07:15:08.198+0000"
+            },
+            "initialDeliveryFees": [
+                {
+                    "name": "DELIVERY_FEE_STANDARD",
+                    "deliveryFeeAmount": {
+                        "amount": 3.95,
+                        "currency": "EUR"
+                    },
+                    "positionItemIds": [
+                        "36c49130-759d-4e88-92d2-d14af26250a4"
+                    ],
+                    "vatRate": 19
+                }
+            ],
+            "deliveryAddress": {
+                "salutation": "MR",
+                "title": null,
+                "lastName": "Zin",
+                "firstName": "Ben",
+                "street": "Am Alexanderplatz",
+                "addition": "Linker Aufgang",
+                "houseNumber": "10a",
+                "city": "Berlin",
+                "zipCode": "10115",
+                "countryCode": "DEU"
+            },
+            "invoiceAddress": {
+                "salutation": "MR",
+                "title": null,
+                "lastName": "Zin",
+                "firstName": "Ben",
+                "street": "Am Alexanderplatz",
+                "addition": "Linker Aufgang",
+                "houseNumber": "10a",
+                "city": "Berlin",
+                "zipCode": "10115",
+                "countryCode": "DEU"
+            },
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "/v4/orders/239a3067-011f-4a5e-9a6c-7ddf4b2ff680"
+                }
+            ]
+        },
+        {
+            "salesOrderId": "8caf792f-7941-4d12-bc33-16db7199c42c",
+            "orderNumber": "bzzphthys2",
+            "orderDate": "2021-07-21T09:39:23.847+0000",
+            "lastModifiedDate": "2021-08-05T08:47:49.191+0000",
+            "positionItems": [
+                {
+                    "positionItemId": "fb917e1e-13a1-4549-a606-e47faea891a8",
+                    "fulfillmentStatus": "RETURNED",
+                    "itemValueGrossPrice": {
+                        "amount": 49.95,
+                        "currency": "EUR"
+                    },
+                    "product": {
+                        "sku": "women-bom-vi-m",
+                        "productTitle": "Manufaktur13 Blousonjacke »Women Bomberjacke - Übergangsjacke« Waffle Stretch",
+                        "articleNumber": "S011P0GIVANP2",
+                        "ean": "0781491970156",
+                        "vatRate": 19
+                    },
+                    "trackingInfo": {
+                        "carrier": "HERMES",
+                        "carrierServiceCode": null,
+                        "trackingNumber": "04203149001198"
+                    },
+                    "expectedDeliveryDate": "2021-07-24T10:00:00.000+0000",
+                    "sentDate": "2021-07-22T11:33:47.871+0000",
+                    "returnedDate": "2021-08-05T08:47:47.956+0000",
+                    "cancellationDate": null
+                },
+                {
+                    "positionItemId": "31f53b49-caad-4b55-b925-706fe638ee8c",
+                    "fulfillmentStatus": "SENT",
+                    "itemValueGrossPrice": {
+                        "amount": 49.95,
+                        "currency": "EUR"
+                    },
+                    "product": {
+                        "sku": "women-bom-da-l",
+                        "productTitle": "Manufaktur13 Blousonjacke »Women Bomberjacke - Übergangsjacke« Waffle Stretch",
+                        "articleNumber": "S011P0GIE31P2",
+                        "ean": "0781491969990",
+                        "vatRate": 19
+                    },
+                    "trackingInfo": {
+                        "carrier": "HERMES",
+                        "carrierServiceCode": null,
+                        "trackingNumber": "04203149001198"
+                    },
+                    "expectedDeliveryDate": "2021-07-24T10:00:00.000+0000",
+                    "sentDate": "2021-07-22T11:33:47.871+0000",
+                    "returnedDate": null,
+                    "cancellationDate": null
+                }
+            ],
+            "orderLifecycleInformation": {
+                "lifecycleChangeDate": "2021-07-22T11:33:48.123+0000"
+            },
+            "initialDeliveryFees": [
+                {
+                    "name": "DELIVERY_FEE_STANDARD",
+                    "deliveryFeeAmount": {
+                        "amount": 3.95,
+                        "currency": "EUR"
+                    },
+                    "positionItemIds": [
+                        "fb917e1e-13a1-4549-a606-e47faea891a8",
+                        "31f53b49-caad-4b55-b925-706fe638ee8c"
+                    ],
+                    "vatRate": 19
+                }
+            ],
+            "deliveryAddress": {
+                "salutation": "MS",
+                "title": null,
+                "lastName": "Tafel",
+                "firstName": "Andi",
+                "street": "Waldallee.",
+                "addition": null,
+                "houseNumber": "25",
+                "city": "Magdeburg",
+                "zipCode": "63512",
+                "countryCode": "DEU"
+            },
+            "invoiceAddress": {
+                "salutation": "MS",
+                "title": null,
+                "lastName": "Tafel",
+                "firstName": "Andi",
+                "street": "Waldallee.",
+                "addition": null,
+                "houseNumber": "25",
+                "city": "Magdeburg",
+                "zipCode": "63512",
+                "countryCode": "DEU"
+            },
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "/v4/orders/8caf792f-7941-4d12-bc33-16db7199c42c"
+                }
+            ]
+        }
+    ]
+}

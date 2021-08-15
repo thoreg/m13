@@ -1,3 +1,5 @@
+import sys
+
 from .base import *
 
 DATABASES = {
@@ -18,3 +20,28 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, '..', 'static'),
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s %(levelname)s %(name)s %(message)s'
+        },
+    },
+    'handlers': {
+        'default': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter':'standard',
+            'stream': sys.stdout
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+    }
+}

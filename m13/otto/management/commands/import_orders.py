@@ -11,6 +11,7 @@ from fastapi import FastAPI
 from requests.auth import HTTPBasicAuth
 
 from otto.models import Address, Order, OrderItem
+from otto.services.orders import fetch_orders, get_auth_token
 
 TOKEN_URL = "https://api.otto.market/v1/token"
 ORDERS_URL = "https://api.otto.market/v4/orders"
@@ -37,6 +38,13 @@ def safenget(dct, key, default=None):
 
 class Command(BaseCommand):
     help = "Import Orders from OTTO"
+
+    # def handle(self, *args, **options):
+    #     """Pull (fetch+merge) orders from marketplace."""
+    #     token = get_auth_token()
+    #     # qqq status list und date?
+    #     orders = fetch_orders(token, 'PROCESSABLE', '2021-08-11T00:00:00+00:00')
+    #     import ipdb; ipdb.set_trace()
 
     def handle(self, *args, **options):
 

@@ -3,17 +3,16 @@ import logging
 from copy import deepcopy
 from datetime import datetime
 
-from django.http import HttpResponseRedirect
-from django.core.mail import EmailMessage
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.shortcuts import render
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core import management
+from django.core.mail import EmailMessage
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse
 
-from .models import OrderItem
 from .forms import UploadFileForm
+from .models import OrderItem
 from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)
