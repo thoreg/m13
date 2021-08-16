@@ -33,11 +33,11 @@ from django.core.management.base import BaseCommand, CommandError
 from fastapi import FastAPI
 from requests.auth import HTTPBasicAuth
 
+from otto.common import get_auth_token
 from otto.models import Address, Order, OrderItem
 
 LOG = logging.getLogger(__name__)
 
-TOKEN_URL = "https://api.otto.market/v1/token"
 ORDERS_URL = "https://api.otto.market/v4/orders"
 
 USERNAME = os.getenv("OTTO_API_USERNAME")
@@ -52,7 +52,6 @@ ORDER_STATUS_LIST = [
     'SENT',
 ]
 
-token = ""
 
 if not all([USERNAME, PASSWORD]):
     print("\nyou need to define username and password\n")
@@ -73,37 +72,16 @@ def safenget(dct, key, default=None):
         return default
 
 
-def get_auth_token():
-    """Get authentication token for further communication."""
-    LOG.info('Get auth token')
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "cache-control": "no-cache",
-    }
-    data = {
-        "username": USERNAME,
-        "grant_type": "password",
-        "client_id": "token-otto-api",
-        "password": PASSWORD,
-    }
-    r = requests.post(
-        TOKEN_URL,
-        headers=headers,
-        data=data,
-    )
-    return r.json().get("access_token")
-
-
 def fetch_orders(token, status, from_order_date=None):
     token = get_auth_token()
     headers = {
-        "Authorization": f"Bearer {token}",
+        'Authorization': f'Bearer {token}',
     }
     r = requests.get(
         get_url(status, from_order_date),
         headers=headers,
     )
-    LOG.info(f"get_orders() response_status_code: {r.status_code}")
+    LOG.info(f'fetch_orders() response_status_code: {r.status_code}')
     return r.json()
 
 
@@ -201,9 +179,9 @@ def save_orders(orders_as_json):
 
 
 
-def get_orders(status, from_order_date):
+def get_orders(token, status, from_order_date):
     """Fetch all orders with given status newer than the specified date."""
-    if not status:
+    if status is None:
         LOG.error('No status')
         return
 

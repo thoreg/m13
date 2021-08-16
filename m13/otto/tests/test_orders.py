@@ -5,7 +5,7 @@ import pytest
 from freezegun import freeze_time
 
 from otto.models import Address, Order, OrderItem
-from otto.services.orders import get_orders, get_url
+from otto.services.orders import get_url, save_orders
 
 FETCH_ORDERS_RESPONSE = './otto/tests/fixtures/fetch_orders_response.json'
 
@@ -15,9 +15,8 @@ def test_get_orders(mocked_fetch_orders):
     """Fetched orders are parsed and processes (stored)."""
     with open(FETCH_ORDERS_RESPONSE) as json_file:
         data = json.load(json_file)
-    mocked_fetch_orders.return_value = data
 
-    get_orders('SENT', '2021-08-11T00:00:00+00:00')
+    save_orders(data)
 
     assert Address.objects.count() == 2
     assert Order.objects.count() == 2
