@@ -296,7 +296,8 @@ def get_url(status, datum=None):
     url is called. Default: last 5 days
     """
     if status not in ORDER_STATUS_LIST:
-        raise InvalidStatus(f'Invalid status {status}')
+        raise InvalidStatus(
+            f'Invalid status {status} - valid status are {ORDER_STATUS_LIST}')
 
     if datum:
         datum = datetime.strptime(datum, "%Y-%m-%d")
