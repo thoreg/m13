@@ -70,3 +70,11 @@ class OrderItem(TimeStampedModel):
     carrier = models.CharField(max_length=32, null=True, blank=True)
     carrier_service_code = models.CharField(max_length=128, null=True, blank=True)
     tracking_number = models.CharField(max_length=128, null=True, blank=True)
+
+
+class Shipment(TimeStampedModel):
+    order = models.ForeignKey(Order, on_delete=models.PROTECT)
+    carrier = models.CharField(max_length=128)
+    tracking_info = models.CharField(max_length=256)
+    response_status_code = models.PositiveSmallIntegerField()
+    response = models.JSONField()
