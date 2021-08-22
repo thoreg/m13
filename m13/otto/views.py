@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .forms import UploadFileForm
-from .models import OrderItem
+from .models import OrderItem, Shipment
 from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)
@@ -204,5 +204,8 @@ def upload_tracking_codes(request):
 
 @login_required
 def upload_tracking_codes_success(request):
-    ctx = {}
-    return render(request, 'otto/upload_tracking_codes_success.html', {'ctx': ctx})
+    shipments = Shipment.objects.all().order_by('-created')[:100]
+    return render(
+        request, 'otto/upload_tracking_codes_success.html', {
+            'shipments': shipments
+        })

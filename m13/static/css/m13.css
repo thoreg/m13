@@ -12,6 +12,10 @@ table {
     background-color: #fff;
 }
 
+th.date {
+  width: 200px;
+}
+
 td {
     padding: 10px;
     border-width: 1px;
