@@ -20,8 +20,8 @@ LOG = logging.getLogger(__name__)
 
 @login_required
 def index(request):
-    order_items = (OrderItem.objects
-        .all()
+    order_items = (
+        OrderItem.objects.all()
         .order_by('-order__order_date')
         .select_related('order__delivery_address'))
     context = {'order_items': order_items}
@@ -79,10 +79,9 @@ def orderitems_csv(request):
     ])
 
     orderitems = (OrderItem.objects
-        .filter(fulfillment_status='PROCESSABLE')
-        .select_related('order__delivery_address')
-        .order_by('order__marketplace_order_number')
-    )
+                           .filter(fulfillment_status='PROCESSABLE')
+                           .select_related('order__delivery_address')
+                           .order_by('order__marketplace_order_number'))
     print(f'Found {len(orderitems)} orderitems')
 
     current_order = None
@@ -97,7 +96,7 @@ def orderitems_csv(request):
                 current_order.marketplace_order_number,
                 current_order.delivery_address.first_name,
                 current_order.delivery_address.last_name,
-                f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}' ,
+                f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}',
                 current_order.delivery_address.zip_code,
                 current_order.delivery_address.city,
                 _get_country_information(current_order.delivery_address.country_code),
@@ -116,7 +115,7 @@ def orderitems_csv(request):
             oi.order.marketplace_order_number,
             oi.order.delivery_address.first_name,
             oi.order.delivery_address.last_name,
-            f'{oi.order.delivery_address.street} {oi.order.delivery_address.house_number}' ,
+            f'{oi.order.delivery_address.street} {oi.order.delivery_address.house_number}',
             oi.order.delivery_address.zip_code,
             oi.order.delivery_address.city,
             _get_country_information(oi.order.delivery_address.country_code),
@@ -139,7 +138,7 @@ def orderitems_csv(request):
             current_order.marketplace_order_number,
             current_order.delivery_address.first_name,
             current_order.delivery_address.last_name,
-            f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}' ,
+            f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}',
             current_order.delivery_address.zip_code,
             current_order.delivery_address.city,
             _get_country_information(current_order.delivery_address.country_code),

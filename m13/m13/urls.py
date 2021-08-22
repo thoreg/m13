@@ -31,4 +31,4 @@ urlpatterns = [
     path('otto/', include('otto.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-handler404 = "m13.views.page_not_found_view"
+handler404 = 'm13.views.page_not_found_view'

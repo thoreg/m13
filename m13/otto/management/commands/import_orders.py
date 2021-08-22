@@ -1,17 +1,10 @@
-import json
 import os
-import pprint
 import sys
 from functools import reduce
-from pprint import pformat
 
-import requests
-from django.core.management.base import BaseCommand, CommandError
-from fastapi import FastAPI
-from requests.auth import HTTPBasicAuth
+from django.core.management.base import BaseCommand
 
 from otto.common import get_auth_token
-from otto.models import Address, Order, OrderItem
 from otto.services.orders import fetch_orders, save_orders
 
 TOKEN_URL = "https://api.otto.market/v1/token"
@@ -40,7 +33,7 @@ def safenget(dct, key, default=None):
 class Command(BaseCommand):
     help = "Import Orders from OTTO"
 
-    def add_arguments(self , parser):
+    def add_arguments(self, parser):
         parser.add_argument(
             '--status', type=str, nargs='?',
             help='Filter orders by status', default='PROCESSABLE')

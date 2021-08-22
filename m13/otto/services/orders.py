@@ -18,20 +18,15 @@ CANCELLED_BY_MARKETPLACE -> This position item was cancelled by the market place
                             and won't be processed any further.
 
 """
-import json
 import logging
 import os
 import sys
 import urllib.parse
 from datetime import datetime, timedelta
 from functools import reduce
-from pprint import pformat
 
 import requests
 from colorama import Fore
-from django.core.management.base import BaseCommand, CommandError
-from fastapi import FastAPI
-from requests.auth import HTTPBasicAuth
 
 from otto.common import get_auth_token
 from otto.models import Address, Order, OrderItem
@@ -99,126 +94,6 @@ def save_orders(orders_as_json):
                 sku = item['product'].get('sku')
                 fulfillment_status = item.get('fulfillmentStatus')
                 print(Fore.YELLOW + f'   {sku} fulfillmentStatus {fulfillment_status}')
-
-                if sku not in announced_orders:
-                    announced_orders[sku] = {
-                        'title': item['product'].get('productTitle'),
-                        'sku': sku,
-                        'number': 1
-                    }
-                else:
-                    announced_orders[sku]['number'] += 1
-
-            continue
-
-        delivery_address, _created = Address.objects.get_or_create(
-            addition=entry.get('deliveryAddress').get('addition'),
-            city=entry.get('deliveryAddress').get('city'),
-            country_code=entry.get('deliveryAddress').get('countryCode'),
-            first_name=entry.get('deliveryAddress').get('firstName'),
-            house_number=entry.get('deliveryAddress').get('houseNumber'),
-            last_name=entry.get('deliveryAddress').get('lastName'),
-            street=entry.get('deliveryAddress').get('street'),
-            title=entry.get('deliveryAddress').get('title'),
-            zip_code=entry.get('deliveryAddress').get('zipCode'),
-        )
-        invoice_address, _created = Address.objects.get_or_create(
-            addition=entry.get('deliveryAddress').get('addition'),
-            city=entry.get('deliveryAddress').get('city'),
-            country_code=entry.get('deliveryAddress').get('countryCode'),
-            first_name=entry.get('deliveryAddress').get('firstName'),
-            house_number=entry.get('deliveryAddress').get('houseNumber'),
-            last_name=entry.get('deliveryAddress').get('lastName'),
-            street=entry.get('deliveryAddress').get('street'),
-            title=entry.get('deliveryAddress').get('title'),
-            zip_code=entry.get('deliveryAddress').get('zipCode'),
-        )
-
-        order, created = Order.objects.get_or_create(
-            marketplace_order_id=marketplace_order_id,
-            defaults={
-                'delivery_address': delivery_address,
-                'delivery_fee': entry.get('initialDeliveryFees'),
-                'invoice_address': invoice_address,
-                'last_modified_date': entry.get('lastModifiedDate'),
-                'marketplace_order_number': entry.get('orderNumber'),
-                'order_date': entry.get('orderDate'),
-            }
-        )
-        if created:
-            print(Fore.GREEN + f'Order {marketplace_order_id} imported')
-        else:
-            print(Fore.YELLOW + f'Order {marketplace_order_id} already known')
-
-        for oi in entry.get('positionItems'):
-            order_item, created = OrderItem.objects.get_or_create(
-                order=order,
-                position_item_id=oi.get('positionItemId'),
-                defaults={
-                    'cancellation_date': oi.get('cancellationDate'),
-                    'expected_delivery_date': oi.get('expectedDeliveryDate'),
-                    'fulfillment_status': oi.get('fulfillmentStatus'),
-                    'price_in_cent':
-                        oi.get('itemValueGrossPrice').get('amount') * 100,
-                    'currency': oi.get('itemValueGrossPrice').get('currency'),
-                    'article_number': oi.get('product').get('articleNumber'),
-                    'ean': oi.get('product').get('ean'),
-                    'product_title': oi.get('product').get('productTitle'),
-                    'sku': oi.get('product').get('sku'),
-                    'vat_rate': int(oi.get('product').get('vatRate')),
-                    'returned_date': oi.get('returnedDate'),
-                    'sent_date': oi.get('sentDate'),
-                    'carrier': safenget(oi, 'trackingInfo.carrier'),
-                    'carrier_service_code': safenget(oi, 'trackingInfo.carrierServiceCode'),
-                    'tracking_number': safenget(oi, 'trackingInfo.trackingNumber'),
-                }
-            )
-            if not created:
-                order_item.fulfillment_status = oi.get('fulfillmentStatus')
-                order_item.save()
-
-
-
-def get_orders(token, status, from_order_date):
-    """Fetch all orders with given status newer than the specified date."""
-    if status is None:
-        LOG.error('No status')
-        return
-
-    if not from_order_date:
-        LOG.error('No from order date')
-        return
-
-    LOG.info(f'Get orders with status {status} newer then {from_order_date}')
-
-    response = fetch_orders(token, status, from_order_date)
-    announced_orders = {}
-
-    for entry in response.get("resources", []):
-        marketplace_order_id = entry.get('salesOrderId')
-        delivery_address = entry.get('deliveryAddress')
-
-        # Orders with internal order status ANNOUNCED do not have a delivery
-        # address set yet - just track these in a dict
-        if not delivery_address:
-            self.stdout.write(self.style.WARNING(
-                f'Order {marketplace_order_id} has no delivery address'
-            ))
-            for item in entry.get('positionItems'):
-                sku = item['product'].get('sku')
-                fulfillment_status = item.get('fulfillmentStatus')
-                self.stdout.write(self.style.WARNING(
-                    f'   {sku} fulfillmentStatus {fulfillment_status}'
-                ))
-
-                if sku not in announced_orders:
-                    announced_orders[sku] = {
-                        'title': item['product'].get('productTitle'),
-                        'sku': sku,
-                        'number': 1
-                    }
-                else:
-                    announced_orders[sku]['number'] += 1
 
             continue
 
