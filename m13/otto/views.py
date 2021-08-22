@@ -7,10 +7,12 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core import management
 from django.core.mail import EmailMessage
+from django.db import connection
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .common import dictfetchall
 from .forms import UploadFileForm
 from .models import OrderItem, Shipment
 from .services.shipments import handle_uploaded_file
@@ -209,3 +211,28 @@ def upload_tracking_codes_success(request):
         request, 'otto/upload_tracking_codes_success.html', {
             'shipments': shipments
         })
+
+
+@login_required
+def stats(request):
+    result = {}
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT
+                DATE_TRUNC('month', modified) AS month,
+                fulfillment_status AS status,
+                COUNT(id) AS count,
+                SUM(price_in_cent)::float/100 AS umsatz
+            FROM
+                otto_orderitem
+            GROUP BY
+                month,
+                fulfillment_status
+        ''')
+        result = dictfetchall(cursor)
+
+        for entry in result:
+            entry['month'] = entry['month'].strftime('%Y%m')
+
+    return render(
+        request, 'otto/stats.html', {'ctx': result})

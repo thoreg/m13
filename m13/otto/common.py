@@ -34,3 +34,15 @@ def get_auth_token():
         data=data,
     )
     return r.json().get("access_token")
+
+
+def dictfetchall(cursor):
+    """Return all rows from a cursor as a dict.
+
+    Stolen from https://docs.djangoproject.com/en/dev/topics/db/sql/
+    """
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div id="main">
+  <h2>OrderItems by status</h2>
+    <table>
+      <thead>
+        <th>month</th>
+        <th>status</th>
+        <th>count</th>
+        <th>umsatz</th>
+    </thead>
+    <tbody>
+    {% for e in ctx %}
+      <tr>
+        <td>{{ e.month }}</td>
+        <td>{{ e.status }}</td>
+        <td>{{ e.count }}</td>
+        <td>{{ e.umsatz }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'otto/footer.html' %}
+{% endblock %}
