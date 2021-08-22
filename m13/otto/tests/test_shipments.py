@@ -33,8 +33,14 @@ def test_handle_uploaded_file(client, django_user_model, django_db_setup):
             format='multipart'
         )
 
+        shipments = Shipment.objects.all()
         assert mocked_do_post.call_count == 3
-        assert Shipment.objects.all().count() == 3
+        assert len(shipments) == 3
+
+    assert [sh.tracking_info for sh in shipments] == (
+        ['04230149000777', '04230151000871', '04230133000493'])
+
+    assert [sh.response_status_code for sh in shipments] == [201, 201, 201]
 
 
 @freeze_time('2013-10-13')

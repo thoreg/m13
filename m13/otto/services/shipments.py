@@ -149,6 +149,7 @@ def handle_uploaded_file(csv_file):
         Shipment.objects.create(
             order=order,
             carrier=carrier,
+            tracking_info=tracking_info,
             response_status_code=status_code,
             response=response
         )
