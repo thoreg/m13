@@ -1,3 +1,4 @@
+import os
 import sys
 
 from .base import *
@@ -33,7 +34,7 @@ LOGGING = {
         'default': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter':'standard',
+            'formatter': 'standard',
             'stream': sys.stdout
         },
     },
