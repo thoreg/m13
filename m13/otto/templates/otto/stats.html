@@ -4,7 +4,29 @@
 
 {% block content %}
 <div id="main">
-  <h2>OrderItems by status</h2>
+  <h2 style='margin-top: 5em'>_total</h2>
+  <table>
+      <thead>
+        <th>Artikel verkauft <br>(seit 2021/07/20)</th>
+        <th>Artikel Retoure</th>
+        <th>Retoure Quote in %</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td style='width: 200em; text-align: right'>
+          {{ ctx.total.number_orderitems_all }}
+        </td>
+        <td style='width: 200em; text-align: right'>
+          {{ ctx.total.number_orderitems_return }}
+        </td>
+        <td style='width: 200em; text-align: right'>
+          {{ ctx.total.return_quote }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 style='margin-top: 5em'>_orderitem_by_status_per_month</h2>
     <table>
       <thead>
         <th>month</th>
@@ -13,13 +35,15 @@
         <th>umsatz</th>
     </thead>
     <tbody>
-    {% for e in ctx %}
-      <tr>
-        <td>{{ e.month }}</td>
-        <td>{{ e.status }}</td>
-        <td>{{ e.count }}</td>
-        <td>{{ e.umsatz }}</td>
-      </tr>
+    {% for month, month_data in ctx.status_per_month.items %}
+      {% for status, status_data in month_data.items %}
+        <tr>
+          <td>{{ month }}</td>
+          <td>{{ status }}</td>
+          <td>{{ status_data.count }}</td>
+          <td>{{ status_data.umsatz }}</td>
+        </tr>
+      {% endfor %}
     {% endfor %}
     </tbody>
   </table>
