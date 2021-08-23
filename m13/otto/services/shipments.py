@@ -47,10 +47,6 @@ from otto.models import Order, Shipment
 
 LOG = logging.getLogger(__name__)
 
-CARRIER_MAP = {
-    'Hermes XS': 'HERMES',
-    'Hermes S': 'HERMES',
-}
 SHIPMENTS_URL = 'https://api.otto.market/v1/shipments'
 
 
