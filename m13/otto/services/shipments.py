@@ -48,7 +48,8 @@ from otto.models import Order, Shipment
 LOG = logging.getLogger(__name__)
 
 CARRIER_MAP = {
-    'Hermes XS': 'HERMES'
+    'Hermes XS': 'HERMES',
+    'Hermes S': 'HERMES',
 }
 SHIPMENTS_URL = 'https://api.otto.market/v1/shipments'
 
@@ -137,11 +138,22 @@ def handle_uploaded_file(csv_file):
             continue
 
         tracking_info = row[17]
+        if not tracking_info:
+            LOG.error(f'Tracking info not found - row: {row}')
+            continue
+
         order_id = row[18].replace('OTTO ', '')
         order = Order.objects.get(marketplace_order_id=order_id)
         if not order:
-            LOG.error(f'Order not found {order_id}')
-        carrier = CARRIER_MAP.get(row[19], 'DHL')
+            LOG.error(f'Order not found {order_id} - row {row}')
+            continue
+
+        carrier = row[19]
+        if carrier.startswith('Hermes'):
+            carrier = 'HERMES'
+        else:
+            carrier = 'DHL'
+
         LOG.info(f'o: {order_id} t: {tracking_info} c: {carrier}')
 
         status_code, response = do_post(token, order_id, tracking_info, carrier)
