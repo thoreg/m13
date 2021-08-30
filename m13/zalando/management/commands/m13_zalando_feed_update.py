@@ -185,4 +185,4 @@ class Command(BaseCommand):
                 data=f.read())
 
         print(f'Response code (feed): {resp.status_code}')
-        print(resp.json())
+        pprint(resp.__dict__)
