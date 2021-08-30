@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
 
-    'otto'
+    'otto',
+    'zalando'
 ]
 
 MIDDLEWARE = [
