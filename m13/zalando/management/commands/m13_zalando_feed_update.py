@@ -119,7 +119,7 @@ class Command(BaseCommand):
                 # import ipdb; ipdb.set_trace()
                 #
                 if row[1] == '':
-                    print(f'SKIP LINE No {idx} - no ean - {row[7]}')
+                    # print(f'SKIP LINE No {idx} - no ean - {row[7]}')
                     ignores['no_ean'] += 1
                     continue
 
@@ -158,7 +158,7 @@ class Command(BaseCommand):
             price = _get_price(float(row[2]))
             retail_price = _get_price(float(row[3]))
             product_name = row[7]
-            print(f'{product_name}: {original_price} -> {price}')
+            # print(f'{product_name}: {original_price} -> {price}')
 
             row[2] = str(price)
             row[3] = str(retail_price)
