@@ -43,6 +43,12 @@ img.center {
     display: inline;
 }
 
+#header_right {
+  float: right;
+  padding-top: 15px;
+  padding-right: 30px;
+}
+
 .sidebar {
   height: 100%;
   width: 0;

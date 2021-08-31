@@ -27,7 +27,13 @@ def index(request):
         .order_by('-order__order_date')
         .select_related('order__delivery_address')[:100]
     )
-    context = {'order_items': order_items}
+    number_of_processable = OrderItem.objects.filter(
+        fulfillment_status='PROCESSABLE').count()
+
+    context = {
+        'number_of_processable': number_of_processable,
+        'order_items': order_items
+    }
     return render(request, 'otto/index.html', context)
 
 
