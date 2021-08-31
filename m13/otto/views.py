@@ -25,7 +25,8 @@ def index(request):
     order_items = (
         OrderItem.objects.all()
         .order_by('-order__order_date')
-        .select_related('order__delivery_address'))
+        .select_related('order__delivery_address')[:100]
+    )
     context = {'order_items': order_items}
     return render(request, 'otto/index.html', context)
 
