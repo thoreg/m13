@@ -235,9 +235,10 @@ def stats(request):
             GROUP BY
                 month,
                 fulfillment_status
+            ORDER BY
+                month DESC
         ''')
         result = dictfetchall(cursor)
-
         for entry in result:
             month = entry['month'].strftime('%Y%m')
             status = entry['status']
@@ -255,5 +256,18 @@ def stats(request):
             'return_quote': return_quote
         }
 
+    sales_revenue_by_status = []
+    for month, status_values in ctx['status_per_month'].items():
+        row = [month]
+        for status in ['PROCESSABLE', 'SENT', 'RETURNED']:
+            values = status_values.get(status)
+            if values:
+                row.extend([status, values['count'], values['umsatz']])
+            else:
+                row.extend([status, '-', '-'])
+
+        sales_revenue_by_status.append(row)
+
+    ctx['sales_revenue_by_status'] = sales_revenue_by_status
     return render(
         request, 'otto/stats.html', {'ctx': ctx})

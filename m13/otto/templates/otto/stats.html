@@ -26,13 +26,42 @@
     </tbody>
   </table>
 
-  <h2 style='margin-top: 5em'>_orderitem_by_status_per_month</h2>
-    <table>
-      <thead>
-        <th>month</th>
-        <th>status</th>
-        <th>count</th>
-        <th>umsatz</th>
+  <h2 style='margin-top: 5em'>
+    _umsatz_pro_monat
+  </h2>
+  <table>
+    <thead>
+      <th>month</th>
+      <th>PROCESSABLE</th>
+      <th>count</th>
+      <th>umsatz</th>
+      <th>SENT</th>
+      <th>count</th>
+      <th>umsatz</th>
+      <th>RETURNED</th>
+      <th>count</th>
+      <th>umsatz</th>
+    </thead>
+    <tbody>
+    {% for row in ctx.sales_revenue_by_status %}
+      <tr>
+      {% for cell in row %}
+        <td>{{ cell }}</td>
+      {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 style='margin-top: 5em'>
+    _orderitem_by_status_per_month
+  </h2>
+  <table>
+    <thead>
+      <th>month</th>
+      <th>status</th>
+      <th>count</th>
+      <th>umsatz</th>
     </thead>
     <tbody>
     {% for month, month_data in ctx.status_per_month.items %}
