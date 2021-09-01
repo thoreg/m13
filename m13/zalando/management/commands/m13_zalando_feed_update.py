@@ -119,7 +119,7 @@ class Command(BaseCommand):
                 # import ipdb; ipdb.set_trace()
                 #
                 if row[1] == '':
-                    # print(f'SKIP LINE No {idx} - no ean - {row[7]}')
+                    # print(f'SKIP LINE No {idx} - no ean - {row[5]} - {row[7]}')
                     ignores['no_ean'] += 1
                     continue
 
