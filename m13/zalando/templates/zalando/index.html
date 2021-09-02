@@ -37,7 +37,7 @@
     <tbody>
     {% for f in feed_uploads %}
       <tr>
-        <td>{{ f.created|date:"Y-m-d:G:i:s" }}</td>
+        <td>{{ f.created|date:"Y-m-d:H:i:s" }}</td>
         <td>{{ f.status_code_validation }}</td>
         <td>{{ f.status_code_feed_upload }}</td>
         <td>{{ f.number_of_valid_items }}</td>
