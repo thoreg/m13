@@ -5,3 +5,4 @@ fast_api_main.py
 *.pyc
 htmlcov
 .coverage
+media/

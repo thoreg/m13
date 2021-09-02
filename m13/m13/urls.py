@@ -28,7 +28,8 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('addi/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('otto/', include('otto.urls'))
+    path('otto/', include('otto.urls')),
+    path('z/', include('zalando.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 handler404 = 'm13.views.page_not_found_view'

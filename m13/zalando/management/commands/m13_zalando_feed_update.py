@@ -1,12 +1,19 @@
 import csv
 import io
+import logging
 import os
 import sys
 from datetime import datetime
 from pprint import pprint
 
 import requests
+from django.conf import settings
 from django.core.management.base import BaseCommand
+
+from m13.common import now_as_str
+from zalando.models import FeedUpload
+
+LOG = logging.getLogger(__name__)
 
 ZALANDO_FEED_PATH = os.getenv('ZALANDO_M13_FEED')
 ZALANDO_API_KEY = os.getenv('ZALANDO_API_KEY')
@@ -14,9 +21,7 @@ ZALANDO_CLIENT_ID = os.getenv('ZALANDO_CLIENT_ID')
 ZALANDO_VALIDATION_URL = (
     f'https://merchants-connector-importer.zalandoapis.com/{ZALANDO_CLIENT_ID}/validate')
 
-now = datetime.now()
-now_as_str = now.strftime('%Y-%m-%dT%H%M%S')
-FEED_NAME = f'{now_as_str}.csv'
+FEED_NAME = f'{now_as_str()}.csv'
 ZALANDO_FEED_URL = (
     f'https://merchants-connector-importer.zalandoapis.com/{ZALANDO_CLIENT_ID}/{FEED_NAME}')
 
@@ -108,7 +113,11 @@ class Command(BaseCommand):
 
         lines = []
         ignores = {'no_ean': 0, 'no_quantity': 0}
-        with open('z.csv', 'w', encoding='UTF8') as f:
+
+        path_origin_feed = os.path.join(
+            settings.MEDIA_ROOT, 'original', f'{now_as_str()}.csv')
+
+        with open(path_origin_feed, 'w', encoding='UTF8') as f:
             writer = csv.writer(f, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
             for idx, row in enumerate(csv_content_as_list):
                 #
@@ -131,8 +140,9 @@ class Command(BaseCommand):
                 writer.writerow(row)
                 lines.append(row)
 
-        print(f'Houston we have a csv with {len(lines)} lines')
-        print(f'Ignores: {ignores}')
+        number_of_valid_items = len(lines)
+        LOG.info(f'Houston we have a csv with {len(lines)} lines')
+        LOG.info(f'Ignores: {ignores}')
 
         headers = {
             'x-api-key': ZALANDO_API_KEY,
@@ -140,14 +150,14 @@ class Command(BaseCommand):
             'cache-control': "no-cache"
         }
 
-        with open('z.csv', 'rb') as f:
+        with open(path_origin_feed, 'rb') as f:
             resp = requests.put(
                 ZALANDO_VALIDATION_URL,
                 headers=headers,
                 data=f.read())
 
-        print(f'Response code: {resp.status_code}')
-        # print(resp.json())
+        LOG.info(f'Response code: {resp.status_code}')
+        status_code_validation = resp.status_code
 
         for row in lines[1:]:
             # print(row)
@@ -158,12 +168,13 @@ class Command(BaseCommand):
             price = _get_price(float(row[2]))
             retail_price = _get_price(float(row[3]))
             product_name = row[7]
-            # print(f'{product_name}: {original_price} -> {price}')
+            LOG.debug(f'{product_name}: {original_price} -> {price}')
 
             row[2] = str(price)
             row[3] = str(retail_price)
 
-        pimped_file_name = 'valid_z_pimped_20_percent.csv'
+        pimped_file_name = os.path.join(
+            settings.MEDIA_ROOT, 'pimped', f'{now_as_str()}.csv')
         with open(pimped_file_name, 'w', encoding='UTF8') as f:
             writer = csv.writer(f, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
             for row in lines:
@@ -175,8 +186,8 @@ class Command(BaseCommand):
                 headers=headers,
                 data=f.read())
 
-        print(f'Response code (validation): {resp.status_code}')
-        print(resp.json())
+        LOG.info(f'Response code (validation): {resp.status_code}')
+        LOG.info(resp.json())
 
         with open(pimped_file_name, 'rb') as f:
             resp = requests.put(
@@ -184,5 +195,15 @@ class Command(BaseCommand):
                 headers=headers,
                 data=f.read())
 
-        print(f'Response code (feed): {resp.status_code}')
-        pprint(resp.__dict__)
+        # Response is empty - b''
+        LOG.info(f'Response code (feed): {resp.status_code}')
+        status_code_feed_upload = resp.status_code
+
+        fupload = FeedUpload(
+            status_code_validation=status_code_validation,
+            status_code_feed_upload=status_code_feed_upload,
+            number_of_valid_items=number_of_valid_items,
+            path_to_original_csv=path_origin_feed,
+            path_to_pimped_csv=pimped_file_name
+        )
+        fupload.save()
