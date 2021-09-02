@@ -42,12 +42,12 @@
         <td>{{ f.status_code_feed_upload }}</td>
         <td>{{ f.number_of_valid_items }}</td>
         <td>
-            <a href="file:///{{ f.path_to_original_csv }}">
+            <a href="/media/{{ f.path_to_original_csv|slice:'37:' }}">
                 Link
             </a>
         </td>
         <td>
-            <a href="file:///{{ f.path_to_pimped_csv }}">
+            <a href="/media/{{ f.path_to_pimped_csv|slice:'37:' }}">
                 Link
             </a>
         </td>
