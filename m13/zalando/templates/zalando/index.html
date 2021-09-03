@@ -25,6 +25,14 @@
 
 {% block content %}
   <div id="main">
+    <h2>_Z_factor</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form }}
+      <button type="submit">SUBMIT</button>
+    </form>
+    <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
+    <h2>_last_13_feed_uploadz</h2>
     <table style='width: 100%'>
       <thead>
         <th>datetime</th>
