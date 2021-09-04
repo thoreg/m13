@@ -11,6 +11,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from m13.common import now_as_str
+from zalando.common import get_z_factor
 from zalando.models import FeedUpload
 
 LOG = logging.getLogger(__name__)
@@ -79,7 +80,9 @@ PRICES = [
     199.95,
 ]
 
-FACTOR = 1.2
+
+# FACTOR = 1.2
+FACTOR = get_z_factor()
 SHIPPING_FEE = 3.95
 
 
@@ -101,8 +104,16 @@ def _get_price(price):
 class Command(BaseCommand):
     help = "Update product feed at zalando"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--dry', type=int,
+            nargs='?',  # argument is optional
+            help='When dry run, the final feedupload is not done (only validation)',
+            default=0)
+
     def handle(self, *args, **kwargs):
         """Download product feed from shop and transmit it to Z for validation"""
+        dry_run = kwargs.get('dry')
         response = requests.get(ZALANDO_FEED_PATH)
         decoded_content = response.content.decode('utf-8')
 
@@ -188,6 +199,12 @@ class Command(BaseCommand):
 
         LOG.info(f'Response code (validation): {resp.status_code}')
         LOG.info(resp.json())
+
+        if dry_run:
+            LOG.info('Return early because of --dry-run')
+            return
+        else:
+            LOG.info('Uploading transformed feed now')
 
         with open(pimped_file_name, 'rb') as f:
             resp = requests.put(

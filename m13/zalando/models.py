@@ -13,3 +13,4 @@ class FeedUpload(TimeStampedModel):
 
 class PriceTool(TimeStampedModel):
     z_factor = models.DecimalField(max_digits=3, decimal_places=2)
+    active = models.BooleanField(default=False)
