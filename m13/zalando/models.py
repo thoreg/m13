@@ -9,3 +9,8 @@ class FeedUpload(TimeStampedModel):
     number_of_valid_items = models.PositiveIntegerField()
     path_to_original_csv = models.CharField(max_length=128)
     path_to_pimped_csv = models.CharField(max_length=128)
+
+
+class PriceTool(TimeStampedModel):
+    z_factor = models.DecimalField(max_digits=3, decimal_places=2)
+    active = models.BooleanField(default=False)
