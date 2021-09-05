@@ -221,6 +221,7 @@ class Command(BaseCommand):
             status_code_feed_upload=status_code_feed_upload,
             number_of_valid_items=number_of_valid_items,
             path_to_original_csv=path_origin_feed,
-            path_to_pimped_csv=pimped_file_name
+            path_to_pimped_csv=pimped_file_name,
+            z_factor=FACTOR
         )
         fupload.save()

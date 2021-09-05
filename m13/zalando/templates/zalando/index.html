@@ -23,6 +23,7 @@
         <th>status_code_validation</th>
         <th>status_code_feed_upload</th>
         <th>number_of_valid_items</th>
+        <th>z_factor</th>
         <th>original_csv</th>
         <th>pimped_csv</th>
     </thead>
@@ -33,6 +34,7 @@
         <td>{{ f.status_code_validation }}</td>
         <td>{{ f.status_code_feed_upload }}</td>
         <td>{{ f.number_of_valid_items }}</td>
+        <td>{{ f.z_factor }}</td>
         <td>
             <a href="/media/{{ f.path_to_original_csv|slice:'37:' }}">
                 Link
