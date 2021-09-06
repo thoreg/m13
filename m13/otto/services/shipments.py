@@ -50,12 +50,8 @@ LOG = logging.getLogger(__name__)
 SHIPMENTS_URL = 'https://api.otto.market/v1/shipments'
 
 
-def get_payload(order_id, tracking_info, carrier):
+def get_payload(order, tracking_info, carrier):
     """Return the payload for all orderitems of the given order."""
-    order = (
-        Order.objects.select_related('delivery_address')
-                     .get(marketplace_order_id=order_id))
-
     LOG.info(order.__dict__)
     LOG.info(order.delivery_address.__dict__)
     for oi in order.orderitem_set.all():
@@ -77,7 +73,7 @@ def get_payload(order_id, tracking_info, carrier):
     for oi in order.orderitem_set.all():
         order_items.append({
             'positionItemId': oi.position_item_id,
-            'salesOrderId': order_id,
+            'salesOrderId': order.marketplace_order_id,
             'returnTrackingKey': {
                 'carrier': carrier,
                 'trackingNumber': tracking_info
@@ -89,11 +85,11 @@ def get_payload(order_id, tracking_info, carrier):
     return data
 
 
-def do_post(token, order_id, tracking_info, carrier):
-    payload = get_payload(order_id, tracking_info, carrier)
+def do_post(token, order, tracking_info, carrier):
+    payload = get_payload(order, tracking_info, carrier)
 
-    LOG.info(f'upload for o: {order_id} t: {tracking_info} c: {carrier}')
-    print(f'upload for o: {order_id} t: {tracking_info} c: {carrier}')
+    LOG.info(
+        f'upload for o: {order.marketplace_order_number} t: {tracking_info} c: {carrier}')
 
     headers = {
         'Authorization': f'Bearer {token}',
@@ -109,10 +105,7 @@ def do_post(token, order_id, tracking_info, carrier):
     )
 
     LOG.info(f'upload shipping information() r.status_code: {r.status_code}')
-    print(f'upload shipping information() r.status_code: {r.status_code}')
-    response = r.json()
-    LOG.info(response)
-    print(response)
+    LOG.info(r.json())
 
     return r.status_code, r.json()
 
@@ -130,29 +123,32 @@ def handle_uploaded_file(csv_file):
     f = TextIOWrapper(csv_file.file, encoding='latin1')
     reader = csv.reader(f, delimiter=';')
     for row in reader:
-        if not row[18].startswith('OTTO'):
+        if not row[0].startswith('b'):
             continue
 
-        tracking_info = row[17]
+        tracking_info = row[3]
         if not tracking_info:
             LOG.error(f'Tracking info not found - row: {row}')
             continue
 
-        order_id = row[18].replace('OTTO ', '')
-        order = Order.objects.get(marketplace_order_id=order_id)
-        if not order:
-            LOG.error(f'Order not found {order_id} - row {row}')
+        order_number = row[0]
+        try:
+            order = (
+                Order.objects.select_related('delivery_address')
+                     .get(marketplace_order_number=order_number))
+        except Order.DoesNotExist:
+            LOG.error(f'Order not found {order_number} - row {row}')
             continue
 
-        carrier = row[19]
-        if carrier.startswith('Hermes'):
-            carrier = 'HERMES'
-        else:
+        carrier = row[4]
+        if carrier.startswith('DHL'):
             carrier = 'DHL'
+        else:
+            carrier = 'HERMES'
 
-        LOG.info(f'o: {order_id} t: {tracking_info} c: {carrier}')
+        LOG.info(f'o: {order_number} t: {tracking_info} c: {carrier}')
 
-        status_code, response = do_post(token, order_id, tracking_info, carrier)
+        status_code, response = do_post(token, order, tracking_info, carrier)
 
         Shipment.objects.create(
             order=order,
