@@ -40,7 +40,8 @@ def index(request):
 def _get_delivery_info(name):
     """Return something human readable for delivery information."""
     MAP = {
-        'DELIVERY_FEE_STANDARD': 'Hermes S',
+        'DELIVERY_FEE_STANDARD': 'Hermes HSI',
+        # 'DELIVERY_FEE_STANDARD': 'Hermes S',
         # 'DELIVERY_FEE_STANDARD': 'DHL Paket',
     }
     return MAP.get(name, name)
@@ -84,7 +85,8 @@ def orderitems_csv(request):
         'Preis (Brutto)',
         'Menge',
         'Positionstyp',
-        'Anmerkung'
+        'Anmerkung',
+        'EMAIL'
     ])
 
     orderitems = (OrderItem.objects
@@ -114,7 +116,8 @@ def orderitems_csv(request):
                 price,
                 1,
                 'Versandposition',
-                f'OTTO {current_order.marketplace_order_id}'
+                f'OTTO {current_order.marketplace_order_id}',
+                'otto@manufaktur13.de'
             ])
 
         price = '%0.2f' % round(oi.price_in_cent / 100, 2)
@@ -133,7 +136,8 @@ def orderitems_csv(request):
             price,
             1,
             'Artikel',
-            f'OTTO {oi.order.marketplace_order_id}'
+            f'OTTO {oi.order.marketplace_order_id}',
+            'otto@manufaktur13.de'
         ])
 
         current_order_id = oi.order.marketplace_order_number
@@ -156,7 +160,8 @@ def orderitems_csv(request):
             price,
             1,
             'Versandposition',
-            f'OTTO {current_order.marketplace_order_id}'
+            f'OTTO {current_order.marketplace_order_id}',
+            'otto@manufaktur13.de'
         ])
 
     email = request.GET.get('email')
