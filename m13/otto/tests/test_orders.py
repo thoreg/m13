@@ -2,6 +2,7 @@ import json
 from unittest.mock import patch
 
 import pytest
+from django.urls import reverse
 from freezegun import freeze_time
 
 from otto.models import Address, Order, OrderItem
@@ -43,3 +44,27 @@ test_data = [
 def test_get_url(state, datum, expected_url):
     """Check all possible fullfillment states."""
     assert get_url(state, datum) == expected_url
+
+
+OTTO_URLS = [
+    'otto_orderitems_csv',
+    'otto_import_orders',
+    'otto_upload_tracking_codes_success',
+    'otto_upload_tracking_codes',
+    'otto_stats',
+    'otto_index'
+]
+
+
+@pytest.mark.parametrize('otto_url', OTTO_URLS)
+@pytest.mark.django_db
+def test_otto_views(client, django_user_model, otto_url):
+    username = "user1"
+    password = "bar"
+    user = django_user_model.objects.create_user(
+        username=username, password=password)
+    client.force_login(user)
+
+    r_url = reverse(otto_url)
+    response = client.get(r_url)
+    assert response.status_code == 200

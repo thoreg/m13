@@ -12,5 +12,5 @@ urlpatterns = [
          views.upload_tracking_codes,
          name='otto_upload_tracking_codes'),
     path('stats', views.stats, name='otto_stats'),
-    path('', views.index, name='index'),
+    path('', views.index, name='otto_index'),
 ]
