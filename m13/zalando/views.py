@@ -23,15 +23,14 @@ def index(request):
         if form.is_valid():
             update_z_factor(form.cleaned_data['z_factor'])
             return HttpResponseRedirect(reverse('zalando_index'))
-        else:
-            print('fucking form not valid')
     else:
         form = PriceToolForm()
 
-    z_factor = 'UNDEFINED'
-    price_tool = PriceTool.objects.get(active=True)
-    if price_tool:
+    try:
+        price_tool = PriceTool.objects.get(active=True)
         z_factor = price_tool.z_factor
+    except PriceTool.DoesNotExist:
+        z_factor = 'UNDEFINED'
 
     ctx = {
         'z_factor': z_factor,
