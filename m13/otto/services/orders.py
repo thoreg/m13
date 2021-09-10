@@ -67,8 +67,7 @@ def safenget(dct, key, default=None):
         return default
 
 
-def fetch_orders(token, status, from_order_date=None):
-    token = get_auth_token()
+def fetch_orders_by_status(token, status, from_order_date=None):
     headers = {
         'Authorization': f'Bearer {token}',
     }
@@ -76,13 +75,25 @@ def fetch_orders(token, status, from_order_date=None):
         get_url(status, from_order_date),
         headers=headers,
     )
-    LOG.info(f'fetch_orders() response_status_code: {r.status_code}')
+    LOG.info(f'fetch_orders_by_status() response_status_code: {r.status_code}')
+    return r.json()
+
+
+def fetch_next_slice(token, href):
+    headers = {
+        'Authorization': f'Bearer {token}',
+    }
+    r = requests.get(
+        ORDERS_URL.replace('/v4/orders', href),
+        headers=headers,
+    )
+    LOG.info(f'fetch_next_slice() response_status_code: {r.status_code}')
     return r.json()
 
 
 def save_orders(orders_as_json):
     """Fetch all orders with given status newer than the specified date."""
-    for entry in orders_as_json.get("resources", []):
+    for entry in orders_as_json.get('resources', []):
         marketplace_order_id = entry.get('salesOrderId')
         delivery_address = entry.get('deliveryAddress')
 
@@ -178,7 +189,7 @@ def get_url(status, datum=None):
         datum = datetime.strptime(datum, "%Y-%m-%d")
     else:
         now = datetime.now()
-        datum = now - timedelta(days=5)
+        datum = now - timedelta(days=14)
 
     fod = datum.astimezone().replace(microsecond=0).isoformat()
 

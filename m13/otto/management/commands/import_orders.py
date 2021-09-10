@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from functools import reduce
@@ -5,13 +6,15 @@ from functools import reduce
 from django.core.management.base import BaseCommand
 
 from otto.common import get_auth_token
-from otto.services.orders import fetch_orders, save_orders
+from otto.services.orders import fetch_next_slice, fetch_orders_by_status, save_orders
 
 TOKEN_URL = "https://api.otto.market/v1/token"
 ORDERS_URL = "https://api.otto.market/v4/orders"
 
 USERNAME = os.getenv("OTTO_API_USERNAME")
 PASSWORD = os.getenv("OTTO_API_PASSWORD")
+
+LOG = logging.getLogger(__name__)
 
 token = ""
 
@@ -30,6 +33,14 @@ def safenget(dct, key, default=None):
         return default
 
 
+def get_next_slice(token, orders):
+    LOG.info(f"paginated response - href: {orders['links'][0]['href']}")
+    orders = fetch_next_slice(token, orders['links'][0]['href'])
+    save_orders(orders)
+    if 'links' in orders:
+        get_next_slice(token, orders)
+
+
 class Command(BaseCommand):
     help = "Import Orders from OTTO"
 
@@ -45,5 +56,8 @@ class Command(BaseCommand):
         datum = kwargs.get('datum')
 
         token = get_auth_token()
-        orders = fetch_orders(token, status, datum)
+        orders = fetch_orders_by_status(token, status, datum)
         save_orders(orders)
+
+        if 'links' in orders:
+            get_next_slice(token, orders)

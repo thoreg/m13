@@ -12,7 +12,7 @@ FETCH_ORDERS_RESPONSE = './otto/tests/fixtures/fetch_orders_response.json'
 
 
 @pytest.mark.django_db
-@patch('otto.services.orders.fetch_orders')
+@patch('otto.services.orders.fetch_orders_by_status')
 def test_save_orders(mocked_fetch_orders):
     """Fetched orders are parsed and processes (stored)."""
 
@@ -34,7 +34,7 @@ def test_save_orders(mocked_fetch_orders):
 
 
 test_data = [
-    ('SENT', None, 'https://api.otto.market/v4/orders?fulfillmentStatus=SENT&fromOrderDate=2013-10-08T00%3A00%3A00%2B02%3A00'),
+    ('SENT', None, 'https://api.otto.market/v4/orders?fulfillmentStatus=SENT&fromOrderDate=2013-09-29T00%3A00%3A00%2B02%3A00'),
     ('PROCESSABLE', '2021-08-11', 'https://api.otto.market/v4/orders?fulfillmentStatus=PROCESSABLE&fromOrderDate=2021-08-11T00%3A00%3A00%2B02%3A00')
 ]
 
