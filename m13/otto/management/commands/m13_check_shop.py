@@ -5,6 +5,8 @@ from functools import reduce
 
 import requests
 from bs4 import BeautifulSoup
+from django.conf import settings
+from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 
 LOG = logging.getLogger(__name__)
@@ -36,7 +38,20 @@ class Command(BaseCommand):
     help = "Check if the shop is up and running."
 
     def suspicious(self, msg):
-        LOG.error(f'SNEAKY PETE detected - suspicious: "{msg}"')
+        msg = f'SNEAKY PETE detected - suspicious: "{msg}"'
+
+        if not settings.FROM_EMAIL_ADDRESS:
+            LOG.critical(msg)
+        else:
+            mail = EmailMessage(
+                msg,
+                'Shop Seite sieht nicht aus wie erwartet "{msg}"',
+                settings.FROM_EMAIL_ADDRESS,
+                settings.OTTO_ORDER_CSV_RECEIVER_LIST,
+            )
+            number_of_messages = mail.send()
+            LOG.info(f'{number_of_messages} send')
+
         sys.exit(-1)
 
     def handle(self, *args, **kwargs):
@@ -57,9 +72,7 @@ class Command(BaseCommand):
             return self.suspicious('Logo has not the right URL')
 
         for link in soup.find_all('a'):
-            print(link.get('href'))
             href = link.get('href')
-
             if href in WHITE_LIST:
                 continue
 
