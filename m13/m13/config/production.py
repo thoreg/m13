@@ -25,6 +25,8 @@ EMAIL_BACKEND = 'django_ses.SESBackend'
 AWS_ACCESS_KEY_ID = os.getenv('M13_AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('M13_AWS_SECRET_ACCESS_KEY')
 
+LOG_DIR = os.getenv('M13_LOG_DIR', '/var/log')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -37,7 +39,7 @@ LOGGING = {
         'default': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/django/m13/default.log',
+            'filename': f'{LOG_DIR}/django/m13/default.log',
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'standard',
@@ -45,7 +47,7 @@ LOGGING = {
         'request_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/django/m13/requests.log',
+            'filename': f'{LOG_DIR}/django/m13/requests.log',
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'standard',
