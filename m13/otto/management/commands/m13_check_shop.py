@@ -45,7 +45,7 @@ class Command(BaseCommand):
         else:
             mail = EmailMessage(
                 msg,
-                'Shop Seite sieht nicht aus wie erwartet "{msg}"',
+                f'Shop Seite sieht nicht aus wie erwartet "{msg}"',
                 settings.FROM_EMAIL_ADDRESS,
                 settings.OTTO_ORDER_CSV_RECEIVER_LIST,
             )
