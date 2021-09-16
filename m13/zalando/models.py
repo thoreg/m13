@@ -15,3 +15,13 @@ class FeedUpload(TimeStampedModel):
 class PriceTool(TimeStampedModel):
     z_factor = models.DecimalField(max_digits=3, decimal_places=2)
     active = models.BooleanField(default=False)
+
+
+class OEAWebhookMessage(TimeStampedModel):
+    """Order Event API Message."""
+    payload = models.JSONField(default=None, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['created']),
+        ]
