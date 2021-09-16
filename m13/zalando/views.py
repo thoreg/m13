@@ -70,7 +70,7 @@ def oea_webhook(request):
     try:
         payload = json.loads(request.body)
     except json.decoder.JSONDecodeError:
-        LOG.exception()
+        LOG.exception('JSON decode failed')
         LOG.error(request.body)
         return HttpResponse(
             'Request body is not JSON', content_type='text/plain')
