@@ -1,12 +1,20 @@
 import logging
+import datetime as dt
+import json
+from secrets import compare_digest
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.db.transaction import non_atomic_requests, atomic
+from django.utils import timezone
 
 from .forms import PriceToolForm
-from .models import FeedUpload, PriceTool
+from .models import FeedUpload, PriceTool, OEAWebhookMessage
 from .services import update_z_factor
 
 LOG = logging.getLogger(__name__)
@@ -39,3 +47,32 @@ def index(request):
     }
 
     return render(request, 'zalando/index.html', ctx)
+
+
+@csrf_exempt
+@require_POST
+@non_atomic_requests
+def oea_webhook(request):
+    if not settings.ZALANDO_OEM_WEBHOOK_TOKEN:
+        return HttpResponse('Token not defined.', content_type='text/plain')
+
+    given_token = request.headers.get('x-api-key', '')
+    if not compare_digest(given_token, settings.ZALANDO_OEM_WEBHOOK_TOKEN):
+        return HttpResponseForbidden(
+            'Incorrect token in header',
+            content_type='text/plain'
+        )
+
+    OEAWebhookMessage.objects.filter(
+        created__lte=timezone.now() - dt.timedelta(days=7)
+    ).delete()
+
+    payload = json.loads(request.body)
+    OEAWebhookMessage.objects.create(payload=payload)
+    process_oea_webhook_payload(payload)
+    return HttpResponse('Message received okay.', content_type='text/plain')
+
+
+@atomic
+def process_oea_webhook_payload(payload):
+    LOG.info(payload)
