@@ -67,7 +67,14 @@ def oea_webhook(request):
         created__lte=timezone.now() - dt.timedelta(days=7)
     ).delete()
 
-    payload = json.loads(request.body)
+    try:
+        payload = json.loads(request.body)
+    except json.decoder.JSONDecodeError:
+        LOG.exception()
+        LOG.error(request.body)
+        return HttpResponse(
+            'Request body is not JSON', content_type='text/plain')
+
     OEAWebhookMessage.objects.create(payload=payload)
     process_oea_webhook_payload(payload)
     return HttpResponse('Message received okay.', content_type='text/plain')
