@@ -22,7 +22,7 @@ import logging
 import os
 import sys
 import urllib.parse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import reduce
 
 import requests

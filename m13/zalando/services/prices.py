@@ -1,8 +1,7 @@
-
 import logging
 from decimal import Decimal
 
-from .models import PriceTool
+from zalando.models import PriceTool
 
 LOG = logging.getLogger(__name__)
 
