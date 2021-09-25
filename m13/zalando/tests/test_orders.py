@@ -27,8 +27,12 @@ def test_process_oea_records_detail():
     call_command(
         'loaddata', 'zalando/tests/fixtures/oea-msgs-small.fixture.json')
 
+    assert OEAWebhookMessage.objects.all().filter(processed=None).count() == 8
+
     process_new_oea_records()
 
     assert Order.objects.all().count() == 6
     assert OrderItem.objects.all().count() == 3
     assert Address.objects.all().count() == 3
+
+    assert OEAWebhookMessage.objects.all().filter(processed=None).count() == 0

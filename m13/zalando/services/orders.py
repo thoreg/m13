@@ -58,8 +58,9 @@ The order is ready to be shipped to the customer.):
 
 """
 import logging
+from datetime import datetime
 
-from colorama import Fore
+from django.utils import timezone
 
 from m13.common import time_str2object
 from zalando.models import Address, OEAWebhookMessage, Order, OrderItem
@@ -116,11 +117,17 @@ def process_orderitem(order, oi, delivery_infos):
         order_item.save()
 
 
+def mark_as_processed(oea_msg_obj):
+    """Mark this object as processed."""
+    oea_msg_obj.processed = timezone.now()
+    oea_msg_obj.save()
+
+
 def process_new_oea_records():
     """Process all unprocessed oem records."""
     unprocessed = OEAWebhookMessage.objects.filter(processed=None)
-    for entry in unprocessed:
-        entry = entry.payload
+    for oea_msg in unprocessed:
+        entry = oea_msg.payload
         order, created = Order.objects.get_or_create(
             marketplace_order_id=entry['order_id'],
             store_id=entry['store_id'],
@@ -147,7 +154,8 @@ def process_new_oea_records():
 
             # import ipdb; ipdb.set_trace()
             if order.last_modified_date > time_str2object(entry['timestamp']):
-                LOG.info('ooo - continue')
+                LOG.info('\t\tooo - continue')
+                mark_as_processed(oea_msg)
                 continue
 
             order.status = entry['state']
@@ -155,7 +163,8 @@ def process_new_oea_records():
 
         # We are done here if order status is just 'assigned
         if order.status == 'assigned':
-            LOG.info('\tfulfillment status is assigned - return early')
+            LOG.info('\t\tfulfillment status is assigned - return early')
+            mark_as_processed(oea_msg)
             continue
 
         dd = entry.get('delivery_details')
@@ -173,9 +182,13 @@ def process_new_oea_records():
             order.delivery_address = get_address(address_data)
         else:
             LOG.error(f'No address data found but expected entry: {entry}')
+
         order.save()
+
         LOG.info(
             f'order: {order.marketplace_order_id} '
             f'order_number: {order.marketplace_order_number} '
             f'order.id: {order.id} order updated - end'
         )
+
+        mark_as_processed(oea_msg)
