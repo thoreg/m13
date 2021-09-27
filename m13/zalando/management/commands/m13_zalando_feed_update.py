@@ -1,3 +1,12 @@
+"""Handle feed upload from M13 shop to zalando retailer API endpoint.
+
+Download, transform, validate and upload feed
+
+Run for dry mode:
+
+python manage.py m13_zalando_feed_update --dry
+
+"""
 import csv
 import io
 import logging
@@ -12,7 +21,7 @@ from django.core.management.base import BaseCommand
 
 from m13.common import now_as_str
 from zalando.common import get_z_factor
-from zalando.models import FeedUpload
+from zalando.models import FeedUpload, Product
 
 LOG = logging.getLogger(__name__)
 
@@ -175,11 +184,15 @@ class Command(BaseCommand):
             # 2 price
             # 3 retail_price
             # 7 name
+            ean = row[1]
             original_price = float(row[2])
             price = _get_price(float(row[2]))
             retail_price = _get_price(float(row[3]))
             product_name = row[7]
             LOG.debug(f'{product_name}: {original_price} -> {price}')
+            Product.objects.get_or_create(ean=ean, defaults={
+                'title': product_name
+            })
 
             row[2] = str(price)
             row[3] = str(retail_price)

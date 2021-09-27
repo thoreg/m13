@@ -89,3 +89,8 @@ class Shipment(TimeStampedModel):
     tracking_info = models.CharField(max_length=256)
     response_status_code = models.PositiveSmallIntegerField()
     response = models.JSONField()
+
+
+class Product(TimeStampedModel):
+    ean = models.CharField(max_length=16, unique=True)
+    title = models.CharField(max_length=256)
