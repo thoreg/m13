@@ -17,7 +17,7 @@ from django.views.decorators.http import require_POST
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm
-from .models import FeedUpload, OEAWebhookMessage, PriceTool, OrderItem, Product
+from .models import FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product
 
 LOG = logging.getLogger(__name__)
 
