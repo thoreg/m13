@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load dicts_extra %}
 
 {% block header %}
  <div id="header" style="margin-top: 3em">
@@ -14,18 +15,18 @@
 {% endblock %}
 
 {% block content %}
-  <div id="main">
-    <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
-    <h2>_last_13_feed_uploadz</h2>
-    <table style='width: 100%'>
-      <thead>
-        <th>datetime</th>
-        <th>status_code_validation</th>
-        <th>status_code_feed_upload</th>
-        <th>number_of_valid_items</th>
-        <th>z_factor</th>
-        <th>original_csv</th>
-        <th>pimped_csv</th>
+<div id="main">
+  <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
+  <h2>_last_5_feed_uploadz</h2>
+  <table style='width: 100%'>
+    <thead>
+      <th>datetime</th>
+      <th>status_code_validation</th>
+      <th>status_code_feed_upload</th>
+      <th>number_of_valid_items</th>
+      <th>z_factor</th>
+      <th>original_csv</th>
+      <th>pimped_csv</th>
     </thead>
     <tbody>
     {% for f in feed_uploads %}
@@ -44,6 +45,45 @@
             <a href="/media/{{ f.path_to_pimped_csv|slice:'37:' }}">
                 Link
             </a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
+  <h2>_last_100_orders</h2>
+  <table>
+    <thead>
+      <th>order_number</th>
+      <th>article_number</th>
+      <th>ean</th>
+      <th>status</th>
+      <th>product title</th>
+      <th>customer name</th>
+      <th>customer address</th>
+      <th>created</th>
+    </thead>
+    <tbody>
+    {% for oi in order_items %}
+      <tr>
+        <td>{{ oi.order.marketplace_order_number }}</td>
+        <td>{{ oi.article_number }}</td>
+        <td>{{ oi.ean }}</td>
+        <td>{{ oi.fulfillment_status }}</td>
+        <td>{{ products|get_item:oi.ean }}</td>
+        <td>
+          {{ oi.order.delivery_address.first_name }}
+          {{ oi.order.delivery_address.last_name }}
+        </td>
+        <td>
+          {{ oi.order.delivery_address.street }}
+          {{ oi.order.delivery_address.house_number }}
+          {{ oi.order.delivery_address.zip_code }}
+          {{ oi.order.delivery_address.city }}
+          {{ oi.order.delivery_address.country_code }}
+        </td>
+        <td>
+          {{ oi.created | date:"c" }}
         </td>
       </tr>
     {% endfor %}

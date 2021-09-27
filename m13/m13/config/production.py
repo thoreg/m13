@@ -67,5 +67,3 @@ LOGGING = {
         },
     }
 }
-
-ZALANDO_OEM_WEBHOOK_TOKEN = os.getenv('M13_ZALANDO_OEM_WEBHOOK_TOKEN')

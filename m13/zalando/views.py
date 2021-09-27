@@ -1,6 +1,7 @@
 import datetime as dt
 import json
 import logging
+from pprint import pformat, pprint
 from secrets import compare_digest
 
 from django.conf import settings
@@ -13,17 +14,23 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from zalando.services.prices import update_z_factor
+
 from .forms import PriceToolForm
-from .models import FeedUpload, OEAWebhookMessage, PriceTool
-from .services import update_z_factor
+from .models import FeedUpload, OEAWebhookMessage, PriceTool, OrderItem, Product
 
 LOG = logging.getLogger(__name__)
 
 
 @login_required
 def index(request):
-    LOG.info('welcome at zalando index')
-    feed_uploads = FeedUpload.objects.all().order_by('-created')[:13]
+    feed_uploads = FeedUpload.objects.all().order_by('-created')[:5]
+    order_items = (
+        OrderItem.objects.all()
+        .order_by('-order__order_date')
+        .select_related('order__delivery_address')[:100]
+    )
+    products = {p['ean']: p['title'] for p in Product.objects.all().values()}
 
     if request.method == 'POST':
         LOG.info('form is valid')
@@ -41,9 +48,11 @@ def index(request):
         z_factor = 'UNDEFINED'
 
     ctx = {
-        'z_factor': z_factor,
         'feed_uploads': feed_uploads,
-        'form': form
+        'form': form,
+        'order_items': order_items,
+        'products': products,
+        'z_factor': z_factor,
     }
 
     return render(request, 'zalando/index.html', ctx)
