@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load dicts_extra %}
+
+{% block header %}
+ <div id="header" style="margin-top: 3em">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form }}
+      <button type="submit">SUBMIT</button>
+    </form>
+</div>
+<div id="header_right">
+  _z_factor: {{ z_factor }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="main">
+  <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
+  <h2>_last_5_feed_uploadz</h2>
+  <table style='width: 100%'>
+    <thead>
+      <th>datetime</th>
+      <th>status_code_validation</th>
+      <th>status_code_feed_upload</th>
+      <th>number_of_valid_items</th>
+      <th>z_factor</th>
+      <th>original_csv</th>
+      <th>pimped_csv</th>
+    </thead>
+    <tbody>
+    {% for f in feed_uploads %}
+      <tr>
+        <td>{{ f.created|date:"Y-m-d:H:i:s" }}</td>
+        <td>{{ f.status_code_validation }}</td>
+        <td>{{ f.status_code_feed_upload }}</td>
+        <td>{{ f.number_of_valid_items }}</td>
+        <td>{{ f.z_factor }}</td>
+        <td>
+            <a href="/media/{{ f.path_to_original_csv|slice:'37:' }}">
+                Link
+            </a>
+        </td>
+        <td>
+            <a href="/media/{{ f.path_to_pimped_csv|slice:'37:' }}">
+                Link
+            </a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'zalando/footer.html' %}
+{% endblock %}
