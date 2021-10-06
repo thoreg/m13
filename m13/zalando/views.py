@@ -2,9 +2,9 @@ import csv
 import datetime as dt
 import json
 import logging
+from datetime import datetime, timedelta
 from pprint import pformat, pprint
 from secrets import compare_digest
-from datetime import datetime, date, timedelta
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -48,6 +48,15 @@ def price_feed(request):
         'z_factor': z_factor,
     }
     return render(request, 'zalando/price_feed.html', ctx)
+
+
+@login_required
+def price_table(request):
+
+    ctx = {
+
+    }
+    return render(request, 'zalando/price_table.html', ctx)
 
 
 @login_required

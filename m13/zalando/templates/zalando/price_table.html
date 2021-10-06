@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block header %}
+ <div id="header" style="margin-top: 3em">
+
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="main">
+  <div id="app"></div>
+  <script type="text/javascript" src="{% static 'src/vue/dist/js/chunk-vendors.js' %}"></script>
+  <script type="text/javascript" src="{% static 'src/vue/dist/js/app.js' %}"></script>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'zalando/footer.html' %}
+{% endblock %}

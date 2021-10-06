@@ -3,30 +3,35 @@
 
 {% block header %}
  <div id="header">
-    <form action={% url 'zalando_price_feed' %}>
-      <button type="submit" class="m13-btn" title="Z Faktor und Price Feed">
-        PRICE FEED
-      </button>
-    </form>
-    Order CSVs >>
-    <form action={% url 'zalando_orderitems_csv' date=today %}>
-      <button type="submit" class="m13-btn"
-        title="Alle aktuellen Bestellungen von heuter als CSV laden">
-        {{ today }}
-      </button>
-    </form>
-    <form action={% url 'zalando_orderitems_csv' date=yesterday %}>
-      <button type="submit" class="m13-btn"
-        title="Alle Bestellungen von gestern als CSV laden">
-        {{ yesterday }}
-      </button>
-    </form>
-    <form action={% url 'zalando_orderitems_csv' date=dbyesterday %}>
-      <button type="submit" class="m13-btn"
-        title="Alle Bestellungen von vorgestern als CSV laden">
-        {{ dbyesterday }}
-      </button>
-    </form>
+  <form action={% url 'zalando_price_table' %}>
+    <button type="submit" class="m13-btn" title="Preise überschreiben für einzelne Produkte">
+      PRICE TABLE
+    </button>
+  </form>
+  <form action={% url 'zalando_price_feed' %}>
+    <button type="submit" class="m13-btn" title="Z Faktor und Price Feed">
+      PRICE FEED
+    </button>
+  </form>
+  Order CSVs >>
+  <form action={% url 'zalando_orderitems_csv' date=today %}>
+    <button type="submit" class="m13-btn"
+      title="Alle aktuellen Bestellungen von heuter als CSV laden">
+      {{ today }}
+    </button>
+  </form>
+  <form action={% url 'zalando_orderitems_csv' date=yesterday %}>
+    <button type="submit" class="m13-btn"
+      title="Alle Bestellungen von gestern als CSV laden">
+      {{ yesterday }}
+    </button>
+  </form>
+  <form action={% url 'zalando_orderitems_csv' date=dbyesterday %}>
+    <button type="submit" class="m13-btn"
+      title="Alle Bestellungen von vorgestern als CSV laden">
+      {{ dbyesterday }}
+    </button>
+  </form>
 </div>
 {% endblock %}
 

@@ -10,6 +10,12 @@
   <meta name="author" content="Thomas Rega">
   <title>M13BM - M13 Business Machine</title>
   <link rel="stylesheet" type="text/css" href="{% static '/css/m13.css' %}">
+
+  {% if env_name == 'production' %}
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  {% else %}
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  {% endif %}
 </head>
 <body>
   <div id="m13-sidebar" class="sidebar">

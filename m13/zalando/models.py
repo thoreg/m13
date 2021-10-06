@@ -94,3 +94,16 @@ class Shipment(TimeStampedModel):
 class Product(TimeStampedModel):
     ean = models.CharField(max_length=16, unique=True)
     title = models.CharField(max_length=256)
+
+
+class FeedRow(TimeStampedModel):
+    store = models.CharField(max_length=8)
+    ean = models.CharField(max_length=16, unique=True)
+    title = models.CharField(max_length=256)
+    price = models.CharField(max_length=8)
+    quantity = models.SmallIntegerField()
+    article_number = models.CharField(max_length=32)
+    color = models.CharField(max_length=32)
+    price_overwrite = models.CharField(
+        max_length=8, null=True, blank=True)
+    use_row = models.BooleanField(default=True)

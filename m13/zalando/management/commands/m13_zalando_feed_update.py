@@ -4,7 +4,7 @@ Download, transform, validate and upload feed
 
 Run for dry mode:
 
-python manage.py m13_zalando_feed_update --dry
+python manage.py m13_zalando_feed_update --dry 1
 
 """
 import csv
@@ -21,7 +21,7 @@ from django.core.management.base import BaseCommand
 
 from m13.common import now_as_str
 from zalando.common import get_z_factor
-from zalando.models import FeedUpload, Product
+from zalando.models import FeedRow, FeedUpload, Product
 
 LOG = logging.getLogger(__name__)
 
@@ -108,6 +108,28 @@ def _get_price(price):
         if price > 200:
             # This should never happen
             return 'ERROR'
+
+
+def update_custom_feed(row):
+    """Write out updated custom feed rows."""
+    feed_row, created = FeedRow.objects.get_or_create(
+        store=row[0],
+        ean=row[1],
+        defaults={
+            'price': _get_price(float(row[2])),
+            'quantity': row[4],
+            'article_number': row[5],
+            'color': row[6],
+            'title': row[7]
+        })
+
+    if not created:
+        feed_row.price = row[2]
+        feed_row.quantity = row[4]
+        feed_row.article_number = row[5]
+        feed_row.color = row[6]
+        feed_row.title = row[7]
+        feed_row.save()
 
 
 class Command(BaseCommand):
@@ -201,8 +223,14 @@ class Command(BaseCommand):
             settings.MEDIA_ROOT, 'pimped', f'{now_as_str()}.csv')
         with open(pimped_file_name, 'w', encoding='UTF8') as f:
             writer = csv.writer(f, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
+            skip_header = True
             for row in lines:
                 writer.writerow(row)
+                if skip_header:
+                    skip_header = False
+                    continue
+
+                update_custom_feed(row)
 
         with open(pimped_file_name, 'rb') as f:
             resp = requests.put(
