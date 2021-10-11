@@ -20,9 +20,11 @@ from django.urls import include, path
 from rest_framework import routers
 
 from otto.viewsets import OrderItemViewSet as OttoOrderItemsViewSet
+from zalando.viewsets import FeedRowViewSet
 
 router = routers.DefaultRouter()
 router.register(r'otto/orderitems', OttoOrderItemsViewSet)
+router.register(r'z/feed-rows', FeedRowViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
