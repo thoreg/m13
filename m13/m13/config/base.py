@@ -10,8 +10,12 @@ APPEND_SLASH = True
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = False
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:8081',
+)
 
+DEBUG = False
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,12 +28,15 @@ INSTALLED_APPS = [
     'django_countries',
     'django_extensions',
     'rest_framework',
+    # to allow requests to Django application from other origins
+    'corsheaders',
 
     'otto',
     'zalando'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
