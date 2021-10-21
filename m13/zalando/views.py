@@ -2,9 +2,9 @@ import csv
 import datetime as dt
 import json
 import logging
+from datetime import date, datetime, timedelta
 from pprint import pformat, pprint
 from secrets import compare_digest
-from datetime import datetime, date, timedelta
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -106,12 +106,12 @@ def process_oea_webhook_payload(payload):
 
 
 @login_required
-def orderitems_csv(request, date):
+def orderitems_csv(request, day):
     """Return all processible orderitems as csv."""
 
     LOG.info(request.__dict__)
     LOG.info(f'GET: {request.GET.__dict__}')
-    LOG.info(f'date: {date}')
+    LOG.info(f'day: {day}')
 
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(

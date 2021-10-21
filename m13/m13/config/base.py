@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'otto',
-    'zalando'
+    'zalando',
+    'etsy'
 ]
 
 MIDDLEWARE = [

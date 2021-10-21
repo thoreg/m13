@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block header %}
+<div id="header">
+  <p>
+  _etsy_header<br>
+  api_key = {{ api_key }}<br>
+  superstring = {{ superstring }} <br>
+  verifier = {{ verifier }} <br>
+  code_challenge = {{ code_challenge }} <br>
+  <p>
+</div>
+<div id="header_right">
+  _authenticated: {{ number_of_processable }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div style="height: 200px">
+    <a href="https://www.etsy.com/oauth/connect?response_type=code&redirect_uri={{ redirect_uri }}&scope={{ scope }}&client_id={{ api_key }}&state={{ superstring }}&code_challenge={{ code_challenge }}&code_challenge_method=S256">
+        Authenticate with Etsy
+    </a>
+</div>
+{% endblock %}
