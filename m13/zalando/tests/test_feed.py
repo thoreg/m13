@@ -8,6 +8,7 @@ from zalando.forms import PriceToolForm
 from zalando.models import PriceTool
 
 ZALANDO_URLS = [
+    'zalando_price_feed',
     'zalando_index',
 ]
 
@@ -24,6 +25,10 @@ def test_zalando_views(client, django_user_model, z_url):
     r_url = reverse(z_url)
     response = client.get(r_url)
     assert response.status_code == 200
+
+    if not z_url == 'zalando_price_feed':
+        return
+
     assert response.context['z_factor'] == 'UNDEFINED'
     assert isinstance(response.context['form'], PriceToolForm)
 
