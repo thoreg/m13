@@ -105,8 +105,8 @@ def oauth(request):
 @login_required
 def index(request):
     """Index view of the etsy app."""
-    token = 'NOT_SET_YET'
-    refresh_token = 'NOT_SET_YET'
+    token = None
+    refresh_token = None
     try:
         auth_request = AuthRequest2.objects.all().order_by('-created')[0]
 

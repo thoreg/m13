@@ -12,6 +12,20 @@
 
 {% block content %}
 <div style="height: 200px">
-  BAUSTELLE
+  <p>
+    {% if token %}
+      AUTH_TOKEN available
+    {% else %}
+      NO_AUTH_TOKEN available
+    {% endif %}
+  </p>
+  <p>
+    {% if refresh_token %}
+      REFRESH_TOKEN available
+    {% else %}
+      NO_REFRESH_TOKEN available
+    {% endif %}
+  </p>
+
 </div>
 {% endblock %}
