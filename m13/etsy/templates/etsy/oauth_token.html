@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block header %}
+<div id="header">
+  Auth token request response
+</div>
+{% endblock %}
+
+{% block content %}
+<div style="height: 200px">
+    <p>
+        auth_token: {{ auth_token }}
+    </p>
+    <p>
+        refresh_token: {{ refresh_token }}
+    </p>
+</div>
+{% endblock %}

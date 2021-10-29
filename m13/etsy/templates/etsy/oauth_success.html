@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block header %}
+<div id="header">
+  _etsy_oauth_redirect_success
+</div>
+{% endblock %}
+
+{% block content %}
+<div style="height: 200px">
+    <p>
+        msg: {{ msg }}
+    </p>
+    <p>
+        token: {{ token }}
+    </p>
+</div>
+{% endblock %}

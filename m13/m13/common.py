@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime, timezone
 
 
@@ -10,3 +11,21 @@ def now_as_str():
 def time_str2object(time_str):
     return datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(
         tzinfo=timezone.utc)
+
+
+# https://gist.github.com/cameronmaske/f520903ade824e4c30ab
+def base64_encode(string):
+    """
+    Removes any `=` used as padding from the encoded string.
+    """
+    encoded = base64.urlsafe_b64encode(string)
+    return encoded.rstrip(b'=')
+
+
+def base64_decode(string):
+    """
+    Adds back in the required padding before decoding.
+    """
+    padding = 4 - (len(string) % 4)
+    string = string + ("=" * padding)
+    return base64.urlsafe_b64decode(string)
