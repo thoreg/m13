@@ -84,7 +84,7 @@ def oea_webhook(request):
         )
 
     OEAWebhookMessage.objects.filter(
-        created__lte=timezone.now() - dt.timedelta(days=7)
+        created__lte=timezone.now() - dt.timedelta(days=365)
     ).delete()
 
     try:
