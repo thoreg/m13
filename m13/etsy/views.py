@@ -36,7 +36,7 @@ def orders(request):
     try:
         auth_request = AuthRequest2.objects.all().order_by('-created')[0]
         token = auth_request.auth_token
-        refresh_token = auth_request.refrsh_token
+        refresh_token = auth_request.refresh_token
     except IndexError:
         pass
 
