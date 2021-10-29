@@ -104,53 +104,25 @@ def oauth(request):
 
 @login_required
 def index(request):
-    """Index view of the etsy app.
+    """Index view of the etsy app."""
+    token = 'NOT_SET_YET'
+    refresh_token = 'NOT_SET_YET'
+    try:
+        auth_request = AuthRequest2.objects.all().order_by('-created')[0]
 
-    Responsible to genere everything needed for auth token request.
-    """
-    # sanity checks
-    if not M13_ETSY_API_KEY:
-        msg = 'M13_ETSY_API_KEY needed - do you know what you are doing?'
-        return HttpResponseNotFound(f'<h1>{msg}</h1>')
+        LOG.info(auth_request.__dict__)
+        LOG.info('foobar_index_before')
+        LOG.info(auth_request.verifier, auth_request.created)
+        LOG.info('foobar_index_after')
 
-    if not M13_ETSY_OAUTH_REDIRECT:
-        msg = 'M13_ETSY_OAUTH_REDIRECT needed - do you know what you are doing?'
-        return HttpResponseNotFound(f'<h1>{msg}</h1>')
+        token = auth_request.auth_token
+        refresh_token = auth_request.refresh_token
+    except IndexError:
+        pass
 
-    # We’ll use the verifier to generate the challenge.
-    # The verifier needs to be saved for a future step in the OAuth flow.
-    verifier = base64_encode(secrets.token_hex(32).encode('utf8'))
-    LOG.info(f'[ index ] verifier: {verifier}')
-
-    # the PKCE (Proof Key for Code Exchange) code challenge generated from
-    # the code verifier above
-    code_challenge = base64_encode(
-        (hashlib.sha256(verifier).hexdigest()).encode('utf-8'))
-    LOG.info(f'[ index ] code_challenge: {code_challenge}')
-
-    # A string which Etsy.com should return with the authorization code
-    MAX_STATE_LENGTH = 8
-    state = ''.join(
-        random.SystemRandom().choice(string.ascii_uppercase + string.digits)
-        for _ in range(MAX_STATE_LENGTH))
-    LOG.info(f'[ index ] state: {state}')
-
-    # Scope: we want listings and transactions (orders)
-    scope = 'transactions_r%20listings_r%20email_r'
-    LOG.info(f'[ index ] scope: {scope}')
-
-    AuthRequest2.objects.create(
-        verifier=verifier.decode('utf8'),
-        code_challenge=code_challenge.decode('utf8'),
-        state=state,
-    )
-
-    context = {
-        'api_key': M13_ETSY_API_KEY,
-        'code_challenge': code_challenge,
-        'redirect_uri': M13_ETSY_OAUTH_REDIRECT,
-        'scope': scope,
-        'state': state,
-        'verifier': verifier,
+    ctx = {
+        'token': token,
+        'refresh_token': refresh_token
     }
-    return render(request, 'etsy/index.html', context)
+
+    return render(request, 'etsy/index.html', ctx)
