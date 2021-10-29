@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block header %}
+<div id="header">
+  _etsy_orders
+</div>
+{% endblock %}
+
+{% block content %}
+<div style="height: 200px">
+    <p>
+        AuthToken: {{ token }}
+    </p>
+    <p>
+        RefreshToken: {{ refresh_token }}
+    </p>
+</div>
+{% endblock %}

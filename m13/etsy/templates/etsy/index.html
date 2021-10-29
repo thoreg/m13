@@ -2,14 +2,16 @@
 
 {% block header %}
 <div id="header">
-  _etsy_index
+  <form action={% url 'etsy_orders' %}>
+    <button type="submit" class="m13-btn" title="Bestellungen von ETSY importieren">
+      BESTELLUNGEN IMPORTIEREN
+    </button>
+  </form>
 </div>
 {% endblock %}
 
 {% block content %}
 <div style="height: 200px">
-    <a href="https://www.etsy.com/oauth/connect?response_type=code&redirect_uri={{ redirect_uri }}&scope={{ scope }}&client_id={{ api_key }}&state={{ state }}&code_challenge={{ code_challenge }}&code_challenge_method=S256">
-        Request AUTH Token
-    </a>
+  BAUSTELLE
 </div>
 {% endblock %}

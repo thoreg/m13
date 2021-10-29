@@ -32,14 +32,17 @@ M13_ETSY_OAUTH_REDIRECT = os.getenv('M13_ETSY_OAUTH_REDIRECT')
 def orders(request):
     """Display orders from etsy."""
     token = 'NOT_SET_YET'
+    refresh_token = 'NOT_SET_YET'
     try:
         auth_request = AuthRequest2.objects.all().order_by('-created')[0]
         token = auth_request.auth_token
+        refresh_token = auth_request.refrsh_token
     except IndexError:
         pass
 
     ctx = {
-        'token': token
+        'token': token,
+        'refresh_token': refresh_token
     }
     return render(request, 'etsy/orders.html', ctx)
 
