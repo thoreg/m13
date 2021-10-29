@@ -35,6 +35,8 @@ def orders(request):
     refresh_token = 'NOT_SET_YET'
     try:
         auth_request = AuthRequest2.objects.all().order_by('-created')[0]
+        LOG.info(auth_request.__dict__)
+        LOG.info(auth_request.verifier, auth_request.created)
         token = auth_request.auth_token
         refresh_token = auth_request.refresh_token
     except IndexError:
