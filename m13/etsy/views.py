@@ -27,6 +27,18 @@ LOG = logging.getLogger(__name__)
 M13_ETSY_API_KEY = os.getenv('M13_ETSY_API_KEY')
 M13_ETSY_GET_AUTH_TOKEN_URL = 'https://api.etsy.com/v3/public/oauth/token'
 M13_ETSY_OAUTH_REDIRECT = os.getenv('M13_ETSY_OAUTH_REDIRECT')
+M13_ETSY_SHOP_ID = os.getenv('M13_ETSY_SHOP_ID')
+
+
+def get_receipts(token):
+    """Return receipts as json."""
+    headers = {
+        'x-api-key': M13_ETSY_API_KEY,
+        'authorization': f'Bearer {token}'
+    }
+    url = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts'
+    r = requests.get(url, headers=headers)
+    return r.json()
 
 
 def orders(request):
@@ -47,7 +59,8 @@ def orders(request):
 
     ctx = {
         'token': token,
-        'refresh_token': refresh_token
+        'refresh_token': refresh_token,
+        'response': get_receipts(token)
     }
     return render(request, 'etsy/orders.html', ctx)
 
@@ -109,12 +122,6 @@ def index(request):
     refresh_token = None
     try:
         auth_request = AuthRequest2.objects.all().order_by('-created')[0]
-
-        LOG.info(auth_request.__dict__)
-        LOG.info('foobar_index_before')
-        LOG.info(auth_request.verifier, auth_request.created)
-        LOG.info('foobar_index_after')
-
         token = auth_request.auth_token
         refresh_token = auth_request.refresh_token
     except IndexError:
