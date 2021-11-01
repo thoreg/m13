@@ -1,5 +1,5 @@
+import logging
 import os
-import time
 
 import requests
 from colorama import Fore
@@ -7,6 +7,8 @@ from colorama import Fore
 from m13.common import timestamp_from_epoch
 
 from .models import Address, Order, OrderItem
+
+LOG = logging.getLogger(__name__)
 
 M13_ETSY_API_KEY = os.getenv('M13_ETSY_API_KEY')
 M13_ETSY_SHOP_ID = os.getenv('M13_ETSY_SHOP_ID')
@@ -27,6 +29,7 @@ def get_receipts(token):
     }
     url = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts'
     r = requests.get(url, headers=headers)
+    LOG.info(r)
     return r.json()
 
 
@@ -35,6 +38,10 @@ def process_receipts(data):
 
     https://developers.etsy.com/documentation/reference/#operation/getShopReceipts
     """
+    if 'results' not in data:
+        LOG.error('No results in data')
+        return
+
     for d in data['results']:
         process_receipt(d)
 
