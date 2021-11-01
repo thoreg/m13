@@ -29,7 +29,8 @@ def get_receipts(token):
     }
     url = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts'
     r = requests.get(url, headers=headers)
-    LOG.info(r)
+    LOG.info(r.__dict__)
+    LOG.info(r.status_code)
     return r.json()
 
 
