@@ -1,4 +1,5 @@
 import base64
+import time
 from datetime import datetime, timezone
 
 
@@ -11,6 +12,11 @@ def now_as_str():
 def time_str2object(time_str):
     return datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(
         tzinfo=timezone.utc)
+
+
+def timestamp_from_epoch(epoch):
+    """Return timestamp which is recognized by psql."""
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch))
 
 
 # https://gist.github.com/cameronmaske/f520903ade824e4c30ab

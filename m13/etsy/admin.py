@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import AuthRequest2
+from .models import Address, AuthRequest2
+
+
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ('buyer_email', 'formatted_address')
+    ordering = ('-created',)
 
 
 class AuthRequest2Admin(admin.ModelAdmin):
@@ -8,4 +13,5 @@ class AuthRequest2Admin(admin.ModelAdmin):
     ordering = ('-created',)
 
 
+admin.site.register(Address, AddressAdmin)
 admin.site.register(AuthRequest2, AuthRequest2Admin)
