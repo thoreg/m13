@@ -16,7 +16,7 @@ def time_str2object(time_str):
 
 def timestamp_from_epoch(epoch):
     """Return timestamp which is recognized by psql."""
-    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch))
+    return time.strftime('%Y-%m-%d %H:%M:%SZ', time.localtime(epoch))
 
 
 # https://gist.github.com/cameronmaske/f520903ade824e4c30ab

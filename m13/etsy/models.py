@@ -2,12 +2,15 @@ from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
 
-class AuthRequest2(TimeStampedModel):
+class AuthGrant(TimeStampedModel):
     verifier = models.CharField(max_length=512)
     code_challenge = models.CharField(max_length=256)
     state = models.CharField(max_length=8)
-    auth_token = models.CharField(max_length=128, null=True, blank=True)
-    refresh_token = models.CharField(max_length=128, null=True, blank=True)
+
+
+class AuthToken(TimeStampedModel):
+    token = models.CharField(max_length=128)
+    refresh_token = models.CharField(max_length=128)
 
 
 class Address(TimeStampedModel):

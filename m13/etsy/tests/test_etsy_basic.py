@@ -7,7 +7,7 @@ from freezegun import freeze_time
 
 ETSY_GET_URLS = [
     'etsy_index',
-    'etsy_oauth',
+    # 'etsy_oauth',
     'etsy_orders',
 ]
 

@@ -4,23 +4,17 @@ OAuth Information:
 https://developers.etsy.com/documentation/essentials/authentication/#proof-key-for-code-exchange-pkce
 
 """
-import base64
-import hashlib
 import logging
 import os
-import random
-import secrets
-import string
 from pprint import pformat
 
 import requests
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseNotFound
 from django.shortcuts import render
 
 from m13.common import base64_encode
 
-from .models import AuthRequest2
+from .models import AuthGrant, AuthToken
 from .services import get_receipts, process_receipts
 
 LOG = logging.getLogger(__name__)
@@ -31,26 +25,56 @@ M13_ETSY_OAUTH_REDIRECT = os.getenv('M13_ETSY_OAUTH_REDIRECT')
 M13_ETSY_SHOP_ID = os.getenv('M13_ETSY_SHOP_ID')
 
 
+def _render_auth_request_not_found(request):
+    ctx = {
+        'error': 'AuthRequest2.DoesNotExist',
+        'error_descrption': 'No AuthRequest2 found'
+    }
+    return render(request, 'etsy/oauth_error.html', ctx)
+
+
 def orders(request):
     """Display orders from etsy."""
-    token = 'NOT_SET_YET'
-    refresh_token = 'NOT_SET_YET'
     try:
-        auth_request = AuthRequest2.objects.all().order_by('-created')[0]
-        token = auth_request.auth_token
-        refresh_token = auth_request.refresh_token
-
-        receipts = get_receipts(token)
-        process_receipts(receipts)
+        auth_token = AuthToken.objects.all().order_by('-created')[0]
+        response = get_receipts(auth_token.token)
+        process_receipts(response)
 
     except IndexError:
-        pass
+        _render_auth_request_not_found(request)
 
     ctx = {
-        'token': token,
-        'refresh_token': refresh_token,
+        'response': 'coming_soon'
     }
     return render(request, 'etsy/orders.html', ctx)
+
+
+def refresh(request):
+    """Refresh Auth Token."""
+    try:
+        auth_request = AuthToken.objects.all().order_by('-created')[0]
+        refresh_token = auth_request.refresh_token
+    except IndexError:
+        _render_auth_request_not_found(request)
+
+    req_body = {
+        'client_id': M13_ETSY_API_KEY,
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token,
+    }
+
+    LOG.info(f'POST: req_body {req_body}')
+    resp = requests.post(M13_ETSY_GET_AUTH_TOKEN_URL, data=req_body)
+
+    resp_json = resp.json()
+    LOG.info('- POST RESPONSE REFRESH ------------------------------------')
+    LOG.info(resp_json)
+    LOG.info('- POST RESPONSE REFRESH -------------------------------- END')
+
+    AuthToken.objects.create(
+        token=resp.get('access_token'),
+        refresh_token=resp.get('refresh_token')
+    )
 
 
 def oauth(request):
@@ -67,16 +91,13 @@ def oauth(request):
         auth_code = request.GET.get('code')
         state = request.GET.get('state')
         try:
-            auth_request = AuthRequest2.objects.get(
+            auth_request = AuthGrant.objects.get(
                 state=state,
             )
-        except AuthRequest2.DoesNotExist:
-            ctx = {
-                'error': 'AuthRequest2.DoesNotExist',
-                'error_descrption': 'AuthRequest2.DoesNotExist'
-            }
-            return render(request, 'etsy/oauth_error.html', ctx)
+        except AuthGrant.DoesNotExist:
+            _render_auth_request_not_found(request)
 
+        # Verify functionality - qqq
         req_body = {
             'client_id': M13_ETSY_API_KEY,
             'code_verifier': auth_request.verifier.encode('utf8'),
@@ -84,7 +105,6 @@ def oauth(request):
             'grant_type': 'authorization_code',
             'redirect_uri': M13_ETSY_OAUTH_REDIRECT,
         }
-
         LOG.info(f'POST: req_body {req_body}')
         resp = requests.post(M13_ETSY_GET_AUTH_TOKEN_URL, data=req_body)
         resp_json = resp.json()
@@ -92,13 +112,13 @@ def oauth(request):
         LOG.info(resp_json)
         LOG.info('- POST RESPONSE ----------------------------------- END')
 
-        auth_request.auth_token = resp_json['access_token']
-        auth_request.refresh_token = resp_json['refresh_token']
-        auth_request.save()
+        AuthToken.objects.create(
+            token=resp.get('access_token'),
+            refresh_token=resp.get('refresh_token')
+        )
 
         context = {
-            'msg': 'Hooray we have an AUTH_TOKEN',
-            'token': auth_request.auth_token
+            'msg': 'Hooray we have an AUTH_TOKEN'
         }
         return render(request, 'etsy/oauth_success.html', context)
 
@@ -109,7 +129,7 @@ def index(request):
     token = None
     refresh_token = None
     try:
-        auth_request = AuthRequest2.objects.all().order_by('-created')[0]
+        auth_request = AuthToken.objects.all().order_by('-created')[0]
         token = auth_request.auth_token
         refresh_token = auth_request.refresh_token
     except IndexError:
