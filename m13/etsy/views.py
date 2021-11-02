@@ -14,7 +14,7 @@ from django.shortcuts import render
 
 from m13.common import base64_encode
 
-from .models import AuthGrant, AuthToken
+from .models import AuthGrant, AuthToken, Order, OrderItem
 from .services import get_receipts, process_receipts
 
 LOG = logging.getLogger(__name__)
@@ -44,9 +44,10 @@ def orders(request):
         _render_auth_request_not_found(request)
 
     ctx = {
-        'response': 'coming_soon'
+        'number_of_orders': Order.objects.count(),
+        'number_of_orderitems': OrderItem.objects.count(),
     }
-    return render(request, 'etsy/orders.html', ctx)
+    return render(request, 'etsy/index.html', ctx)
 
 
 def refresh(request):
@@ -126,18 +127,8 @@ def oauth(request):
 @login_required
 def index(request):
     """Index view of the etsy app."""
-    token = None
-    refresh_token = None
-    try:
-        auth_request = AuthToken.objects.all().order_by('-created')[0]
-        token = auth_request.auth_token
-        refresh_token = auth_request.refresh_token
-    except IndexError:
-        pass
-
     ctx = {
-        'token': token,
-        'refresh_token': refresh_token
+        'number_of_orders': Order.objects.count(),
+        'number_of_orderitems': OrderItem.objects.count(),
     }
-
     return render(request, 'etsy/index.html', ctx)
