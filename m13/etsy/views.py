@@ -72,8 +72,8 @@ def refresh(request):
     LOG.info('- POST RESPONSE REFRESH -------------------------------- END')
 
     AuthToken.objects.create(
-        token=resp.get('access_token'),
-        refresh_token=resp.get('refresh_token')
+        token=resp_json.get('access_token'),
+        refresh_token=resp_json.get('refresh_token')
     )
 
 
@@ -113,8 +113,8 @@ def oauth(request):
         LOG.info('- POST RESPONSE ----------------------------------- END')
 
         AuthToken.objects.create(
-            token=resp.get('access_token'),
-            refresh_token=resp.get('refresh_token')
+            token=resp_json.get('access_token'),
+            refresh_token=resp_json.get('refresh_token')
         )
 
         context = {
