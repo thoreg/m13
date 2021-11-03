@@ -10,7 +10,8 @@ from pprint import pformat
 
 import requests
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 
 from m13.common import base64_encode
 
@@ -42,11 +43,7 @@ def orders(request):
     response = get_receipts(token)
     process_receipts(response)
 
-    ctx = {
-        'number_of_orders': Order.objects.count(),
-        'number_of_orderitems': OrderItem.objects.count(),
-    }
-    return render(request, 'etsy/index.html', ctx)
+    return redirect(reverse('etsy_index'))
 
 
 def oauth(request):
@@ -67,7 +64,7 @@ def oauth(request):
                 state=state,
             )
         except AuthGrant.DoesNotExist:
-            _render_auth_request_not_found(request)
+            return _render_auth_request_not_found(request)
 
         # Verify functionality - qqq
         req_body = {

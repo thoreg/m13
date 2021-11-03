@@ -6,15 +6,17 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 ETSY_GET_URLS = [
-    'etsy_index',
-    # 'etsy_oauth',
-    'etsy_orders',
+    ('etsy_index', 200),
+    ('etsy_oauth', 200),
+    ('etsy_orders', 302),
 ]
 
 
-@pytest.mark.parametrize('etsy_url', ETSY_GET_URLS)
+@pytest.mark.parametrize('etsy_url_data', ETSY_GET_URLS)
 @pytest.mark.django_db
-def test_etsy_get_views(client, django_user_model, etsy_url):
+def test_etsy_get_views(client, django_user_model, etsy_url_data):
+    (etsy_url, expected_status_code) = etsy_url_data
+
     username = "user1"
     password = "bar"
     user = django_user_model.objects.create_user(
@@ -26,4 +28,4 @@ def test_etsy_get_views(client, django_user_model, etsy_url):
             'M13_ETSY_OAUTH_REDIRECT': 'bar'}):
         r_url = reverse(etsy_url)
         response = client.get(r_url)
-        assert response.status_code == 200
+        assert response.status_code == expected_status_code
