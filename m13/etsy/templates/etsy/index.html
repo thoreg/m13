@@ -5,12 +5,34 @@
 {% endblock %}
 
 {% block content %}
-<div style="height: 200px; padding-top: 33px; padding-left: 33px;">
-  <p>
-    Number of Orders: {{ number_of_orders }}
-  </p>
-  <p>
-    Number of OrderItems: {{ number_of_orderitems }}
-  </p>
+<div id="main">
+  <table>
+    <thead>
+      <th>order_number</th>
+      <th>sku</th>
+      <th>status</th>
+      <th>expected delivery date</th>
+      <th>product title</th>
+      <th>customer address</th>
+      <th>created</th>
+    </thead>
+    <tbody>
+    {% for oi in order_items %}
+      <tr>
+        <td>{{ oi.order.marketplace_order_id }}</td>
+        <td>{{ oi.sku }}</td>
+        <td>{{ oi.fulfillment_status }}</td>
+        <td>{{ oi.expected_delivery_date|date:"Y-m-d" }}</td>
+        <td>{{ oi.product_title }}</td>
+        <td>
+          {{ oi.order.delivery_address.formatted_address }}
+        </td>
+        <td>
+          {{ oi.created | date:"c" }}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}

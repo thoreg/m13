@@ -98,8 +98,15 @@ def oauth(request):
 @login_required
 def index(request):
     """Index view of the etsy app."""
+    order_items = (
+        OrderItem.objects.all()
+        .order_by('-order__order_date')
+        .select_related('order__delivery_address')[:100]
+    )
+
     ctx = {
         'number_of_orders': Order.objects.count(),
         'number_of_orderitems': OrderItem.objects.count(),
+        'order_items': order_items,
     }
     return render(request, 'etsy/index.html', ctx)
