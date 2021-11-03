@@ -15,7 +15,7 @@ from django.shortcuts import render
 from m13.common import base64_encode
 
 from .models import AuthGrant, AuthToken, Order, OrderItem
-from .services import get_receipts, process_receipts
+from .services import get_auth_token, get_receipts, process_receipts
 
 LOG = logging.getLogger(__name__)
 
@@ -35,47 +35,18 @@ def _render_auth_request_not_found(request):
 
 def orders(request):
     """Display orders from etsy."""
-    try:
-        auth_token = AuthToken.objects.all().order_by('-created')[0]
-        response = get_receipts(auth_token.token)
-        process_receipts(response)
-
-    except IndexError:
+    token = get_auth_token()
+    if not token:
         _render_auth_request_not_found(request)
+
+    response = get_receipts(token)
+    process_receipts(response)
 
     ctx = {
         'number_of_orders': Order.objects.count(),
         'number_of_orderitems': OrderItem.objects.count(),
     }
     return render(request, 'etsy/index.html', ctx)
-
-
-def refresh(request):
-    """Refresh Auth Token."""
-    try:
-        auth_request = AuthToken.objects.all().order_by('-created')[0]
-        refresh_token = auth_request.refresh_token
-    except IndexError:
-        _render_auth_request_not_found(request)
-
-    req_body = {
-        'client_id': M13_ETSY_API_KEY,
-        'grant_type': 'refresh_token',
-        'refresh_token': refresh_token,
-    }
-
-    LOG.info(f'POST: req_body {req_body}')
-    resp = requests.post(M13_ETSY_GET_AUTH_TOKEN_URL, data=req_body)
-
-    resp_json = resp.json()
-    LOG.info('- POST RESPONSE REFRESH ------------------------------------')
-    LOG.info(resp_json)
-    LOG.info('- POST RESPONSE REFRESH -------------------------------- END')
-
-    AuthToken.objects.create(
-        token=resp_json.get('access_token'),
-        refresh_token=resp_json.get('refresh_token')
-    )
 
 
 def oauth(request):
