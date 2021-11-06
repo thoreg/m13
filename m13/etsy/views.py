@@ -4,17 +4,18 @@ OAuth Information:
 https://developers.etsy.com/documentation/essentials/authentication/#proof-key-for-code-exchange-pkce
 
 """
-import logging
 import csv
+import logging
 import os
-from pprint import pformat
+from copy import deepcopy
 from datetime import datetime
+from pprint import pformat
 
 import requests
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.http import HttpResponse
 
 from m13.common import base64_encode
 
@@ -27,6 +28,8 @@ M13_ETSY_API_KEY = os.getenv('M13_ETSY_API_KEY')
 M13_ETSY_GET_AUTH_TOKEN_URL = 'https://api.etsy.com/v3/public/oauth/token'
 M13_ETSY_OAUTH_REDIRECT = os.getenv('M13_ETSY_OAUTH_REDIRECT')
 M13_ETSY_SHOP_ID = os.getenv('M13_ETSY_SHOP_ID')
+
+DELIVERY_FEE_STANDARD = 'Hermes HSI'
 
 
 def _render_auth_request_not_found(request):
@@ -92,25 +95,38 @@ def orderitems_csv(request):
     for oi in orderitems:
 
         # Append shipping information at the end of an order (after all orderitems)
-        # if current_order_id and current_order_id != oi.order.marketplace_order_id:
-        #     price = '%0.2f' % current_order.delivery_fee[0]['deliveryFeeAmount']['amount']
-        #     price = price.replace('.', ',')
-        #     writer.writerow([
-        #         current_order.marketplace_order_id,
-        #         current_order.delivery_address.first_name,
-        #         current_order.delivery_address.last_name,
-        #         f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}',
-        #         current_order.delivery_address.zip_code,
-        #         current_order.delivery_address.city,
-        #         _get_country_information(current_order.delivery_address.country_code),
-        #         ' ',
-        #         _get_delivery_info(current_order.delivery_fee[0]['name']),
-        #         price,
-        #         1,
-        #         'Versandposition',
-        #         f'OTTO {current_order.marketplace_order_id}',
-        #         'otto@manufaktur13.de'
-        #     ])
+        if current_order_id and current_order_id != oi.order.marketplace_order_id:
+
+            amount = current_order.delivery_fee['amount']
+            divisor = current_order.delivery_fee['divisor']
+            price = '%0.2f' % (int(amount) / int(divisor))
+            price = price.replace('.', ',')
+
+            parsed_address = oi.order.delivery_address.formatted_address.split()
+
+            first_name = parsed_address[0]
+            last_name = parsed_address[1]
+            street = ' '.join(parsed_address[2:-3])
+            zip_code = parsed_address[-3]
+            city = parsed_address[-2]
+            country = parsed_address[-1]
+
+            writer.writerow([
+                current_order.marketplace_order_id,
+                first_name,
+                last_name,
+                street,
+                zip_code,
+                city,
+                country,
+                ' ',
+                DELIVERY_FEE_STANDARD,
+                price,
+                1,
+                'Versandposition',
+                f'ETSY {current_order.marketplace_order_id}',
+                'etsy@manufaktur13.de'
+            ])
 
         price = '%0.2f' % round(oi.price_in_cent / 100, 2)
         price = price.replace('.', ',')
@@ -141,29 +157,41 @@ def orderitems_csv(request):
             'etsy@manufaktur13.de'
         ])
 
-        # current_order_id = oi.order.marketplace_order_id
-        # current_order = deepcopy(oi.order)
+        current_order_id = oi.order.marketplace_order_id
+        current_order = deepcopy(oi.order)
 
-    # if current_order:
-    #     # extra locke for the last shipping position
-    #     price = '%0.2f' % current_order.delivery_fee[0]['deliveryFeeAmount']['amount']
-    #     price = price.replace('.', ',')
-    #     writer.writerow([
-    #         current_order.marketplace_order_number,
-    #         current_order.delivery_address.first_name,
-    #         current_order.delivery_address.last_name,
-    #         f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}',
-    #         current_order.delivery_address.zip_code,
-    #         current_order.delivery_address.city,
-    #         _get_country_information(current_order.delivery_address.country_code),
-    #         ' ',
-    #         _get_delivery_info(current_order.delivery_fee[0]['name']),
-    #         price,
-    #         1,
-    #         'Versandposition',
-    #         f'OTTO {current_order.marketplace_order_id}',
-    #         'otto@manufaktur13.de'
-    #     ])
+    if current_order:
+
+        amount = current_order.delivery_fee['amount']
+        divisor = current_order.delivery_fee['divisor']
+        price = '%0.2f' % (int(amount) / int(divisor))
+        price = price.replace('.', ',')
+
+        parsed_address = oi.order.delivery_address.formatted_address.split()
+
+        first_name = parsed_address[0]
+        last_name = parsed_address[1]
+        street = ' '.join(parsed_address[2:-3])
+        zip_code = parsed_address[-3]
+        city = parsed_address[-2]
+        country = parsed_address[-1]
+
+        writer.writerow([
+            current_order.marketplace_order_id,
+            first_name,
+            last_name,
+            street,
+            zip_code,
+            city,
+            country,
+            ' ',
+            DELIVERY_FEE_STANDARD,
+            price,
+            1,
+            'Versandposition',
+            f'ETSY {current_order.marketplace_order_id}',
+            'etsy@manufaktur13.de'
+        ])
 
     return response
 
