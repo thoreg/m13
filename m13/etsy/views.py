@@ -58,11 +58,12 @@ def orderitems_csv(request):
     """Return all processible orderitems as csv."""
     now = datetime.now()
     now_as_str = now.strftime('%Y-%m-%dT%H_%M_%S')
+    file_name = f'{now_as_str}_etsy.csv'
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(
         content_type='text/csv',
         headers={
-            'Content-Disposition': f'attachment; filename="{now_as_str}.csv"'},
+            'Content-Disposition': f'attachment; filename="{file_name}"'},
     )
 
     response.write(u'\ufeff'.encode('utf8'))
@@ -93,7 +94,6 @@ def orderitems_csv(request):
     current_order = None
     current_order_id = None
     for oi in orderitems:
-
         # Append shipping information at the end of an order (after all orderitems)
         if current_order_id and current_order_id != oi.order.marketplace_order_id:
 
@@ -102,7 +102,7 @@ def orderitems_csv(request):
             price = '%0.2f' % (int(amount) / int(divisor))
             price = price.replace('.', ',')
 
-            parsed_address = oi.order.delivery_address.formatted_address.split()
+            parsed_address = current_order.delivery_address.formatted_address.split()
 
             first_name = parsed_address[0]
             last_name = parsed_address[1]

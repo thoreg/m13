@@ -8,7 +8,10 @@ def django_db_setup(django_db_setup, django_db_blocker):
         'otto/tests/fixtures/address.json',
         'otto/tests/fixtures/order.json',
         'otto/tests/fixtures/order_item.json',
-        'zalando/tests/fixtures/oea_webhook_messages.fixture.json'
+        'zalando/tests/fixtures/oea_webhook_messages.fixture.json',
+        'etsy/tests/fixtures/etsy.address.json',
+        'etsy/tests/fixtures/etsy.order.json',
+        'etsy/tests/fixtures/etsy.orderitem.json',
     ]
     with django_db_blocker.unblock():
         for fixture in fixtures:
