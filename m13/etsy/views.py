@@ -252,6 +252,8 @@ def index(request):
     )
 
     ctx = {
+        'number_of_paid': OrderItem.objects.filter(
+            fulfillment_status='PAID').count(),
         'number_of_orders': Order.objects.count(),
         'number_of_orderitems': OrderItem.objects.count(),
         'order_items': order_items,
