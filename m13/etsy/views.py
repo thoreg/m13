@@ -125,7 +125,7 @@ def orderitems_csv(request):
                 1,
                 'Versandposition',
                 f'ETSY {current_order.marketplace_order_id}',
-                'etsy@manufaktur13.de'
+                oi.order.delivery_address.buyer_email
             ])
 
         price = '%0.2f' % round(oi.price_in_cent / 100, 2)
@@ -153,8 +153,8 @@ def orderitems_csv(request):
             price,
             1,
             'Artikel',
-            f'{oi.order.marketplace_order_id}',
-            'etsy@manufaktur13.de'
+            f'ETSY {oi.order.marketplace_order_id}',
+            oi.order.delivery_address.buyer_email
         ])
 
         current_order_id = oi.order.marketplace_order_id
@@ -190,7 +190,7 @@ def orderitems_csv(request):
             1,
             'Versandposition',
             f'ETSY {current_order.marketplace_order_id}',
-            'etsy@manufaktur13.de'
+            oi.order.delivery_address.buyer_email
         ])
 
     return response
