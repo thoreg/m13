@@ -63,7 +63,7 @@ def get_receipts(token):
     # Take in maximum 100 items from the timerange of the last week
     today_one_week_ago = datetime.datetime.now() + datetime.timedelta(days=7)
     min_created = today_one_week_ago.strftime('%s')
-    url = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts?limit=100&min_created{min_created}'
+    url = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts?limit=100&min_created={min_created}'
     r = requests.get(url, headers=headers)
     LOG.info(r.__dict__)
     LOG.info(r.status_code)
