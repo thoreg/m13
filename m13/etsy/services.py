@@ -59,7 +59,7 @@ def get_receipts(token):
         'x-api-key': M13_ETSY_API_KEY,
         'authorization': f'Bearer {token}'
     }
-    url = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts'
+    url = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts?limit=100'
     r = requests.get(url, headers=headers)
     LOG.info(r.__dict__)
     LOG.info(r.status_code)
@@ -71,6 +71,7 @@ def process_receipts(data):
 
     https://developers.etsy.com/documentation/reference/#operation/getShopReceipts
     """
+    LOG.info(f'response[count]: {data["count"]}')
     if 'results' not in data:
         LOG.error('No results in data')
         return
@@ -106,6 +107,8 @@ def process_receipt(data):
         print(Fore.GREEN + f'Order {marketplace_order_id} imported')
     else:
         print(Fore.YELLOW + f'Order {marketplace_order_id} already known')
+        order.status = STATUS_MAP[data.get('status')]
+        order.save()
 
     carrier = None
     tracking_number = None

@@ -45,7 +45,7 @@ def orders(request):
     """Display orders from etsy."""
     token = get_auth_token()
     if not token:
-        _render_auth_request_not_found(request)
+        return _render_auth_request_not_found(request)
 
     response = get_receipts(token)
     process_receipts(response)
