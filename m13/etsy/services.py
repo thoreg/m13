@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 
@@ -59,7 +60,10 @@ def get_receipts(token):
         'x-api-key': M13_ETSY_API_KEY,
         'authorization': f'Bearer {token}'
     }
-    url = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts?limit=100'
+    # Take in maximum 100 items from the timerange of the last week
+    today_one_week_ago = datetime.datetime.now() + datetime.timedelta(days=7)
+    min_created = today_one_week_ago.strftime('%s')
+    url = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts?limit=100&min_created{min_created}'
     r = requests.get(url, headers=headers)
     LOG.info(r.__dict__)
     LOG.info(r.status_code)
@@ -71,10 +75,12 @@ def process_receipts(data):
 
     https://developers.etsy.com/documentation/reference/#operation/getShopReceipts
     """
-    LOG.info(f'response[count]: {data["count"]}')
-    if 'results' not in data:
-        LOG.error('No results in data')
-        return
+    for k in ['count', 'results']:
+        if k not in data:
+            LOG.error(f'No {k} in data')
+            return
+
+    LOG.info(f'count: {data["count"]} number_of_results: {len(data["results"])}')
 
     for d in data['results']:
         process_receipt(d)
