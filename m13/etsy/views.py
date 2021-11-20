@@ -112,7 +112,7 @@ def orderitems_csv(request):
             country = parsed_address[-1]
 
             writer.writerow([
-                current_order.marketplace_order_id,
+                f'ETSY{current_order.marketplace_order_id}',
                 first_name,
                 last_name,
                 street,
@@ -124,7 +124,7 @@ def orderitems_csv(request):
                 price,
                 1,
                 'Versandposition',
-                f'ETSY {current_order.marketplace_order_id}',
+                f'ETSY{current_order.marketplace_order_id}',
                 oi.order.delivery_address.buyer_email
             ])
 
@@ -141,7 +141,7 @@ def orderitems_csv(request):
         country = parsed_address[-1]
 
         writer.writerow([
-            oi.order.marketplace_order_id,
+            f'ETSY{oi.order.marketplace_order_id}',
             first_name,
             last_name,
             street,
@@ -153,7 +153,7 @@ def orderitems_csv(request):
             price,
             1,
             'Artikel',
-            f'ETSY {oi.order.marketplace_order_id}',
+            f'ETSY{oi.order.marketplace_order_id}',
             oi.order.delivery_address.buyer_email
         ])
 
@@ -177,7 +177,7 @@ def orderitems_csv(request):
         country = parsed_address[-1]
 
         writer.writerow([
-            current_order.marketplace_order_id,
+            f'ETSY{current_order.marketplace_order_id}',
             first_name,
             last_name,
             street,
@@ -189,8 +189,8 @@ def orderitems_csv(request):
             price,
             1,
             'Versandposition',
-            f'ETSY {current_order.marketplace_order_id}',
-            oi.order.delivery_address.buyer_email
+            f'ETSY{current_order.marketplace_order_id}',
+            current_order.delivery_address.buyer_email
         ])
 
     return response
