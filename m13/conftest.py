@@ -16,3 +16,10 @@ def django_db_setup(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         for fixture in fixtures:
             call_command('loaddata', fixture)
+
+
+def pytest_addoption(parser):
+    """Add optparse-style options."""
+    parser.addoption(
+        "--overwrite", action="store_true",
+        help="Overwrite regression test traces (tests will fail then!)")

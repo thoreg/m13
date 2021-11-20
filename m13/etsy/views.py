@@ -125,7 +125,7 @@ def orderitems_csv(request):
                 1,
                 'Versandposition',
                 f'ETSY{current_order.marketplace_order_id}',
-                oi.order.delivery_address.buyer_email
+                current_order.delivery_address.buyer_email
             ])
 
         price = '%0.2f' % round(oi.price_in_cent / 100, 2)
@@ -167,7 +167,7 @@ def orderitems_csv(request):
         price = '%0.2f' % (int(amount) / int(divisor))
         price = price.replace('.', ',')
 
-        parsed_address = oi.order.delivery_address.formatted_address.split()
+        parsed_address = current_order.delivery_address.formatted_address.split()
 
         first_name = parsed_address[0]
         last_name = parsed_address[1]

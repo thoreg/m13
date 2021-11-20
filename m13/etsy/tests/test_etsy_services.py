@@ -31,7 +31,7 @@ def test_process_receipts(mocked_fetch_orders):
 
 
 @pytest.mark.django_db
-def test_etsy_orderitems_csv(client, django_user_model):
+def test_etsy_orderitems_csv(client, django_user_model, pytestconfig):
     """Download orderitems plus shipping information as csv."""
     username = "user1"
     password = "bar"
@@ -45,8 +45,11 @@ def test_etsy_orderitems_csv(client, django_user_model):
     assert response.status_code == 200
     content = response.content.decode('utf-8-sig')
 
-    # with open('etsy/tests/data/etsy_orderitems.csv', 'w') as oi_csv:
-    #     oi_csv.write(content)
+    if pytestconfig.getoption('--overwrite'):
+        with open('etsy/tests/data/etsy_orderitems.csv', 'w') as oi_csv:
+            oi_csv.write(content)
+        assert False, 'etsy order items dump updated'
+
     with open('etsy/tests/data/etsy_orderitems.csv', 'r') as oi_csv:
         expected = oi_csv.read()
 
