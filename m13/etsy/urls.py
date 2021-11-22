@@ -6,5 +6,6 @@ urlpatterns = [
     path('csv', views.orderitems_csv, name='etsy_orderitems_csv'),
     path('orders', views.orders, name='etsy_orders'),
     path('oauth', views.oauth, name='etsy_oauth'),
+    path('shipments', views.shipments, name='etsy_shipments'),
     path('', views.index, name='etsy_index'),
 ]
