@@ -13,14 +13,16 @@ from pprint import pformat
 
 import requests
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from m13.common import base64_encode
 
-from .models import AuthGrant, AuthToken, Order, OrderItem
-from .services import get_auth_token, get_receipts, process_receipts
+from .forms import UploadFileForm
+from .models import AuthGrant, AuthToken, Order, OrderItem, Shipment
+from .services.orders import get_auth_token, get_receipts, process_receipts
+from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)
 
@@ -56,6 +58,11 @@ def orders(request):
 @login_required
 def orderitems_csv(request):
     """Return all processible orderitems as csv."""
+
+    def __get_street_offset(city):
+        """Return end index of the street depending on how many words of the city."""
+        return (-2 - len(city.split()))
+
     now = datetime.now()
     now_as_str = now.strftime('%Y-%m-%dT%H_%M_%S')
     file_name = f'{now_as_str}_etsy.csv'
@@ -103,13 +110,14 @@ def orderitems_csv(request):
             price = price.replace('.', ',')
 
             parsed_address = current_order.delivery_address.formatted_address.split()
+            city = current_order.delivery_address.city
 
             first_name = parsed_address[0]
             last_name = parsed_address[1]
-            street = ' '.join(parsed_address[2:-3])
-            zip_code = parsed_address[-3]
-            city = parsed_address[-2]
-            country = parsed_address[-1]
+            street = ' '.join(parsed_address[2:__get_street_offset(city)])
+            zip_code = current_order.delivery_address.zip_code
+            city = city
+            country = current_order.delivery_address.country_code
 
             writer.writerow([
                 f'ETSY{current_order.marketplace_order_id}',
@@ -132,13 +140,14 @@ def orderitems_csv(request):
         price = price.replace('.', ',')
 
         parsed_address = oi.order.delivery_address.formatted_address.split()
+        city = oi.order.delivery_address.city
 
         first_name = parsed_address[0]
         last_name = parsed_address[1]
-        street = ' '.join(parsed_address[2:-3])
-        zip_code = parsed_address[-3]
-        city = parsed_address[-2]
-        country = parsed_address[-1]
+        street = ' '.join(parsed_address[2:__get_street_offset(city)])
+        zip_code = oi.order.delivery_address.zip_code
+        city = city
+        country = oi.order.delivery_address.country_code
 
         writer.writerow([
             f'ETSY{oi.order.marketplace_order_id}',
@@ -168,13 +177,14 @@ def orderitems_csv(request):
         price = price.replace('.', ',')
 
         parsed_address = current_order.delivery_address.formatted_address.split()
+        city = current_order.delivery_address.city
 
         first_name = parsed_address[0]
         last_name = parsed_address[1]
-        street = ' '.join(parsed_address[2:-3])
-        zip_code = parsed_address[-3]
-        city = parsed_address[-2]
-        country = parsed_address[-1]
+        street = ' '.join(parsed_address[2:__get_street_offset(city)])
+        zip_code = current_order.delivery_address.zip_code
+        city = current_order.delivery_address.city
+        country = current_order.delivery_address.country_code
 
         writer.writerow([
             f'ETSY{current_order.marketplace_order_id}',
@@ -263,18 +273,20 @@ def index(request):
 
 @login_required
 def shipments(request):
-    """Index view of the etsy app."""
-    order_items = (
-        OrderItem.objects.all()
-        .order_by('-order__order_date')
-        .select_related('order__delivery_address')[:100]
-    )
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+            return HttpResponseRedirect(reverse('etsy_upload_tracking_codes_success'))
+    else:
+        form = UploadFileForm()
+    return render(request, 'etsy/upload_tracking_codes.html', {'form': form})
 
-    ctx = {
-        'number_of_paid': OrderItem.objects.filter(
-            fulfillment_status='PAID').count(),
-        'number_of_orders': Order.objects.count(),
-        'number_of_orderitems': OrderItem.objects.count(),
-        'order_items': order_items,
-    }
-    return render(request, 'etsy/upload_tracking_codes.html', ctx)
+
+@login_required
+def upload_tracking_codes_success(request):
+    shipments = Shipment.objects.all().order_by('-created')[:100]
+    return render(
+        request, 'etsy/upload_tracking_codes_success.html', {
+            'shipments': shipments
+        })

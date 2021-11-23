@@ -6,9 +6,8 @@ import requests
 from colorama import Fore
 from requests.models import codes
 
+from etsy.models import Address, AuthToken, Order, OrderItem
 from m13.common import timestamp_from_epoch
-
-from .models import Address, AuthToken, Order, OrderItem
 
 LOG = logging.getLogger(__name__)
 
