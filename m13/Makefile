@@ -5,6 +5,10 @@ clean:
 test:
 	py.test --cov=. --cov-report html
 
+test_over:
+	py.test --overwrite
+
+
 style:
 	isort .
 	flake8 .
