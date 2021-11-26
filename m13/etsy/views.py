@@ -19,9 +19,10 @@ from django.urls import reverse
 
 from m13.common import base64_encode
 
+from .common import get_auth_token
 from .forms import UploadFileForm
 from .models import AuthGrant, AuthToken, Order, OrderItem, Shipment
-from .services.orders import get_auth_token, get_receipts, process_receipts
+from .services.orders import get_receipts, process_receipts
 from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)

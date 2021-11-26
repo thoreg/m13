@@ -30,67 +30,37 @@ REQUEST BODY SCHEMA: application/x-www-form-urlencoded
 """
 import csv
 import logging
+import os
 from datetime import datetime
 from io import TextIOWrapper
 from pprint import pprint
 
 import requests
 
-from otto.common import get_auth_token
-from otto.models import Order, Shipment
+from etsy.common import get_auth_token
+from etsy.models import Order, Shipment
 
 LOG = logging.getLogger(__name__)
 
-SHIPMENTS_URL = 'https://openapi.etsy.com/v3/application/shops/{shop_id}/receipts/{receipt_id}/tracking'
+M13_ETSY_API_KEY = os.getenv('M13_ETSY_API_KEY')
+M13_ETSY_SHOP_ID = os.getenv('M13_ETSY_SHOP_ID')
 
 
-def get_payload(order, tracking_info, carrier):
-    """Return the payload for all orderitems of the given order."""
-    LOG.info(order.__dict__)
-    LOG.info(order.delivery_address.__dict__)
-    for oi in order.orderitem_set.all():
-        LOG.info(oi.__dict__)
-
-    data = {
-        'trackingKey': {
-            'carrier': carrier,
-            'trackingNumber': tracking_info
-        },
-        'shipDate': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-        'shipFromAddress': {
-            'city': order.delivery_address.city,
-            'countryCode': order.delivery_address.country_code,
-            'zipCode': order.delivery_address.zip_code
-        },
-    }
-    order_items = []
-    for oi in order.orderitem_set.all():
-        order_items.append({
-            'positionItemId': oi.position_item_id,
-            'salesOrderId': order.marketplace_order_id,
-            'returnTrackingKey': {
-                'carrier': carrier,
-                'trackingNumber': tracking_info
-            }
-        })
-
-    data['positionItems'] = order_items
-    LOG.info(f'Return data: {data}')
-    return data
-
-
-def do_post(token, order, tracking_info, carrier):
-    payload = get_payload(order, tracking_info, carrier)
-
+def do_post(token, order, tracking_code, carrier_name):
+    """Do the actual post call to report shipping information."""
     LOG.info(
-        f'upload for o: {order.marketplace_order_number} t: {tracking_info} c: {carrier}')
+        f'post shipping infos for o: {order.marketplace_order_id} t: {tracking_code} c: {carrier_name}')
+
+    SHIPMENTS_URL = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts/{order.marketplace_order_id}/tracking'
 
     headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json;charset=UTF-8',
+        'authorization': f'Bearer {token}',
+        'x-api-key': M13_ETSY_API_KEY
     }
-
-    pprint(payload)
+    payload = {
+        'carrier_name': carrier_name,
+        'tracking_code': tracking_code
+    }
 
     r = requests.post(
         SHIPMENTS_URL,
@@ -114,24 +84,30 @@ def handle_uploaded_file(csv_file):
     text-mode files instead.
     """
     token = get_auth_token()
+    if not token:
+        LOG.error('No token found')
+        return
+
     f = TextIOWrapper(csv_file.file, encoding='latin1')
     reader = csv.reader(f, delimiter=';')
     for row in reader:
-        if not row[0].startswith('b'):
+        if not row[0].startswith('ETSY'):
             continue
+
+        LOG.info(row)
 
         tracking_info = row[3]
         if not tracking_info:
             LOG.error(f'Tracking info not found - row: {row}')
             continue
 
-        order_number = row[0]
+        order_id = row[0].lstrip('ETSY')
         try:
             order = (
                 Order.objects.select_related('delivery_address')
-                     .get(marketplace_order_number=order_number))
+                     .get(marketplace_order_id=order_id))
         except Order.DoesNotExist:
-            LOG.error(f'Order not found {order_number} - row {row}')
+            LOG.error(f'Order not found {order_id} - row {row}')
             continue
 
         carrier = row[4]
@@ -139,8 +115,6 @@ def handle_uploaded_file(csv_file):
             carrier = 'DHL'
         else:
             carrier = 'HERMES'
-
-        LOG.info(f'o: {order_number} t: {tracking_info} c: {carrier}')
 
         status_code, response = do_post(token, order, tracking_info, carrier)
 
