@@ -18,7 +18,7 @@ def index(request):
         if form.is_valid():
             file = request.FILES['file']
             otto_handle_upload(file)
-            file.seek(0)
+            file.open()
             etsy_handle_upload(file)
             return HttpResponseRedirect(reverse('upload_shipping_infos_success'))
     else:
