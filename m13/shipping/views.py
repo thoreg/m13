@@ -33,8 +33,8 @@ def index(request):
 
 @login_required
 def upload_shipping_infos_success(request):
-    otto_shipments = OttoShipment.objects.all().order_by('-created')[:200]
-    etsy_shipments = EtsyShipment.objects.all().order_by('-created')[:100]
+    otto_shipments = OttoShipment.objects.all().order_by('-created')[:100]
+    etsy_shipments = EtsyShipment.objects.all().order_by('-created')[:50]
     LOG.info(f'otto_shipments: {len(otto_shipments)}')
     LOG.info(f'etsy_shipments: {len(etsy_shipments)}')
     return render(
