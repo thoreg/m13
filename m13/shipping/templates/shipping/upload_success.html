@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div id="main">
+  <h2>Upload CSV mit Tracking Codes zu ETSY und OTTO war erfolgreich</h2>
+
+  <h3>_etsy</h3>
+  <table>
+    <thead>
+      <th class='date'>created_at</th>
+      <th>marketplace_order_number</th>
+      <th>tracking_info</th>
+      <th>carrier</th>
+      <th>status_code</th>
+      <th>response</th>
+    </thead>
+    <tbody>
+      {% for sh in etsy_shipments %}
+      <tr>
+        <td>{{ sh.created|date:"Y/m/d/h:m:s" }}</td>
+        <td>{{ sh.order.marketplace_order_id }}</td>
+        <td>{{ sh.tracking_info }}</td>
+        <td>{{ sh.carrier }}</td>
+        <td>{{ sh.response_status_code }}</td>
+        <td>{{ sh.response }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td>No shipments found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>_otto</h3>
+  <table>
+    <thead>
+      <th class='date'>created_at</th>
+      <th>marketplace_order_number</th>
+      <th>tracking_info</th>
+      <th>carrier</th>
+      <th>status_code</th>
+      <th>response</th>
+    </thead>
+    <tbody>
+      {% for sh in otto_shipments %}
+      <tr>
+        <td>{{ sh.created|date:"Y/m/d/h:m:s" }}</td>
+        <td>{{ sh.order.marketplace_order_id }}</td>
+        <td>{{ sh.tracking_info }}</td>
+        <td>{{ sh.carrier }}</td>
+        <td>{{ sh.response_status_code }}</td>
+        <td>{{ sh.response }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td>No shipments found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
