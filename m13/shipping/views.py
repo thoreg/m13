@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -16,10 +18,10 @@ def index(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            file = request.FILES['file']
-            otto_handle_upload(file)
-            file.open()
-            etsy_handle_upload(file)
+            file1 = deepcopy(request.FILES['file'])
+            file2 = deepcopy(request.FILES['file'])
+            otto_handle_upload(file1)
+            etsy_handle_upload(file2)
             return HttpResponseRedirect(reverse('upload_shipping_infos_success'))
     else:
         form = UploadFileForm()
