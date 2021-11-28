@@ -16,8 +16,10 @@ def index(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            otto_handle_upload(request.FILES['file'])
-            etsy_handle_upload(request.FILES['file'])
+            file = request.FILES['file']
+            otto_handle_upload(file)
+            file.seek(0)
+            etsy_handle_upload(file)
             return HttpResponseRedirect(reverse('upload_shipping_infos_success'))
     else:
         form = UploadFileForm()
