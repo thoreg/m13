@@ -9,9 +9,14 @@
       DOWNLOAD ORDERS CSV
     </button>
   </form>
+  <form action={% url 'etsy_shipments' %}>
+    <button type="submit" class="m13-btn" title="Upload tracking infos for Etsy">
+      UPLOAD TRACKING INFOS
+    </button>
+  </form>
 </div>
 <div id="header_right">
   _number_of_paid: {{ number_of_paid }}
-  _number_of_orders (since 2021/10): {{ number_of_orders }}
-  _number_of_orderitems (since 2021/10): {{ number_of_orderitems }}
+  _orders: {{ number_of_orders }}
+  _orderitems: {{ number_of_orderitems }} (since 2021/10)
 </div>
