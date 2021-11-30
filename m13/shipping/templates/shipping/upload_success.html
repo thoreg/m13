@@ -10,21 +10,19 @@
   <table>
     <thead>
       <th class='date'>created_at</th>
-      <th>marketplace_order_number</th>
+      <th>marketplace_order_id</th>
       <th>tracking_info</th>
       <th>carrier</th>
       <th>status_code</th>
-      <th>response</th>
     </thead>
     <tbody>
       {% for sh in etsy_shipments %}
       <tr>
-        <td>{{ sh.created|date:"Y/m/d/h:m:s" }}</td>
-        <td>{{ sh.order.marketplace_order_id }}</td>
-        <td>{{ sh.tracking_info }}</td>
-        <td>{{ sh.carrier }}</td>
-        <td>{{ sh.response_status_code }}</td>
-        <td>{{ sh.response }}</td>
+        <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
+        <td>{{ sh.1 }}</td>
+        <td>{{ sh.2 }}</td>
+        <td>{{ sh.3 }}</td>
+        <td>{{ sh.4 }}</td>
       </tr>
       {% empty %}
       <tr>
@@ -42,17 +40,15 @@
       <th>tracking_info</th>
       <th>carrier</th>
       <th>status_code</th>
-      <th>response</th>
     </thead>
     <tbody>
       {% for sh in otto_shipments %}
       <tr>
-        <td>{{ sh.created|date:"Y/m/d/h:m:s" }}</td>
-        <td>{{ sh.order.marketplace_order_id }}</td>
-        <td>{{ sh.tracking_info }}</td>
-        <td>{{ sh.carrier }}</td>
-        <td>{{ sh.response_status_code }}</td>
-        <td>{{ sh.response }}</td>
+        <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
+        <td>{{ sh.1 }}</td>
+        <td>{{ sh.2 }}</td>
+        <td>{{ sh.3 }}</td>
+        <td>{{ sh.4 }}</td>
       </tr>
       {% empty %}
       <tr>
