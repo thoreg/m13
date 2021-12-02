@@ -9,7 +9,7 @@ from secrets import compare_digest
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.transaction import atomic, non_atomic_requests
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
@@ -19,7 +19,7 @@ from django.views.decorators.http import require_POST
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm
-from .models import FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product
+from .models import FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product, StatsOrderItems
 
 LOG = logging.getLogger(__name__)
 
@@ -242,3 +242,9 @@ def orderitems_csv(request, day):
     #     LOG.info(f'{number_of_messages} send')
 
     return response
+
+
+@login_required
+def stats_orderitems(request):
+    return JsonResponse(
+        list(StatsOrderItems.objects.all().values()), safe=False)
