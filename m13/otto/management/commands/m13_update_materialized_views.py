@@ -16,5 +16,5 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         for view in MATERIALIZED_VIEWS:
             with connection.cursor() as cursor:
-                LOG.info(f'Update {view}')
+                self.stdout.write(self.style.SUCCESS(f'Update {view}'))
                 cursor.execute(f'REFRESH MATERIALIZED VIEW {view}')
