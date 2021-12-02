@@ -13,7 +13,7 @@ MATERIALIZED_VIEWS = [
 class Command(BaseCommand):
     help = "Simple management command to update existing materialized views."
 
-    def handle(self):
+    def handle(self, *args, **kwargs):
         for view in MATERIALIZED_VIEWS:
             with connection.cursor() as cursor:
                 LOG.info(f'Update {view}')
