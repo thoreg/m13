@@ -1,0 +1,146 @@
+const ctxOttoNumberOfOrderItems = document.getElementById('ottoNumberOfOrderItemsChart');
+const ctxOttoRevenue = document.getElementById('ottoRevenueChart');
+
+$(function() {
+  $.get('/otto/stats/orderitems', function( data ) {
+
+    const datesOfSent = data.reduce(function(filtered, entry) {
+    if (entry.status === 'SENT') {
+      filtered.push(entry.month.slice(0, 7));
+    }
+    return filtered;
+    }, []);
+
+    const numberOfSent = data.reduce(function(filtered, entry) {
+    if (entry.status === 'SENT') {
+      filtered.push(entry.count);
+    }
+    return filtered;
+    }, []);
+
+    const revenueOfSent = data.reduce(function(filtered, entry) {
+    if (entry.status === 'SENT') {
+      filtered.push(entry.revenue);
+    }
+    return filtered;
+    }, []);
+
+    const numberOfReturned = data.reduce(function(filtered, entry) {
+    if (entry.status === 'RETURNED') {
+      filtered.push(entry.count * -1);
+    }
+    return filtered;
+    }, []);
+
+    const revenueOfReturned = data.reduce(function(filtered, entry) {
+    if (entry.status === 'RETURNED') {
+      filtered.push(entry.revenue * -1);
+    }
+    return filtered;
+    }, []);
+
+    const ottoNumberOfOrderItems = new Chart(ctxOttoNumberOfOrderItems, {
+    type: 'bar',
+    data: {
+      labels: datesOfSent,
+      datasets: [
+      {
+        label: 'SENT',
+        data: numberOfSent,
+        backgroundColor: [
+        'rgba(75, 192, 192, 0.2)',
+        ],
+        borderColor: [
+        'rgba(75, 192, 192, 1)',
+        ],
+        borderWidth: 1
+      },
+      {
+        label: 'RETURNED',
+        data: numberOfReturned,
+        backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        ],
+        borderColor: [
+        'rgba(255, 99, 132, 1)',
+        ],
+        borderWidth: 1
+      }
+      ]
+    },
+    options: {
+      scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        beginAtZero: true,
+        stacked: true,
+      }
+      },
+      responsive: true,
+      plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Number of OrderItems per Month by State'
+      }
+      }
+    }
+    });
+
+    const ottoRevenue = new Chart(ctxOttoRevenue, {
+    type: 'bar',
+    data: {
+      labels: datesOfSent,
+      datasets: [
+      {
+        label: 'SENT',
+        data: revenueOfSent,
+        backgroundColor: [
+        'rgba(75, 192, 192, 0.2)',
+        ],
+        borderColor: [
+        'rgba(75, 192, 192, 1)',
+        ],
+        borderWidth: 1
+      },
+      {
+        label: 'RETURNED',
+        data: revenueOfReturned,
+        backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        ],
+        borderColor: [
+        'rgba(255, 99, 132, 1)',
+        ],
+        borderWidth: 1
+      }
+      ]
+    },
+    options: {
+      scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        beginAtZero: true,
+        stacked: true,
+      }
+      },
+      responsive: true,
+      plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Revenue per Month by State'
+      }
+      }
+    }
+    });
+  });
+});

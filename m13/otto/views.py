@@ -8,13 +8,13 @@ from django.contrib.auth.decorators import login_required
 from django.core import management
 from django.core.mail import EmailMessage
 from django.db import connection
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
 from .common import dictfetchall
 from .forms import UploadFileForm
-from .models import OrderItem, Shipment
+from .models import OrderItem, Shipment, StatsOrderItems
 from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)
@@ -276,3 +276,9 @@ def stats(request):
     ctx['sales_revenue_by_status'] = sales_revenue_by_status
     return render(
         request, 'otto/stats.html', {'ctx': ctx})
+
+
+@login_required
+def stats_orderitems(request):
+    return JsonResponse(
+        list(StatsOrderItems.objects.all().values()), safe=False)

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div id="main">
+  <table width="100%">
+    <tr>
+      <td width="49%;">
+        <h2><span style='font-size:50px;'>&#127950;</span> otto</h2>
+          <table>
+            <tr>
+              <td>
+                <canvas id="ottoNumberOfOrderItemsChart" width="400" height="400"></canvas>
+              </td>
+              <td>
+                <canvas id="ottoRevenueChart" width="400" height="400"></canvas>
+              </td>
+            </tr>
+          </table>
+      </td>
+      <td>
+        <h2>_zalando</h2>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h2>_etsy</h2>
+      </td>
+      <td></td>
+    </tr>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.1/dist/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="{% static '/js/m13.index.js' %}"></script>
+
+{% endblock %}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.aggregates import Count
 from django_extensions.db.models import TimeStampedModel
 
 
@@ -82,3 +83,14 @@ class Shipment(TimeStampedModel):
     tracking_info = models.CharField(max_length=256)
     response_status_code = models.PositiveSmallIntegerField()
     response = models.JSONField()
+
+
+class StatsOrderItems(models.Model):
+    month = models.DateTimeField()
+    status = models.CharField(max_length=16)
+    count = models.IntegerField()
+    revenue = models.FloatField()
+
+    class Meta:
+        managed = False
+        db_table = 'otto_orderitem_stats'
