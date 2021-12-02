@@ -6,6 +6,7 @@ from django.db import connection
 LOG = logging.getLogger(__name__)
 
 MATERIALIZED_VIEWS = [
+    'etsy_orderitem_stats',
     'otto_orderitem_stats',
     'zalando_orderitem_stats'
 ]

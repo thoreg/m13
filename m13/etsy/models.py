@@ -76,3 +76,14 @@ class Shipment(TimeStampedModel):
     tracking_info = models.CharField(max_length=256)
     response_status_code = models.PositiveSmallIntegerField()
     response = models.JSONField()
+
+
+class StatsOrderItems(models.Model):
+    month = models.DateTimeField()
+    status = models.CharField(max_length=16)
+    count = models.IntegerField()
+    revenue = models.FloatField()
+
+    class Meta:
+        managed = False
+        db_table = 'etsy_orderitem_stats'

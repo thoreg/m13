@@ -13,7 +13,7 @@ from pprint import pformat
 
 import requests
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
@@ -21,7 +21,7 @@ from m13.common import base64_encode
 
 from .common import get_auth_token
 from .forms import UploadFileForm
-from .models import AuthGrant, AuthToken, Order, OrderItem, Shipment
+from .models import AuthGrant, AuthToken, Order, OrderItem, Shipment, StatsOrderItems
 from .services.orders import get_receipts, process_receipts
 from .services.shipments import handle_uploaded_file
 
@@ -291,3 +291,9 @@ def upload_tracking_codes_success(request):
         request, 'etsy/upload_tracking_codes_success.html', {
             'shipments': shipments
         })
+
+
+@login_required
+def stats_orderitems(request):
+    return JsonResponse(
+        list(StatsOrderItems.objects.all().values()), safe=False)
