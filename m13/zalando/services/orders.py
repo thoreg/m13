@@ -102,18 +102,21 @@ def process_orderitem(order, oi, delivery_infos):
         position_item_id=oi['item_id'],
         ean=oi['ean'],
         defaults={
-            'fulfillment_status': order.status,
             'article_number': oi['article_number'],
-            'price_in_cent': oi['price'] * 100,
-            'currency': oi['currency'],
             'carrier': delivery_infos['carrier'],
+            'currency': oi['currency'],
+            'fulfillment_status': order.status,
+            'orig_created_timestamp': oi['timestamp'],
+            'orig_modified_timestamp': oi['timestamp'],
+            'price_in_cent': oi['price'] * 100,
             'tracking_number': delivery_infos['tracking_number'],
         }
     )
-    LOG.info(f'    order_item: {order_item.ean} created: {created}')
+    LOG.info(f'   iid: {oi["item_id"]} ean: {order_item.ean} created: {created} creation_datetime: {oi["timestamp"]}')
 
     if not created:
         order_item.fulfillment_status = order.status
+        order_item.orig_modified_timestamp = oi['timestamp']
         order_item.save()
 
 
@@ -134,6 +137,7 @@ def process_new_oea_records():
             defaults={
                 'marketplace_order_number': entry['order_number'],
                 'order_date': entry['timestamp'],
+                'created': entry['timestamp'],
                 'last_modified_date': entry['timestamp'],
                 'status': entry['state']
             })
@@ -153,10 +157,10 @@ def process_new_oea_records():
             )
 
             # import ipdb; ipdb.set_trace()
-            if order.last_modified_date > time_str2object(entry['timestamp']):
-                LOG.info('\t\tooo - continue')
-                mark_as_processed(oea_msg)
-                continue
+            # if order.last_modified_date > time_str2object(entry['timestamp']):
+            #     LOG.info('\t\tooo - continue')
+            #     mark_as_processed(oea_msg)
+            #     continue
 
             order.status = entry['state']
             order.last_modified_date = entry['timestamp']
@@ -173,6 +177,7 @@ def process_new_oea_records():
             continue
 
         for oi in entry['items']:
+            oi['timestamp'] = entry['timestamp']
             process_orderitem(order, oi, {
                 'carrier': dd['delivery_carrier_name'],
                 'tracking_number': dd['delivery_tracking_number']
