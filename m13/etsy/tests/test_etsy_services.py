@@ -54,3 +54,21 @@ def test_etsy_orderitems_csv(client, django_user_model, pytestconfig):
         expected = oi_csv.read()
 
     assert content.replace('\r', '') == expected
+
+
+@pytest.mark.django_db
+def test_process_multiple_order_items():
+    """Process orderitems properly which are reported with an quantity > 1."""
+    OrderItem.objects.all().delete()
+    Order.objects.all().delete()
+    Address.objects.all().delete()
+
+    RESPONSE = './etsy/tests/data/multiple_order_items.json'
+    with open(RESPONSE) as json_file:
+        data = json.load(json_file)
+
+    process_receipts(data)
+
+    assert Address.objects.count() == 1
+    assert Order.objects.count() == 1
+    assert OrderItem.objects.count() == 2

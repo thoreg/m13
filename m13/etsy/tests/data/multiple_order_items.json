@@ -1,0 +1,117 @@
+{
+    "count": 522,
+    "results": [{
+        "receipt_id": 2324618665,
+        "receipt_type": 0,
+        "seller_user_id": 39152135,
+        "seller_email": "info@manufaktur13.de",
+        "buyer_user_id": 257337229,
+        "buyer_email": "mp@web.de",
+        "name": "MP",
+        "first_line": "Uhrigstraße 100",
+        "second_line": "",
+        "city": "Mossadtal",
+        "state": null,
+        "zip": "14758",
+        "status": "Completed",
+        "formatted_address": "MP\nUhrigstraße 100\n14758 MOSSADTAL\nGermany",
+        "country_iso": "DE",
+        "payment_method": "cc",
+        "payment_email": "",
+        "message_from_payment": null,
+        "message_from_seller": null,
+        "message_from_buyer": "",
+        "is_shipped": true,
+        "is_paid": true,
+        "create_timestamp": 1640628991,
+        "update_timestamp": 1640679425,
+        "is_gift": false,
+        "gift_message": "",
+        "grandtotal": {
+            "amount": 4385,
+            "divisor": 100,
+            "currency_code": "EUR"
+        },
+        "subtotal": {
+            "amount": 3990,
+            "divisor": 100,
+            "currency_code": "EUR"
+        },
+        "total_price": {
+            "amount": 3990,
+            "divisor": 100,
+            "currency_code": "EUR"
+        },
+        "total_shipping_cost": {
+            "amount": 395,
+            "divisor": 100,
+            "currency_code": "EUR"
+        },
+        "total_tax_cost": {
+            "amount": 0,
+            "divisor": 100,
+            "currency_code": "EUR"
+        },
+        "total_vat_cost": {
+            "amount": 0,
+            "divisor": 100,
+            "currency_code": "EUR"
+        },
+        "discount_amt": {
+            "amount": 0,
+            "divisor": 100,
+            "currency_code": "EUR"
+        },
+        "gift_wrap_price": {
+            "amount": 0,
+            "divisor": 100,
+            "currency_code": "EUR"
+        },
+        "shipments": [
+            {
+                "receipt_shipping_id": 1044926049794,
+                "shipment_notification_timestamp": 1640679420,
+                "carrier_name": "Hermes",
+                "tracking_code": "02362145000906"
+            }
+        ],
+        "transactions": [
+            {
+                "transaction_id": 2809318062,
+                "title": "Slouch Beanie - Long Beanie Hat, Knitted Hat with Leather Finishing (Manufacture13/M13) (Asphalt)",
+                "description": "Slouch Beanie - hat, wool cap, long beanie hat, knitted hat with genuine leather finishing (Asphalt)\n\n\n\nSlouch Beanie: Asphalt\n\nWhen the days get shorter and the wind whistles through the muddy side streets in the ghetto, it is always good to listen to Mum. With the M13 beanies you are sure to be well prepared for the warm summer days in wind and weather. Suitable for both men and women.\n\n✔ robust & resilient rib-knit (rib-knit)\n✔ high-quality web stick finishing\n✔ warm & soft (double-layered)\n✔ Beanie / Knit hat (wool hat)\n✔ Unisex: Suitable for Women & Men\n• Washing-resistant colours\n\nHandcrafted with Love!\n\n**Textile marking:**\n\n100% Polyacryl",
+                "seller_user_id": 39152135,
+                "buyer_user_id": 257337229,
+                "create_timestamp": 1640628991,
+                "paid_timestamp": 1640629037,
+                "shipped_timestamp": 1640679424,
+                "quantity": 2,
+                "listing_image_id": 2194974902,
+                "receipt_id": 2324618665,
+                "is_digital": false,
+                "file_data": "",
+                "listing_id": 779890671,
+                "sku": "SM004",
+                "product_id": 4284826184,
+                "transaction_type": "listing",
+                "price": {
+                    "amount": 1995,
+                    "divisor": 100,
+                    "currency_code": "EUR"
+                },
+                "shipping_cost": {
+                    "amount": 0,
+                    "divisor": 100,
+                    "currency_code": "EUR"
+                },
+                "variations": [],
+                "shipping_profile_id": 164528416778,
+                "min_processing_days": 1,
+                "max_processing_days": 2,
+                "shipping_method": null,
+                "shipping_upgrade": null,
+                "expected_ship_date": 1640679424
+            }
+        ]
+    }]
+}
