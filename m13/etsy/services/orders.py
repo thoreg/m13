@@ -111,7 +111,8 @@ def process_receipt(data):
                 'product_title': oi.get('title'),
                 'sku': oi.get('sku'),
                 'carrier': carrier,
-                'tracking_number': tracking_number
+                'tracking_number': tracking_number,
+                'quantity': oi.get('quantity')
             }
         )
         if not created:

@@ -161,7 +161,7 @@ def orderitems_csv(request):
             oi.sku,
             oi.product_title,
             price,
-            1,
+            oi.quantity,
             'Artikel',
             f'ETSY{oi.order.marketplace_order_id}',
             oi.order.delivery_address.buyer_email

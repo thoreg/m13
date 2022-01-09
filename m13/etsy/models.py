@@ -69,6 +69,8 @@ class OrderItem(TimeStampedModel):
     carrier = models.CharField(max_length=32, null=True, blank=True)
     tracking_number = models.CharField(max_length=128, null=True, blank=True)
 
+    quantity = models.PositiveSmallIntegerField(default=1)
+
 
 class Shipment(TimeStampedModel):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)

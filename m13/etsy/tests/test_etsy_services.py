@@ -71,4 +71,7 @@ def test_process_multiple_order_items():
 
     assert Address.objects.count() == 1
     assert Order.objects.count() == 1
-    assert OrderItem.objects.count() == 2
+    assert OrderItem.objects.count() == 1
+
+    oi = OrderItem.objects.all()
+    assert oi[0].quantity == 2
