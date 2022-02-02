@@ -31,7 +31,6 @@ def test_multi_file_upload(client, django_user_model, django_db_setup):
         original_files_md5sums.append(md5_hash.hexdigest())
 
     response = client.post(upload_url, {'original_csv': original_files})
-
     entries = TransactionFileUpload.objects.all()
     assert len(entries) == 3
 
