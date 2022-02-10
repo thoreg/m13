@@ -12,6 +12,7 @@ SHIPMENTS_FILE = 'otto/tests/fixtures/Versandadressen.csv'
 
 @pytest.mark.django_db
 def test_handle_uploaded_file(client, django_user_model, django_db_setup):
+    """Basic shipment file upload test."""
     username = "user1"
     password = "bar"
     user = django_user_model.objects.create_user(username=username, password=password)
@@ -34,18 +35,25 @@ def test_handle_uploaded_file(client, django_user_model, django_db_setup):
         )
 
         shipments = Shipment.objects.all()
-        assert mocked_do_post.call_count == 3
-        assert len(shipments) == 3
+        assert mocked_do_post.call_count == 6
+        assert len(shipments) == 6
 
-    assert [sh.tracking_info for sh in shipments] == (
-        ['04245181000623', '04245112000449', '04245166000365'])
+    assert [sh.tracking_info for sh in shipments] == ([
+        '04245181000623',
+        '04245112000449',
+        '04245166000365',
+        '04245166000366',
+        '04245166000367',
+        '04245166000368'])
 
-    assert [sh.response_status_code for sh in shipments] == [201, 201, 201]
+    assert [sh.response_status_code for sh in shipments] == [
+        201, 201, 201, 201, 201, 201]
 
 
 @freeze_time('2013-10-13')
 @pytest.mark.django_db
 def test_get_payload():
+    """Generate proper payload for shipment update endpoint out of given order."""
     order = Order.objects.get(marketplace_order_number='bzyrxkr8mz')
     payload = get_payload(order, '123', 'Hurz')
     expected = {

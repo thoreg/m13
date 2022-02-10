@@ -36,6 +36,7 @@ POST /v1/shipments gets the following payload
 """
 import csv
 import logging
+import string
 from datetime import datetime
 from io import TextIOWrapper
 from pprint import pprint
@@ -47,6 +48,7 @@ from otto.models import Order, Shipment
 
 LOG = logging.getLogger(__name__)
 
+ALPHA = string.ascii_letters
 SHIPMENTS_URL = 'https://api.otto.market/v1/shipments'
 
 
@@ -123,7 +125,13 @@ def handle_uploaded_file(csv_file):
     f = TextIOWrapper(csv_file.file, encoding='latin1')
     reader = csv.reader(f, delimiter=';')
     for row in reader:
-        if not row[0].startswith('b'):
+        # Check if row is considered to be an 'OTTO ROW'
+        valid_row = False
+        if row[0].startswith(tuple(ALPHA)) and len(row[0]) == 10:
+            valid_row = True
+
+        if not valid_row:
+            LOG.info(f'Skip non otto row: {row}')
             continue
 
         tracking_info = row[3]
