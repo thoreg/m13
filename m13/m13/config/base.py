@@ -23,7 +23,6 @@ INSTALLED_APPS = [
 
     'django_countries',
     'django_extensions',
-    'django_ses',
     'rest_framework',
 
     'otto',
