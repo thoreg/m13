@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv('M13_PRODUCTION_DJANGO_SECRET')
 
 STATIC_ROOT = os.getenv('STATIC_ROOT')
 
-EMAIL_BACKEND = 'django_ses.SESBackend'
+EMAIL_BACKEND = 'django_amazon_ses.EmailBackend'
 
 AWS_ACCESS_KEY_ID = os.getenv('M13_AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('M13_AWS_SECRET_ACCESS_KEY')
