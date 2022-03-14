@@ -23,6 +23,7 @@ INSTALLED_APPS = [
 
     'django_countries',
     'django_extensions',
+    'django_ses',
     'rest_framework',
 
     'otto',
@@ -102,6 +103,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+DEFAULT_FROM_EMAIL = os.getenv('M13_FROM_EMAIL_ADDRESS')
 FROM_EMAIL_ADDRESS = os.getenv('M13_FROM_EMAIL_ADDRESS')
 ADMINS = [
     ('Thomas Rega', 'thoreg@gmail.com'),
