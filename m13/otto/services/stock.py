@@ -2,7 +2,7 @@
 import json
 import logging
 import os
-import sys
+import time
 from datetime import datetime
 
 import requests
@@ -57,3 +57,4 @@ def sync_stock():
                 continue
 
             LOG.info(f'updated - sku: {sku} quantity : {quantity}')
+            time.sleep(1)
