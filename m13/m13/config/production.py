@@ -59,12 +59,14 @@ LOGGING = {
     },
     'loggers': {
         '': {
-            'handlers': ['default', 'mail_admins'],
+            # 'handlers': ['default', 'mail_admins'],
+            'handlers': ['default'],
             'level': 'DEBUG',
             'propagate': True
         },
         'django.request': {  # Stop SQL debug from logging to main logger
-            'handlers': ['request_handler', 'mail_admins'],
+            # 'handlers': ['request_handler', 'mail_admins'],
+            'handlers': ['request_handler'],
             'level': 'DEBUG',
             'propagate': False
         },
