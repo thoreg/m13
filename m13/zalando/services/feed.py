@@ -197,7 +197,7 @@ def pimp_prices(lines):
             writer.writerow(row)
 
     LOG.info(f'{pimped_file_name} written')
-    return pimped_file_name, FACTOR
+    return pimped_file_name
 
 
 def validate_feed(file_name):
