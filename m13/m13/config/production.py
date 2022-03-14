@@ -52,16 +52,19 @@ LOGGING = {
             'backupCount': 5,
             'formatter': 'standard',
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
     },
     'loggers': {
-
         '': {
-            'handlers': ['default'],
+            'handlers': ['default', 'mail_admins'],
             'level': 'DEBUG',
             'propagate': True
         },
         'django.request': {  # Stop SQL debug from logging to main logger
-            'handlers': ['request_handler'],
+            'handlers': ['request_handler', 'mail_admins'],
             'level': 'DEBUG',
             'propagate': False
         },

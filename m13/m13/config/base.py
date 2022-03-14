@@ -103,6 +103,10 @@ REST_FRAMEWORK = {
 }
 
 FROM_EMAIL_ADDRESS = os.getenv('M13_FROM_EMAIL_ADDRESS')
+ADMINS = [
+    ('Thomas Rega', 'thoreg@gmail.com'),
+]
+MANAGERS = ADMINS
 
 OTTO_ORDER_CSV_RECEIVER_LIST = [
     'thoreg@gmail.com',
