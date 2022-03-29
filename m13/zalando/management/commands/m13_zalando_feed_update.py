@@ -9,6 +9,8 @@ Run for dry mode:
 """
 import logging
 
+from django.conf import settings
+from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 
 from zalando.services.feed import (download_feed, pimp_prices, save_original_feed,
@@ -24,6 +26,7 @@ HEADER = [
 
 
 class Command(BaseCommand):
+    """..."""
     help = "Update product feed at zalando"
 
     def add_arguments(self, parser):
@@ -37,17 +40,29 @@ class Command(BaseCommand):
         """Download product feed from shop and transmit it to Z for validation"""
         dry_run = kwargs.get('dry')
 
-        csv_content_as_list = download_feed()
-        print(f'Houston we have a csv with {len(csv_content_as_list)} lines')
+        try:
+            csv_content_as_list = download_feed()
+            print(f'Houston we have a csv with {len(csv_content_as_list)} lines')
 
-        dto = save_original_feed(csv_content_as_list)
-        pimped_file_name = pimp_prices(dto.lines)
-        status_code_validation = validate_feed(pimped_file_name)
+            dto = save_original_feed(csv_content_as_list)
+            pimped_file_name = pimp_prices(dto.lines)
+            status_code_validation = validate_feed(pimped_file_name)
 
-        if dry_run:
-            LOG.info('Return early because of --dry-run')
-            return
-        else:
-            LOG.info('Uploading transformed feed now')
+            if dry_run:
+                LOG.info('Return early because of --dry-run')
+                return
+            else:
+                LOG.info('Uploading transformed feed now')
 
-        upload_pimped_feed(pimped_file_name, status_code_validation, dto)
+            upload_pimped_feed(pimped_file_name, status_code_validation, dto)
+
+        except Exception as exc:
+            LOG.exception(exc)
+            mail = EmailMessage(
+                "Zalando Feed Upload failed :(",
+                "Zalando Feed Upload failed :(",
+                settings.FROM_EMAIL_ADDRESS,
+                settings.ZALANDO_LOVERS,
+            )
+            number_of_messages = mail.send()
+            LOG.info(f'Error EMail: {number_of_messages} send')
