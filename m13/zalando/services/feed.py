@@ -118,6 +118,8 @@ def download_feed():
         decoded_content = response.content.decode('utf-8')
         cr = csv.reader(decoded_content.splitlines(), delimiter=';')
         return list(cr)
+    except IndexError:
+        raise ZalandoException('IndexError - is the feed available in the shop?')
     except Exception as exc:
         raise exc
 
