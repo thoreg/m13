@@ -38,7 +38,6 @@ docopt==0.6.2
 docutils==0.17.1
 dpd-components==0.1.0
 dropbox==11.27.0
-easy-thumbnails==2.8
 etsy2==0.7.0
 fastapi==0.66.1
 feedparser==6.0.8
@@ -91,6 +90,8 @@ pydantic==1.8.2
 pyflakes==2.4.0
 Pygments==2.9.0
 pylint==2.12.2
+pylint-django==2.5.3
+pylint-plugin-utils==0.7
 pymongo==3.12.3
 pyparsing==2.4.7
 pytest==6.2.5
