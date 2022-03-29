@@ -60,7 +60,7 @@ class Command(BaseCommand):
             LOG.exception(exc)
             mail = EmailMessage(
                 "Zalando Feed Upload failed :(",
-                "Zalando Feed Upload failed :(",
+                str(exc),
                 settings.FROM_EMAIL_ADDRESS,
                 settings.ZALANDO_LOVERS,
             )

@@ -113,10 +113,13 @@ def download_feed():
     if not ZALANDO_FEED_PATH:
         raise ZalandoException("Missing Environment Variable ZALANDO_FEED_PATH")
 
-    response = requests.get(ZALANDO_FEED_PATH)
-    decoded_content = response.content.decode('utf-8')
-    cr = csv.reader(decoded_content.splitlines(), delimiter=';')
-    return list(cr)
+    try:
+        response = requests.get(ZALANDO_FEED_PATH)
+        decoded_content = response.content.decode('utf-8')
+        cr = csv.reader(decoded_content.splitlines(), delimiter=';')
+        return list(cr)
+    except Exception as exc:
+        raise exc
 
 
 def save_original_feed(csv_content_as_list):
@@ -168,7 +171,7 @@ def pimp_prices(lines):
     def get_z_factor():
         price_tool = PriceTool.objects.get(active=True)
         if not price_tool:
-            return 'UNDEFINED'
+            raise ZalandoException("No Base Price Found")
 
         return float(price_tool.z_factor)
 
@@ -176,7 +179,7 @@ def pimp_prices(lines):
         FACTOR = get_z_factor()
     except PriceTool.DoesNotExist:
         LOG.error('No price factor found')
-        return
+        raise ZalandoException("No Feed found in M13 shop")
 
     for row in lines[1:]:
         # print(row)
@@ -220,6 +223,8 @@ def validate_feed(file_name):
     if resp.status_code != requests.codes.ok:
         LOG.error('Got other than 200')
         LOG.error(resp.json())
+        raise ZalandoException("Feed is not valid")
+
     return resp.status_code
 
 
@@ -241,6 +246,7 @@ def upload_pimped_feed(pimped_file_name, status_code_validation, dto):
     if resp.status_code != requests.codes.ok:
         LOG.error('Got other than 200')
         LOG.error(resp.json())
+        raise ZalandoException("Upload Failed")
 
     fupload = FeedUpload(
         status_code_validation=status_code_validation,
