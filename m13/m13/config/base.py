@@ -23,7 +23,6 @@ INSTALLED_APPS = [
 
     'django_countries',
     'django_extensions',
-    'django_ses',
     'rest_framework',
 
     'otto',
@@ -116,3 +115,7 @@ OTTO_ORDER_CSV_RECEIVER_LIST = [
 ]
 
 ZALANDO_OEM_WEBHOOK_TOKEN = os.getenv('M13_ZALANDO_OEM_WEBHOOK_TOKEN')
+ZALANDO_LOVERS = [
+    'thoreg@gmail.com',
+    'custom.art.berlin@googlemail.com',
+]

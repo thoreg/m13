@@ -22,7 +22,7 @@ FEED_NAME = f'{now_as_str()}.csv'
 ZALANDO_FEED_URL = (
     f'https://merchants-connector-importer.zalandoapis.com/{ZALANDO_CLIENT_ID}/{FEED_NAME}')
 
-if not all([ZALANDO_CLIENT_ID, ZALANDO_API_KEY, ZALANDO_FEED_PATH]):
+if not all([ZALANDO_CLIENT_ID, ZALANDO_API_KEY]):
     print("\ncheck you environment variables - do you what you are doing son?\n")
     sys.exit(1)
 
@@ -104,8 +104,15 @@ class DtoZalandoFeed(NamedTuple):
     path_origin_feed: str
 
 
+class ZalandoException(Exception):
+    pass
+
+
 def download_feed():
     """Download feed from M13 shop and return list of stock."""
+    if not ZALANDO_FEED_PATH:
+        raise ZalandoException("Missing Environment Variable ZALANDO_FEED_PATH")
+
     response = requests.get(ZALANDO_FEED_PATH)
     decoded_content = response.content.decode('utf-8')
     cr = csv.reader(decoded_content.splitlines(), delimiter=';')

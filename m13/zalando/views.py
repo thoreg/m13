@@ -26,6 +26,7 @@ LOG = logging.getLogger(__name__)
 
 @login_required
 def price_feed(request):
+    """Price Feed Index View."""
     feed_uploads = FeedUpload.objects.all().order_by('-created')[:5]
 
     if request.method == 'POST':
@@ -52,6 +53,7 @@ def price_feed(request):
 
 @login_required
 def index(request):
+    """Zalando Index View."""
     order_items = (
         OrderItem.objects.all()
         .order_by('-order__order_date')
@@ -73,6 +75,7 @@ def index(request):
 @require_POST
 @non_atomic_requests
 def oea_webhook(request):
+    """Handle incoming webhook messages."""
     if not settings.ZALANDO_OEM_WEBHOOK_TOKEN:
         return HttpResponse('Token not defined.', content_type='text/plain')
 

@@ -1,7 +1,6 @@
+"""Management command to verify the shop is running and it looks like expected."""
 import logging
-import os
 import sys
-from functools import reduce
 
 import requests
 from bs4 import BeautifulSoup
@@ -35,9 +34,11 @@ WHITE_LIST = [
 
 
 class Command(BaseCommand):
+    """..."""
     help = "Check if the shop is up and running."
 
     def suspicious(self, msg):
+        """Send out email on threat detection."""
         msg = f'SNEAKY PETE detected - suspicious: "{msg}"'
 
         if not settings.FROM_EMAIL_ADDRESS:
