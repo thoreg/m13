@@ -181,7 +181,10 @@ def pimp_prices(lines):
         FACTOR = get_z_factor()
     except PriceTool.DoesNotExist:
         LOG.error('No price factor found')
-        raise ZalandoException("No Feed found in M13 shop")
+        raise ZalandoException("No price factor found")
+
+    if not lines:
+        raise ZalandoException("No feed found")
 
     for row in lines[1:]:
         # print(row)

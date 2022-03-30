@@ -5,7 +5,7 @@ import pytest
 from django.core.management import call_command
 
 from zalando.models import PriceTool
-from zalando.services.feed import pimp_prices
+from zalando.services.feed import ZalandoException, pimp_prices
 
 
 @pytest.mark.django_db
@@ -15,14 +15,20 @@ def test_pimp_prices():
         cr = csv.reader(f.read().splitlines(), delimiter=';')
         lines = list(cr)
 
-    # No basic price factor defined
-    assert pimp_prices(lines) is None
+    with pytest.raises(ZalandoException) as exc_info:
+        pimp_prices(lines)
+    assert 'No price factor found' in str(exc_info.value)
 
     pt = PriceTool.objects.create(z_factor=2, active=True)
     pt.save()
 
-    # No basic price factor defined
+    # Basic price factor defined and lines are available
     assert pimp_prices(lines) is not None
+
+    # Basic price factor defined but no lines available (FEED not available)
+    with pytest.raises(ZalandoException) as exc_info:
+        assert pimp_prices(None)
+    assert 'No feed found' in str(exc_info.value)
 
 
 @pytest.mark.django_db
