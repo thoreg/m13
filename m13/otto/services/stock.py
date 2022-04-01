@@ -37,6 +37,7 @@ def sync_stock():
         LOG.info(len(_chunk))
 
         for product in _chunk:
+            time.sleep(1)
             # LOG.info(product)
             payload = []
             sku = product['sku']
@@ -57,4 +58,3 @@ def sync_stock():
                 continue
 
             LOG.info(f'updated - sku: {sku} quantity : {quantity}')
-            time.sleep(1)
