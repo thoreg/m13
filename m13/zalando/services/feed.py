@@ -8,6 +8,7 @@ import requests
 from django.conf import settings
 
 from m13.common import now_as_str
+from zalando.constants import SKU_BLACKLIST
 from zalando.models import FeedUpload, PriceTool, Product
 
 LOG = logging.getLogger(__name__)
@@ -145,6 +146,10 @@ def save_original_feed(csv_content_as_list):
             if row[1] == '':
                 # print(f'SKIP LINE No {idx} - no ean - {row[5]} - {row[7]}')
                 meta['no_ean'] += 1
+                continue
+
+            if row[5] in SKU_BLACKLIST:
+                print(f'SKU {row[5]} black listed')
                 continue
 
             if row[4] == '':
