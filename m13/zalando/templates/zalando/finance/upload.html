@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load dicts_extra %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div id="main">
+  <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
+  <h2>Finance > Upload Single Transaction CSV Files</h2>
+  <div id="msg">
+    {{ msg }}
+  </div>
+
+  <form method = "post", enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit"> Submit</button>
+  </form>
+
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'zalando/footer.html' %}
+{% endblock %}

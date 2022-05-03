@@ -108,3 +108,14 @@ class StatsOrderItems(models.Model):
     class Meta:
         managed = False
         db_table = 'zalando_orderitem_stats'
+
+
+class TransactionFileUpload(TimeStampedModel):
+    """Upload of CSV files which contain detailed information about transactions."""
+    status_code_upload = models.BooleanField(default=False)
+    status_code_processing = models.BooleanField(default=False)
+    original_csv = models.FileField(upload_to='zalando/finance/')
+    month = models.IntegerField()
+
+    def __repr__(self):
+        return f'ZalandoTransactionFile({self.month}, {self.original_csv})'

@@ -2,7 +2,9 @@ import csv
 import datetime as dt
 import json
 import logging
+import os
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from pprint import pformat, pprint
 from secrets import compare_digest
 
@@ -18,8 +20,9 @@ from django.views.decorators.http import require_POST
 
 from zalando.services.prices import update_z_factor
 
-from .forms import PriceToolForm
-from .models import FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product, StatsOrderItems
+from .forms import PriceToolForm, UploadFileForm
+from .models import (FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product, StatsOrderItems,
+                     TransactionFileUpload)
 
 LOG = logging.getLogger(__name__)
 
@@ -142,108 +145,6 @@ def orderitems_csv(request, day):
         'EMAIL'
     ])
 
-    # orderitems = (OrderItem.objects
-    #                        .filter(fulfillment_status='PROCESSABLE')
-    #                        .select_related('order__delivery_address')
-    #                        .order_by('order__marketplace_order_number'))
-    # print(f'Found {len(orderitems)} orderitems')
-
-    # current_order = None
-    # current_order_id = None
-    # for oi in orderitems:
-
-    #     # Append shipping information at the end of an order (after all orderitems)
-    #     if current_order_id and current_order_id != oi.order.marketplace_order_number:
-    #         price = '%0.2f' % current_order.delivery_fee[0]['deliveryFeeAmount']['amount']
-    #         price = price.replace('.', ',')
-    #         writer.writerow([
-    #             current_order.marketplace_order_number,
-    #             current_order.delivery_address.first_name,
-    #             current_order.delivery_address.last_name,
-    #             f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}',
-    #             current_order.delivery_address.zip_code,
-    #             current_order.delivery_address.city,
-    #             _get_country_information(current_order.delivery_address.country_code),
-    #             ' ',
-    #             _get_delivery_info(current_order.delivery_fee[0]['name']),
-    #             price,
-    #             1,
-    #             'Versandposition',
-    #             f'OTTO {current_order.marketplace_order_id}',
-    #             'otto@manufaktur13.de'
-    #         ])
-
-    #     price = '%0.2f' % round(oi.price_in_cent / 100, 2)
-    #     price = price.replace('.', ',')
-
-    #     writer.writerow([
-    #         oi.order.marketplace_order_number,
-    #         oi.order.delivery_address.first_name,
-    #         oi.order.delivery_address.last_name,
-    #         f'{oi.order.delivery_address.street} {oi.order.delivery_address.house_number}',
-    #         oi.order.delivery_address.zip_code,
-    #         oi.order.delivery_address.city,
-    #         _get_country_information(oi.order.delivery_address.country_code),
-    #         oi.sku,
-    #         oi.product_title,
-    #         price,
-    #         1,
-    #         'Artikel',
-    #         f'OTTO {oi.order.marketplace_order_id}',
-    #         'otto@manufaktur13.de'
-    #     ])
-
-    #     current_order_id = oi.order.marketplace_order_number
-    #     current_order = deepcopy(oi.order)
-
-    # if current_order:
-    #     # extra locke for the last shipping position
-    #     price = '%0.2f' % current_order.delivery_fee[0]['deliveryFeeAmount']['amount']
-    #     price = price.replace('.', ',')
-    #     writer.writerow([
-    #         current_order.marketplace_order_number,
-    #         current_order.delivery_address.first_name,
-    #         current_order.delivery_address.last_name,
-    #         f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}',
-    #         current_order.delivery_address.zip_code,
-    #         current_order.delivery_address.city,
-    #         _get_country_information(current_order.delivery_address.country_code),
-    #         ' ',
-    #         _get_delivery_info(current_order.delivery_fee[0]['name']),
-    #         price,
-    #         1,
-    #         'Versandposition',
-    #         f'OTTO {current_order.marketplace_order_id}',
-    #         'otto@manufaktur13.de'
-    #     ])
-
-    # email = request.GET.get('email')
-    # if email:
-    #     LOG.info('Houston we got to send an email')
-    #     if not settings.FROM_EMAIL_ADDRESS:
-    #         LOG.error('settings.FROM_EMAIL_ADDRESS needs to be defined')
-    #         return response
-
-    #     if not settings.OTTO_ORDER_CSV_RECEIVER_LIST:
-    #         LOG.error('settings.OTTO_ORDER_CSV_RECEIVER_LIST needs to be defined')
-    #         return response
-
-    #     LOG.info(f'settings.FROM_EMAIL_ADDRESS: {settings.FROM_EMAIL_ADDRESS}')
-    #     LOG.info(f'settings.OTTO_ORDER_CSV_RECEIVER_LIST: {settings.OTTO_ORDER_CSV_RECEIVER_LIST}')
-
-    #     message = EmailMessage(
-    #         f'OTTO Bestellungen - {now.strftime("%Y/%m/%d")}',
-    #         'OTTO Bestellungen als csv - Frohes Schaffen!!',
-    #         settings.FROM_EMAIL_ADDRESS,
-    #         settings.OTTO_ORDER_CSV_RECEIVER_LIST,
-    #     )
-    #     message.attach(
-    #         f'{now.strftime("%Y/%m/%d")}_otto_bestellungen.csv',
-    #         response.getvalue(),
-    #         'text/csv')
-    #     number_of_messages = message.send()
-    #     LOG.info(f'{number_of_messages} send')
-
     return response
 
 
@@ -251,3 +152,42 @@ def orderitems_csv(request, day):
 def stats_orderitems(request):
     return JsonResponse(
         list(StatsOrderItems.objects.all().values()), safe=False)
+
+
+@login_required
+def upload_files(request):
+    """Handle for uploaded files."""
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        files = request.FILES.getlist('original_csv')
+        if form.is_valid():
+            month = form['month'].value()
+            for f in files:
+                handle_uploaded_file(month, f)
+            context = {'msg': '<span style="color: green;">File successfully uploaded</span>'}
+            return render(request, 'zalando/finance/upload.html', context)
+    else:
+        form = UploadFileForm()
+    return render(request, 'zalando/finance/upload.html', {'form': form})
+
+
+def handle_uploaded_file(month, f):
+    """Handle for single uploaded file."""
+    if not settings.ZALANDO_FINANCE_CSV_UPLOAD_PATH:
+        return HttpResponse(
+            'ZALANDO_FINANCE_CSV_UPLOAD_PATH not defined.', content_type='text/plain')
+
+    directory = os.path.join(settings.ZALANDO_FINANCE_CSV_UPLOAD_PATH, month[:4], month[4:],)
+    Path(directory).mkdir(parents=True, exist_ok=True)
+
+    path = os.path.join(directory, f.name)
+    print(f'path: {path}')
+    with open(path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+        TransactionFileUpload.objects.create(
+            status_code_upload=True,
+            status_code_processing=False,
+            original_csv=path,
+            month=month
+        )
