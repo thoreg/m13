@@ -120,3 +120,4 @@ ZALANDO_LOVERS = [
     'thoreg@gmail.com',
     'custom.art.berlin@googlemail.com',
 ]
+ZALANDO_FINANCE_CSV_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'zalando', 'finance')

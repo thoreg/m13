@@ -35,7 +35,7 @@ def test_pimp_prices():
 @patch('zalando.services.feed.upload_pimped_feed')
 @patch('zalando.services.feed.validate_feed', return_value=200)
 @patch('zalando.services.feed.pimp_prices', return_value='bogus_file_name')
-@patch('zalando.services.feed.download_feed', return_value=[[1, 2, 3, 4, 5]])
+@patch('zalando.services.feed.download_feed', return_value=[[1, 2, 3, 4, 5, 6]])
 def test_m13_zalando_feed_update(
         mock_download_feed,
         mock_pimp_prices,
