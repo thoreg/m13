@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import PriceTool, TransactionFileUpload
+from .models import TransactionFileUpload
 
 
 class PriceToolForm(forms.Form):

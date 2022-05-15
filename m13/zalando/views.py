@@ -150,6 +150,7 @@ def orderitems_csv(request, day):
 
 @login_required
 def stats_orderitems(request):
+    """Return order items stats in JSON format."""
     return JsonResponse(
         list(StatsOrderItems.objects.all().values()), safe=False)
 
@@ -166,6 +167,9 @@ def upload_files(request):
                 handle_uploaded_file(month, f)
             context = {'msg': '<span style="color: green;">File successfully uploaded</span>'}
             return render(request, 'zalando/finance/upload.html', context)
+
+        context = {'msg': '<span style="color: red;">Form is invalid</span>'}
+        return render(request, 'zalando/finance/upload.html', context)
     else:
         form = UploadFileForm()
     return render(request, 'zalando/finance/upload.html', {'form': form})
