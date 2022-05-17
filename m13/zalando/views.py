@@ -2,10 +2,7 @@ import csv
 import datetime as dt
 import json
 import logging
-import os
 from datetime import date, datetime, timedelta
-from pathlib import Path
-from pprint import pformat, pprint
 from secrets import compare_digest
 
 from django.conf import settings
@@ -18,6 +15,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from m13.lib.file_upload import handle_uploaded_file
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
@@ -162,36 +160,24 @@ def upload_files(request):
         form = UploadFileForm(request.POST, request.FILES)
         files = request.FILES.getlist('original_csv')
         if form.is_valid():
-            month = form['month'].value()
             for f in files:
-                handle_uploaded_file(month, f)
-            context = {'msg': '<span style="color: green;">File successfully uploaded</span>'}
+                path = handle_uploaded_file(settings.ZALANDO_FINANCE_CSV_UPLOAD_PATH, f)
+                _tfu, created = TransactionFileUpload.objects.get_or_create(
+                    file_name=f.name, defaults={
+                        'status_code_upload': True,
+                        'status_code_processing': False,
+                        'original_csv': path,
+                    })
+                if created:
+                    LOG.info(f'{path} successfully uploaded')
+                else:
+                    LOG.info(f'{path} already exist')
+
+            context = {'msg': f'{len(files)} files uploaded successfully'}
             return render(request, 'zalando/finance/upload.html', context)
 
-        context = {'msg': '<span style="color: red;">Form is invalid</span>'}
+        context = {'msg': 'Form is invalid'}
         return render(request, 'zalando/finance/upload.html', context)
     else:
         form = UploadFileForm()
     return render(request, 'zalando/finance/upload.html', {'form': form})
-
-
-def handle_uploaded_file(month, f):
-    """Handle for single uploaded file."""
-    if not settings.ZALANDO_FINANCE_CSV_UPLOAD_PATH:
-        return HttpResponse(
-            'ZALANDO_FINANCE_CSV_UPLOAD_PATH not defined.', content_type='text/plain')
-
-    directory = os.path.join(settings.ZALANDO_FINANCE_CSV_UPLOAD_PATH, month[:4], month[4:],)
-    Path(directory).mkdir(parents=True, exist_ok=True)
-
-    path = os.path.join(directory, f.name)
-    print(f'path: {path}')
-    with open(path, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-        TransactionFileUpload.objects.create(
-            status_code_upload=True,
-            status_code_processing=False,
-            original_csv=path,
-            month=month
-        )

@@ -1,3 +1,5 @@
+import hashlib
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
@@ -16,22 +18,32 @@ def test_multi_file_upload(client, django_user_model, django_db_setup):
     response = client.get(upload_url)
     assert response.status_code == 200
 
-    files = []
-    for idx in range(1, 4):
+    original_files = []
+    original_files_md5sums = []
+    for idx in range(3):
         fp = open(f'zalando/tests/fixtures/daily_sales_report_{idx}.csv', 'rb')
-        files.append(fp)
+        content = fp.read()
+        md5_hash = hashlib.md5()
+        md5_hash.update(content)
+        fp.seek(0)
 
-    response = client.post(upload_url, {
-        'month': 202203,
-        'original_csv': files
-    })
+        original_files.append(fp)
+        original_files_md5sums.append(md5_hash.hexdigest())
+
+    response = client.post(upload_url, {'original_csv': original_files})
 
     entries = TransactionFileUpload.objects.all()
     assert len(entries) == 3
 
-    for idx in range(1, 4):
-        entry = entries[idx - 1]
+    for idx in range(3):
+        entry = entries[idx]
         assert entry.original_csv.name.endswith(f'daily_sales_report_{idx}.csv')
-        assert entry.month == 202203
         assert entry.status_code_upload is True
         assert entry.status_code_processing is False
+        assert entry.file_name == f'daily_sales_report_{idx}.csv'
+
+        with open(entry.original_csv.name, 'rb') as result_file:
+            content = result_file.read()
+            md5_hash = hashlib.md5()
+            md5_hash.update(content)
+            assert original_files_md5sums[idx] == md5_hash.hexdigest()

@@ -14,4 +14,4 @@ class UploadFileForm(forms.ModelForm):
 
     class Meta:
         model = TransactionFileUpload
-        fields = ['month', 'original_csv']
+        fields = ['original_csv']
