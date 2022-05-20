@@ -38,8 +38,7 @@ def test_multi_file_upload(client, django_user_model, django_db_setup):
     for idx in range(3):
         entry = entries[idx]
         assert entry.original_csv.name.endswith(f'daily_sales_report_{idx}.csv')
-        assert entry.status_code_upload is True
-        assert entry.status_code_processing is False
+        assert entry.processed is False
         assert entry.file_name == f'daily_sales_report_{idx}.csv'
 
         with open(entry.original_csv.name, 'rb') as result_file:

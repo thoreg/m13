@@ -12,7 +12,8 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .common import dictfetchall
+from m13.lib.psql import dictfetchall
+
 from .forms import UploadFileForm
 from .models import OrderItem, Shipment, StatsOrderItems
 from .services.shipments import handle_uploaded_file

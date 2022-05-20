@@ -2,21 +2,39 @@
 {% load dicts_extra %}
 
 {% block header %}
+<h2>Finance > Upload Single Transaction CSV Files</h2>
+<div id="msg">
+  {{ msg }}
+</div>
+
+<form method = "post", enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit"> Submit</button>
+</form>
 {% endblock %}
 
 {% block content %}
 <div id="main">
   <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
-  <h2>Finance > Upload Single Transaction CSV Files</h2>
-  <div id="msg">
-    {{ msg }}
-  </div>
-
-  <form method = "post", enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit"> Submit</button>
-  </form>
+  <table>
+    <thead>
+      <th>article_number</th>
+      <th>returned</th>
+      <th>canceled</th>
+      <th>shipped</th>
+    </thead>
+    <tbody>
+    {% for article in article_stats %}
+    <tr>
+      <td>{{ article.article_number }}</td>
+      <td>{{ article.returned }}</td>
+      <td>{{ article.canceled }}</td>
+      <td>{{ article.shipped }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 
 </div>
 {% endblock %}

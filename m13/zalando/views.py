@@ -7,6 +7,8 @@ from secrets import compare_digest
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.db import connection
+from django.db.models import Count
 from django.db.transaction import atomic, non_atomic_requests
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -16,11 +18,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from m13.lib.file_upload import handle_uploaded_file
+from m13.lib.psql import dictfetchall
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
-from .models import (FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product, StatsOrderItems,
-                     TransactionFileUpload)
+from .models import (FeedUpload, OEAWebhookMessage, OrderItem, PriceTool,
+                     Product, StatsOrderItems, TransactionFileUpload)
 
 LOG = logging.getLogger(__name__)
 
@@ -164,9 +167,8 @@ def upload_files(request):
                 path = handle_uploaded_file(settings.ZALANDO_FINANCE_CSV_UPLOAD_PATH, f)
                 _tfu, created = TransactionFileUpload.objects.get_or_create(
                     file_name=f.name, defaults={
-                        'status_code_upload': True,
-                        'status_code_processing': False,
                         'original_csv': path,
+                        'processed': False,
                     })
                 if created:
                     LOG.info(f'{path} successfully uploaded')
@@ -180,4 +182,24 @@ def upload_files(request):
         return render(request, 'zalando/finance/upload.html', context)
     else:
         form = UploadFileForm()
-    return render(request, 'zalando/finance/upload.html', {'form': form})
+
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT
+                article_number,
+                COUNT(shipment) FILTER (WHERE shipment) AS shipped,
+                COUNT(returned) FILTER (WHERE returned) AS returned,
+                COUNT(cancel) FILTER (WHERE cancel) AS canceled
+            FROM
+                zalando_dailyshipmentreport
+            GROUP BY
+                article_number
+            ORDER BY
+                returned DESC
+        ''')
+        article_stats = dictfetchall(cursor)
+
+    return render(request, 'zalando/finance/upload.html', {
+        'article_stats': article_stats,
+        'form': form
+    })

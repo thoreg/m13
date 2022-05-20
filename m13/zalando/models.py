@@ -112,10 +112,21 @@ class StatsOrderItems(models.Model):
 
 class TransactionFileUpload(TimeStampedModel):
     """Upload of CSV files which contain detailed information about transactions."""
-    status_code_upload = models.BooleanField(default=False)
-    status_code_processing = models.BooleanField(default=False)
+    processed = models.BooleanField(default=False)
     original_csv = models.FileField(upload_to='zalando/finance/')
     file_name = models.CharField(max_length=64, unique=True)
 
     def __repr__(self):
         return f'ZalandoTransactionFile({self.original_csv})'
+
+
+class DailyShipmentReport(TimeStampedModel):
+    """Relevant data from daily shipment reports from Zalando."""
+    article_number = models.CharField(max_length=36)
+    cancel = models.BooleanField(default=False)
+    channel_order_number = models.CharField(max_length=16)
+    order_created = models.DateTimeField()
+    price_in_cent = models.PositiveIntegerField()
+    return_reason = models.CharField(max_length=256)
+    returned = models.BooleanField(default=False)
+    shipment = models.BooleanField(default=False)
