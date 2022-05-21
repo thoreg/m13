@@ -46,3 +46,11 @@ def test_multi_file_upload(client, django_user_model, django_db_setup):
             md5_hash = hashlib.md5()
             md5_hash.update(content)
             assert original_files_md5sums[idx] == md5_hash.hexdigest()
+
+    # Multiple uploads of the same files do not lead to multiple storage of objects
+    response = client.post(upload_url, {'original_csv': original_files})
+    response = client.post(upload_url, {'original_csv': original_files})
+    response = client.post(upload_url, {'original_csv': original_files})
+
+    entries = TransactionFileUpload.objects.all()
+    assert len(entries) == 3
