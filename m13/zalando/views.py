@@ -22,8 +22,8 @@ from m13.lib.psql import dictfetchall
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
-from .models import (FeedUpload, OEAWebhookMessage, OrderItem, PriceTool,
-                     Product, StatsOrderItems, TransactionFileUpload)
+from .models import (FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product, StatsOrderItems,
+                     TransactionFileUpload)
 
 LOG = logging.getLogger(__name__)
 
