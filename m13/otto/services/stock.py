@@ -9,7 +9,6 @@ import requests
 
 from m13.lib.common import chunk
 from otto.common import get_auth_token
-from otto.services.orders import fetch_next_slice, fetch_orders_by_status, save_orders
 
 LOG = logging.getLogger(__name__)
 

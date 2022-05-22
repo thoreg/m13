@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'otto',
     'zalando',
     'etsy',
-    'shipping'
+    'shipping',
+    'core'
 ]
 
 MIDDLEWARE = [
