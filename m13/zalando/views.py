@@ -3,12 +3,11 @@ import datetime as dt
 import json
 import logging
 from datetime import date, datetime, timedelta
+from pprint import pformat
 from secrets import compare_digest
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db import connection
-from django.db.models import Count
 from django.db.transaction import atomic, non_atomic_requests
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -18,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from m13.lib.file_upload import handle_uploaded_file
-from m13.lib.psql import dictfetchall
+from zalando.services.efficiency_check import get_article_stats
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
@@ -183,21 +182,8 @@ def upload_files(request):
     else:
         form = UploadFileForm()
 
-    with connection.cursor() as cursor:
-        cursor.execute('''
-            SELECT
-                article_number,
-                COUNT(shipment) FILTER (WHERE shipment) AS shipped,
-                COUNT(returned) FILTER (WHERE returned) AS returned,
-                COUNT(cancel) FILTER (WHERE cancel) AS canceled
-            FROM
-                zalando_dailyshipmentreport
-            GROUP BY
-                article_number
-            ORDER BY
-                returned DESC
-        ''')
-        article_stats = dictfetchall(cursor)
+    article_stats = get_article_stats()
+    LOG.info(pformat(article_stats))
 
     return render(request, 'zalando/finance/upload.html', {
         'article_stats': article_stats,
