@@ -9,15 +9,17 @@ def import_all_unprocessed_daily_shipment_reports():
     """..."""
     files = TransactionFileUpload.objects.filter(processed=False)
     for file in files:
-        import_daily_shipment_report(file.original_csv.name)
+        import_daily_shipment_report(file)
+        file.processed = True
+        file.save()
 
 
-def import_daily_shipment_report(path):
+def import_daily_shipment_report(file: TransactionFileUpload) -> None:
     """Import daily shipment report data for further analytics and reports.
 
     One row in the database per row from the original CSV.
     """
-    for line in read_csv(path, delimiter=","):
+    for line in read_csv(file.original_csv.name, delimiter=","):
 
         canceled = line['Cancellation'] == 'x'
         returned = line['Return'] == 'x'
