@@ -4,7 +4,7 @@ from .models import Article, Product
 
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('product_name', 'sku', 'ean')
+    list_display = ('product_name', 'sku', 'product_ean')
 
     @admin.display()
     def product_name(self, obj):
