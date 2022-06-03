@@ -10,3 +10,10 @@ class Product(TimeStampedModel):
 class Article(TimeStampedModel):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     sku = models.CharField(max_length=32, unique=True)
+
+    class Meta:
+        ordering = ['sku']
+
+    def __str__(self):
+        # return self.product.name
+        return self.sku

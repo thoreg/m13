@@ -22,7 +22,7 @@ from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
 from .models import (FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product, StatsOrderItems,
-                     TransactionFileUpload)
+                     TransactionFileUpload, ZCalculator)
 
 LOG = logging.getLogger(__name__)
 
@@ -188,4 +188,45 @@ def upload_files(request):
     return render(request, 'zalando/finance/upload.html', {
         'article_stats': article_stats,
         'form': form
+    })
+
+
+@login_required
+def calculator(request):
+    """Overview of all zalando calculator values."""
+    article_stats = get_article_stats()
+    LOG.info(pformat(article_stats))
+
+    calculated_values = ZCalculator.objects.all()
+
+    values = {}
+    for cv_obj in calculated_values:
+        values[cv_obj.article.sku] = {
+            'obj': cv_obj,
+        }
+
+    for entry in article_stats:
+        if entry['article_number'] in values:
+            values[entry['article_number']].update(entry)
+            obj = values[entry['article_number']]['obj']
+
+            values[entry['article_number']]['profit_on_sales'] = (
+                # =I2*(J2-K2)
+                obj.profit_after_taxes * (entry['shipped'] - entry['returned'])
+            )
+
+            values[entry['article_number']]['loss_on_retour'] = (
+                # =(D2+E2+H2)*K2
+                (obj.shipping_costs + obj.return_costs + obj.generic_costs) * entry['returned']
+            )
+
+            tmp = values[entry['article_number']]
+            values[entry['article_number']]['diff'] = (
+                # =L2-M2
+                tmp['profit_on_sales'] - tmp['loss_on_retour']
+            )
+
+    return render(request, 'zalando/finance/z_calculator.html', {
+        # 'article_stats': article_stats,
+        'calculated': values
     })

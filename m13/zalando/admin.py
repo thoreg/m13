@@ -1,6 +1,20 @@
 from django.contrib import admin
 
-from .models import DailyShipmentReport, PriceTool, TransactionFileUpload
+from .models import DailyShipmentReport, PriceTool, TransactionFileUpload, ZCalculator
+
+
+class ZCalculatorAdmin(admin.ModelAdmin):
+    list_display = (
+        'article',
+        'costs_production',
+        'vk_zalando',  # C2
+        'shipping_costs',
+        'return_costs',
+        'eight_percent_provision',
+        'nineteen_percent_vat',
+        'generic_costs',
+        'profit_after_taxes'
+    )
 
 
 class PriceToolAdmin(admin.ModelAdmin):
@@ -42,3 +56,4 @@ class DailyShipmentReportAdmin(admin.ModelAdmin):
 admin.site.register(DailyShipmentReport, DailyShipmentReportAdmin)
 admin.site.register(PriceTool, PriceToolAdmin)
 admin.site.register(TransactionFileUpload, TransactionFileUploadAdmin)
+admin.site.register(ZCalculator, ZCalculatorAdmin)
