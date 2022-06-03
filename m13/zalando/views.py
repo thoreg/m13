@@ -183,7 +183,6 @@ def upload_files(request):
         form = UploadFileForm()
 
     article_stats = get_article_stats()
-    LOG.info(pformat(article_stats))
 
     return render(request, 'zalando/finance/upload.html', {
         'article_stats': article_stats,
@@ -195,8 +194,6 @@ def upload_files(request):
 def calculator(request):
     """Overview of all zalando calculator values."""
     article_stats = get_article_stats()
-    LOG.info(pformat(article_stats))
-
     calculated_values = ZCalculator.objects.all()
 
     values = {}
