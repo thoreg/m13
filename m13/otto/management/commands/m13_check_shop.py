@@ -88,7 +88,13 @@ class Command(BaseCommand):
                         break
 
                 if suspicious:
-                    return self.suspicious(f'strange href: {href}')
+                    msg = f'strange href: BEGIN:{href}:END '
+                    try:
+                        msg += f'parent: {href.parent}'
+                    except:
+                        msg += 'appending parent failed'
+
+                    return self.suspicious(msg)
 
         LOG.info('All fine')
         sys.exit(0)
