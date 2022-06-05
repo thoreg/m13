@@ -1,9 +1,12 @@
+import math
 from decimal import Decimal
 
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
 from core.models import Article
+
+from .constants import ACCOUNT_ONLINE_FEE, NINETEEN_PERCENT_GERMANY_ZALANDO, NINETEEN_PERCENT_VAT
 
 
 class FeedUpload(TimeStampedModel):
@@ -173,3 +176,90 @@ class ZCalculator(TimeStampedModel):
         base = self.vk_zalando - self.costs_production - self.shipping_costs
         return _r(
             base + self.eight_percent_provision + self.nineteen_percent_vat + self.generic_costs)
+
+
+class SalesReportImport(TimeStampedModel):
+    """Model to track report imports"""
+
+    name = models.CharField(max_length=256, unique=True)
+    """File name of the report"""
+    processed = models.DateTimeField(null=True, blank=True)
+    """Timestamp when this report has been processed"""
+    month = models.PositiveIntegerField()
+    """YYYYMM month which this report is about"""
+
+
+class SalesReportExport(TimeStampedModel):
+    month = models.PositiveIntegerField()
+    """YYYYMM month which this report is about"""
+    report = models.JSONField()
+    """The complete report as JSON (used for CSV export)"""
+    import_reference = models.ForeignKey(SalesReportImport, on_delete=models.PROTECT)
+    """Reference to the original import"""
+
+
+class SalesReport(TimeStampedModel):
+    """Zalando Sales Export Item."""
+    class Currency(models.TextChoices):
+        EUR = "EUR", "Euro"
+
+    year = models.PositiveSmallIntegerField()
+    month = models.PositiveSmallIntegerField()
+    created_date = models.DateTimeField()
+    currency = models.CharField(
+        max_length=3, choices=Currency.choices, default=Currency.EUR
+    )
+    order_number = models.CharField(max_length=32)
+    ean = models.CharField(max_length=16)
+    shipping_return_date = models.DateTimeField()
+    order_date = models.DateTimeField()
+    partner_units = models.PositiveSmallIntegerField()
+    partner_revenue = models.DecimalField(max_digits=10, decimal_places=5)
+    partner_provision = models.DecimalField(max_digits=10, decimal_places=5)
+
+    @property
+    def debit_or_credit_indicator_fees(self):
+        """Return indicator if this value is debit or credit for fees."""
+        if self.partner_revenue < 0:
+            return 'S'
+        return 'H'
+
+    @property
+    def debit_or_credit_indicator_income(self):
+        """Return indicator if this value is debit or credit for income."""
+        if self.partner_revenue < 0:
+            return 'H'
+        return 'S'
+
+    @property
+    def short_order_date(self):
+        """Accounting request format: DDMM"""
+        return '{d.day:02}{d.month:02}'.format(d=self.created_date)
+
+    def get_bu_key(self, revenue=False):
+        """Return 9 for target account 3101."""
+        if revenue:
+            return ''
+        return 9
+
+    def get_target(self, revenue=False):
+        """Return indicator if this value is debit or credit."""
+        if revenue:
+            return NINETEEN_PERCENT_GERMANY_ZALANDO
+        return ACCOUNT_ONLINE_FEE
+
+    def get_abs_value(self, revenue=False):
+        """Return absolute value of either revenue or provision."""
+        def __as_str(value):
+            # Do not round here by intention -> diff is getting to big quickly
+            return str(abs(value)).replace('.', ',')
+
+        if revenue:
+            return __as_str(self.partner_revenue)
+        return __as_str(round(self.partner_provision * NINETEEN_PERCENT_VAT, 4))
+
+    def get_description(self, revenue=False):
+        """Return description depending on revnue or not."""
+        if revenue:
+            return 'Erlöse 19% für Zielland Dtld Marktplatz Zalando'
+        return 'Aufwandskonto Gebühren Onlinehandel'
