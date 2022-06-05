@@ -22,8 +22,7 @@ LOG = logging.getLogger(__name__)
 AUTH_TOKEN = os.getenv("M13_DROPBOX_AUTH_TOKEN")
 REPORTS_PATH = os.getenv("M13_DROPBOX_ZALANDO_REPORTS_PATH")
 
-EXTRACT_DIR = "/Users/thoreg/Downloads/temp"
-PROCESSED_DIR = "/Users/thoreg/Downloads/processed"
+EXTRACT_DIR = "/tmp"
 
 
 class DownloadFailed(Exception):
@@ -46,7 +45,6 @@ def import_sales_reports(month):
         path = f"{EXTRACT_DIR}/{file}"
         LOG.info(f"Import {path}")
         _import_sales_report(path, month)
-        # qqq - when imported -> move files to processed directory
 
 
 def _get_files_from_dropbox(dbx, month):
