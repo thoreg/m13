@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from m13.lib.file_upload import handle_uploaded_file
-from zalando.services.efficiency_check import get_article_stats
+from zalando.services.efficiency_check import get_article_stats, import_daily_shipment_report
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
@@ -164,11 +164,13 @@ def upload_files(request):
         if form.is_valid():
             for f in files:
                 path = handle_uploaded_file(settings.ZALANDO_FINANCE_CSV_UPLOAD_PATH, f)
-                _tfu, created = TransactionFileUpload.objects.get_or_create(
+                tfu, created = TransactionFileUpload.objects.get_or_create(
                     file_name=f.name, defaults={
                         'original_csv': path,
                         'processed': False,
                     })
+                import_daily_shipment_report(tfu)
+
                 if created:
                     LOG.info(f'{path} successfully uploaded')
                 else:

@@ -3,7 +3,7 @@ import hashlib
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
-from zalando.models import TransactionFileUpload
+from zalando.models import DailyShipmentReport, TransactionFileUpload
 
 
 def test_multi_file_upload(client, django_user_model, django_db_setup):
@@ -52,5 +52,5 @@ def test_multi_file_upload(client, django_user_model, django_db_setup):
     response = client.post(upload_url, {'original_csv': original_files})
     response = client.post(upload_url, {'original_csv': original_files})
 
-    entries = TransactionFileUpload.objects.all()
-    assert len(entries) == 3
+    assert TransactionFileUpload.objects.count() == 3
+    assert DailyShipmentReport.objects.count() == 12
