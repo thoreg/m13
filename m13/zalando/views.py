@@ -21,8 +21,8 @@ from zalando.services.efficiency_check import get_article_stats
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
-from .models import (FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product, StatsOrderItems,
-                     TransactionFileUpload, ZCalculator)
+from .models import (DailyShipmentReport, FeedUpload, OEAWebhookMessage, OrderItem, PriceTool,
+                     Product, StatsOrderItems, TransactionFileUpload, ZCalculator)
 
 LOG = logging.getLogger(__name__)
 
@@ -182,10 +182,11 @@ def upload_files(request):
     else:
         form = UploadFileForm()
 
-    article_stats = get_article_stats()
+    file_uploads = TransactionFileUpload.objects.all().order_by('-created')[:50]
+    LOG.info(f'we have {len(file_uploads)} objects')
 
     return render(request, 'zalando/finance/upload.html', {
-        'article_stats': article_stats,
+        'file_uploads': file_uploads,
         'form': form
     })
 

@@ -19,23 +19,26 @@
   <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
   <table>
     <thead>
-      <th>article_number</th>
-      <th>returned</th>
-      <th>canceled</th>
-      <th>shipped</th>
+      <th>name</th>
+      <th>processed</th>
+      <th>created</th>
     </thead>
     <tbody>
-    {% for article in article_stats %}
+    {% for file in file_uploads %}
     <tr>
-      <td>{{ article.article_number }}</td>
-      <td>{{ article.returned }}</td>
-      <td>{{ article.canceled }}</td>
-      <td>{{ article.shipped }}</td>
+      <td>{{ file.file_name }}</td>
+      <td>
+        {% if file.processed %}
+          <div style="width: 1.5rem; height: 1.5rem; background: green; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
+        {% else %}
+          <div style="width: 1.5rem; height: 1.5rem; background: red; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
+        {% endif %}
+      </td>
+      <td>{{ file.created | date:"c" }}</td>
     </tr>
     {% endfor %}
     </tbody>
   </table>
-
 </div>
 {% endblock %}
 
