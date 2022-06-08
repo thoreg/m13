@@ -6,3 +6,4 @@ fast_api_main.py
 htmlcov
 .coverage
 media/
+m13/var
