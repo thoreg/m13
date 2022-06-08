@@ -2,17 +2,18 @@
 
 {% load mathfilters %}
 {% load dicts_extra %}
+{% load static %}
 
 {% block header %}
-<h2>Zalando Rechner</h2>
-<div id="msg">
-  Gewinn und Verlust Rechnungen Zalando Sendungen
-</div>
 
 {% endblock %}
 
 {% block content %}
 <div id="main">
+  <h2>Zalando Rechner</h2>
+  <div id="msg">
+    Gewinn und Verlust Rechnungen Zalando Sendungen
+  </div>
   <div id="app"></div>
   <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
   <table>
@@ -59,4 +60,7 @@
 
 {% block footer %}
   {% include 'zalando/footer.html' %}
+  <script type="text/javascript" src="{% static 'src/vue/dist/js/chunk-vendors.js' %}"></script>
+  <script type="text/javascript" src="{% static 'src/vue/dist/js/app.js' %}"></script>
+  <link href="{% static 'src/vue/dist/css/app.css' %}" rel=stylesheet>
 {% endblock %}
