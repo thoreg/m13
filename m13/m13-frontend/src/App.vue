@@ -1,26 +1,23 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <ZalandoCalculator msg="Zalando Calculator"/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ZalandoCalculator from './components/ZalandoCalculator.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    ZalandoCalculator
   }
 }
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: monospace;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 10px;
 }
 </style>

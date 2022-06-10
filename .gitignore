@@ -7,3 +7,4 @@ htmlcov
 .coverage
 media/
 m13/var
+m13/static/src/

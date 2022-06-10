@@ -1,8 +1,8 @@
 import pytest
 from django.test import TestCase
 
-from zalando.models import DailyShipmentReport, TransactionFileUpload
-from zalando.services.efficiency_check import get_article_stats, import_daily_shipment_report
+from zalando.models import DailyShipmentReport, TransactionFileUpload, ZProduct
+from zalando.services.efficiency_check import get_product_stats, import_daily_shipment_report
 
 
 class TestWhateverFunctions(TestCase):
@@ -50,7 +50,7 @@ class TestWhateverFunctions(TestCase):
         assert daily_shipment_reports[3]['returned'] is True
         assert daily_shipment_reports[3]['cancel'] is False
 
-    def test_get_article_stats(self):
+    def test_get_product_stats(self):
         """CSV files get imported properly (1:1 row_csv:row_db)."""
         import_daily_shipment_report(self.file0)
         import_daily_shipment_report(self.file1)
@@ -59,7 +59,7 @@ class TestWhateverFunctions(TestCase):
         daily_shipment_reports = DailyShipmentReport.objects.values()
         assert len(daily_shipment_reports) == 12
 
-        article_stats = get_article_stats()
+        article_stats = get_product_stats()
 
         assert article_stats == [{
             'article_number': 'women-bom-vi-s',
@@ -82,3 +82,5 @@ class TestWhateverFunctions(TestCase):
             'returned': 0,
             'shipped': 2
         }]
+
+        assert ZProduct.objects.count() == 4

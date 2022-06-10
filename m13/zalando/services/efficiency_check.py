@@ -1,8 +1,12 @@
+import logging
+
 from django.db import connection
 
 from m13.lib.csv_reader import read_csv
 from m13.lib.psql import dictfetchall
-from zalando.models import DailyShipmentReport, TransactionFileUpload
+from zalando.models import DailyShipmentReport, TransactionFileUpload, ZProduct
+
+LOG = logging.getLogger(__name__)
 
 
 def import_all_unprocessed_daily_shipment_reports():
@@ -36,9 +40,11 @@ def import_daily_shipment_report(file: TransactionFileUpload) -> None:
             return_reason=line['Return Reason'],
             returned=returned,
             shipment=shipped)
+    # Update the product stats after each import
+    get_product_stats()
 
 
-def get_article_stats():
+def get_product_stats():
     """Return dictionary with aggregated values for number of shipped, returned and canceled."""
     article_stats = {}
     with connection.cursor() as cursor:
@@ -56,5 +62,22 @@ def get_article_stats():
                 returned DESC
         ''')
         article_stats = dictfetchall(cursor)
+
+    for stats in article_stats:
+        zp, created = ZProduct.objects.get_or_create(
+            article=stats['article_number'],
+            defaults=dict(
+                shipped=stats['shipped'],
+                returned=stats['returned'],
+                canceled=stats['canceled']
+            )
+        )
+        if created:
+            LOG.info(f'ZProduct created : {stats}')
+        else:
+            zp.shipped = stats['shipped']
+            zp.returned = stats['returned']
+            zp.canceled = stats['canceled']
+            zp.save()
 
     return article_stats

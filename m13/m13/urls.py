@@ -6,6 +6,8 @@ from django.urls import include, path
 from rest_framework import routers
 
 from otto.viewsets import OrderItemViewSet as OttoOrderItemsViewSet
+from zalando import views as zalando_views
+from zalando import viewsets as zalando_viewsets
 
 from .views import index
 
@@ -14,6 +16,9 @@ router.register(r'otto/orderitems', OttoOrderItemsViewSet)
 
 urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
+    path('api/zalando/finance/products/<str:pk>/', zalando_viewsets.ZProductDetail.as_view()),
+    path('api/zalando/finance/products/', zalando_viewsets.ZProductList.as_view()),
+    path('api/zalando/finance/article-stats/', zalando_views.article_stats),
     path('api/', include(router.urls)),
     path('addi/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
