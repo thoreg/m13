@@ -5,61 +5,15 @@
 {% load static %}
 
 {% block header %}
-
 {% endblock %}
 
 {% block content %}
 <div id="main">
-  <h2>Zalando Rechner</h2>
-  <div id="msg">
-    Gewinn und Verlust Rechnungen Zalando Sendungen
-  </div>
   <div id="app"></div>
-  <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
-  <table>
-    <thead>
-      <th>Artikel</th>
-      <th>Herstellungskosten</th>
-      <th>VK (Zalando)</th>
-      <th>Versandkosten</th>
-      <th>Retourenkosten</th>
-      <th>8% Provision</th>
-      <th>19% MwSt.</th>
-      <th>Gemeinkosten</th>
-      <th>Gewinn nach Steuern</th>
-      <th>verkaufte Stückzahl</th>
-      <th>Retoure Stk</th>
-      <th>Gewinn an Verkäufen</th>
-      <th>Verlust an Retouren</th>
-      <th>Differenz</th>
-    </thead>
-    <tbody>
-    {% for sku, article in calculated.items %}
-    <tr>
-      <td>{{ sku }}</td>
-      <td>{{ article.obj.costs_production }}</td>
-      <td>{{ article.obj.vk_zalando }}</td>
-      <td>{{ article.obj.shipping_costs }}</td>
-      <td>{{ article.obj.return_costs }}</td>
-      <td>{{ article.obj.eight_percent_provision }}</td>
-      <td>{{ article.obj.nineteen_percent_vat }}</td>
-      <td>{{ article.obj.generic_costs }}</td>
-      <td>{{ article.obj.profit_after_taxes }}</td>
-      <td>{{ article.shipped }}</td>
-      <td>{{ article.returned }}</td>
-      <td>{{ article.profit_on_sales }}</td>
-      <td>{{ article.loss_on_retour }}</td>
-      <td>{{ article.diff }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-  </table>
-
 </div>
 {% endblock %}
 
 {% block footer %}
-  {% include 'zalando/footer.html' %}
   <script type="text/javascript" src="{% static 'src/vue/dist/js/chunk-vendors.js' %}"></script>
   <script type="text/javascript" src="{% static 'src/vue/dist/js/app.js' %}"></script>
   <link href="{% static 'src/vue/dist/css/app.css' %}" rel=stylesheet>

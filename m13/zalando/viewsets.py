@@ -5,7 +5,7 @@ from .serializers import ZProductSerializer
 
 
 class ZProductList(generics.ListCreateAPIView):
-    queryset = ZProduct.objects.all()
+    queryset = ZProduct.objects.all().order_by('-shipped')
     serializer_class = ZProductSerializer
 
 

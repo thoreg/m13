@@ -3,6 +3,7 @@
   <table>
     <thead>
       <th>Artikel</th>
+      <th>Kategorie</th>
       <th>Herstellungskosten</th>
       <th>VK (Zalando)</th>
       <th>Retourenkosten</th>
@@ -11,10 +12,12 @@
       <th>19% MwSt.</th>
       <th>Gemeinkosten</th>
       <th>Gewinn nach Steuern</th>
-      <th>verkaufte Stückzahl</th>
+      <th>Stückzahl Verkauf</th>
+      <th>Stückzahl Retoure</th>
     </thead>
     <tr v-for="product in products" v-bind:key="product">
-      <td>{{ product.sku }}</td>
+      <td>{{ product.article }}</td>
+      <td>{{ product.category_name }}</td>
       <td>{{ product.costs_production }}</td>
       <td>{{ product.vk_zalando }}</td>
       <td>{{ product.return_costs }}</td>
@@ -23,13 +26,15 @@
       <td>{{ product.nineteen_percent_vat }}</td>
       <td>{{ product.generic_costs }}</td>
       <td>{{ product.profit_after_taxes }}</td>
-      <td>{{ articleStats(product.sku).shipped }}</td>
+      <td>{{ product.shipped }}</td>
+      <td>{{ product.returned }}</td>
     </tr>
   </table>
 
 </template>
 
 <script>
+
 export default {
   name: 'ZalandoCalculator',
   props: {
@@ -38,40 +43,48 @@ export default {
   data() {
     return {
       products: [],
-      articleStats: {}
+      currentPage: 1
     }
   },
-  created () {
-    fetch('http://127.0.0.1:8000/api/zalando/finance/article-stats/')
-    .then(response => response.json())
-    .then(json => {
-      // Map all entries in the list into an object
-      // this.articleStats = json // normal array with all the values
-      // Object but faulty
-      // this.articleStats = Object.fromEntries(json.map(e => Object.values(e)))
-      this.articleStats = json.reduce((accumulator, currentValue) => {
-        accumulator[currentValue.article_number] = currentValue;
-        return accumulator;
-      }, {})
-      fetch('http://127.0.0.1:8000/api/zalando/finance/products/')
-      .then(response => response.json())
-      .then(json => {
-        this.products = json.results;
+  methods: {
+      getProducts() {
+        fetch(`/api/zalando/finance/products/?page=${this.currentPage}`)
+          .then(response => {
+            return response.json()
+          })
+          .then(data => {
+            console.log(data);
+            this.products.push(...data.results);
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      },
+  },
+  // The steps in Vue lifecycle are:
+  // - beforeCreate, created,
+  // - beforeMount, mounted,
+  // - beforeUpdate, updated,
+  // - beforeDestroy, destroyed.
+  created() {
+    // In Server Side Rendering created() is used over mounted() because mounted() is not present in it.
+    console.log('App component created');
+  },
+  mounted() {
+    // the mounted hook can be used to run code after the component has finished the initial
+    // rendering and created the DOM nodes
+    console.log('App component mounted');
+    this.getProducts();
 
-        for (var i = 0; i < this.products.length; i++) {
-          if (this.products[i].sku in this.articleStats) {
-            const sku = this.products[i].sku;
-            console.log(`found sku ${sku}`);
-            this.products[i].canceled = this.articleStats[sku].canceled;
-            this.products[i].returned = this.articleStats[sku].returned;
-            this.products[i].shipped = this.articleStats[sku].shipped;
-          }
-        }
-      })
-    })
+    window.onscroll = () => {
+      let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+      if (bottomOfWindow) {
+        this.currentPage += 1;
+        this.getProducts();
+      }
+    }
 
-  }
-
+  },
 }
 </script>
 
