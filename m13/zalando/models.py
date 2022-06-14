@@ -301,3 +301,10 @@ class ZProduct(TimeStampedModel):
             base = self.vk_zalando - self.costs_production - self.shipping_costs
             return _r(
                 base + self.eight_percent_provision + self.nineteen_percent_vat + self.generic_costs)
+
+    @property
+    def category_name(self):
+        """Return the name of the category."""
+        if self.category:
+            return self.category.name
+        return 'N/A'
