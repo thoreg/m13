@@ -68,6 +68,10 @@ class ZProductAdmin(admin.ModelAdmin):
         # 'generic_costs',
         'profit_after_taxes'
     )
+    search_fields = [
+        'article',
+        'category'
+    ]
 
 
 admin.site.register(DailyShipmentReport, DailyShipmentReportAdmin)
