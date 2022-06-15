@@ -70,7 +70,7 @@ class ZProductAdmin(admin.ModelAdmin):
     )
     search_fields = [
         'article',
-        'category'
+        'category__name'
     ]
 
 
