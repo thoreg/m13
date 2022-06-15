@@ -14,6 +14,9 @@
       <th>Gewinn nach Steuern</th>
       <th>Stückzahl Verkauf</th>
       <th>Stückzahl Retoure</th>
+      <th>Gewinn an Verkäufen</th>
+      <th>Verlust an Retouren</th>
+      <th>Differenz</th>
     </thead>
     <tr v-for="product in products" v-bind:key="product">
       <td>{{ product.article }}</td>
@@ -28,6 +31,9 @@
       <td>{{ product.profit_after_taxes }}</td>
       <td>{{ product.shipped }}</td>
       <td>{{ product.returned }}</td>
+      <td>{{ product.total_revenue }}</td>
+      <td>{{ product.total_return_costs }}</td>
+      <td>{{ product.total_diff }}</td>
     </tr>
   </table>
 

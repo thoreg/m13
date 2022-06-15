@@ -308,3 +308,21 @@ class ZProduct(TimeStampedModel):
         if self.category:
             return self.category.name
         return 'N/A'
+
+    @property
+    def total_revenue(self):
+        """Revenue from all sold items."""
+        if self.vk_zalando:
+            return self.profit_after_taxes * (self.shipped - self.returned)
+        return 0
+
+    @property
+    def total_return_costs(self):
+        """Return costs (plus schmalz) from all returned items."""
+        if self.vk_zalando:
+            return self.returned * (self.shipping_costs + self.return_costs + self.generic_costs)
+        return 0
+
+    def total_diff(self):
+        """..."""
+        return self.total_revenue - self.total_return_costs

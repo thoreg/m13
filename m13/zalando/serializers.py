@@ -20,11 +20,17 @@ class ZProductSerializer(serializers.ModelSerializer):
             'returned',
             'shipped',
             'shipping_costs',
+            'total_revenue',
+            'total_return_costs',
+            'total_diff',
             'vk_zalando',
         )
         read_only_fields = (
             'eight_percent_provision',
             'generic_costs',
             'nineteen_percent_vat',
-            'profit_after_taxes'
+            'profit_after_taxes',
+            'total_revenue',
+            'total_return_costs',
+            'total_diff',
         )
