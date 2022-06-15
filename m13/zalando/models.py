@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
-from core.models import Article
+from core.models import Article, Category
 
 from .constants import ACCOUNT_ONLINE_FEE, NINETEEN_PERCENT_GERMANY_ZALANDO, NINETEEN_PERCENT_VAT
 
@@ -263,3 +263,48 @@ class SalesReport(TimeStampedModel):
         if revenue:
             return 'Erlöse 19% für Zielland Dtld Marktplatz Zalando'
         return 'Aufwandskonto Gebühren Onlinehandel'
+
+
+class ZProduct(TimeStampedModel):
+    article = models.CharField(max_length=32, primary_key=True)
+    category = models.ForeignKey(Category, null=True, on_delete=models.PROTECT)
+    costs_production = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)              # B2
+    vk_zalando = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)                    # C2
+    shipping_costs = models.DecimalField(default=3.55, max_digits=5, decimal_places=2, null=True, blank=True)  # D2
+    return_costs = models.DecimalField(default=3.55, max_digits=5, decimal_places=2, null=True, blank=True)    # E2
+    shipped = models.PositiveIntegerField(null=True, blank=True)
+    returned = models.PositiveIntegerField(null=True, blank=True)
+    canceled = models.PositiveIntegerField(null=True, blank=True)
+
+    @property
+    def eight_percent_provision(self):                                                  # F2
+        """8% =SUM(C2/1,08-C2)"""
+        if self.vk_zalando:
+            return _r(self.vk_zalando / Decimal('1.08') - self.vk_zalando)
+
+    @property
+    def nineteen_percent_vat(self):                                                     # G2
+        """19% =SUM(C2/1,19-C2)"""
+        if self.vk_zalando:
+            return _r(self.vk_zalando / Decimal('1.19') - self.vk_zalando)
+
+    @property
+    def generic_costs(self):                                                            # H2
+        """Generic costs =SUM(C2*1,03-C2)"""
+        if self.vk_zalando:
+            return _r(self.vk_zalando * Decimal('1.03') - self.vk_zalando)
+
+    @property
+    def profit_after_taxes(self):                                                       # I2
+        """=SUM(C2-B2-D2+F2+G2+H2)"""
+        if self.vk_zalando:
+            base = self.vk_zalando - self.costs_production - self.shipping_costs
+            return _r(
+                base + self.eight_percent_provision + self.nineteen_percent_vat + self.generic_costs)
+
+    @property
+    def category_name(self):
+        """Return the name of the category."""
+        if self.category:
+            return self.category.name
+        return 'N/A'
