@@ -22,22 +22,20 @@ EXPORT_FIELDS = [
 ]
 
 
-def export_sales_report(month):
+def export_sales_report(from_order_date, to_order_date):
     """Write result CSV in the requested format.
 
     Each row has revenue and provision information - the result file has two
     lines (one for revenue one for provision) which go into different target
     account numbers.
     """
-    month = month.replace('/', '')
-    year = month[0:4]
-    month = month[4:6]
-
     result_list = []
+    print(f'Start to export from {from_order_date} to {to_order_date}')
     data = (
-        SalesReport.objects
-                   .filter(year=year, month=month)
-                   .order_by('created_date')
+        SalesReport
+        .objects
+        .filter(order_date__range=(from_order_date, to_order_date))
+        .order_by('order_date')
     )
 
     for row in data:
@@ -62,7 +60,9 @@ def export_sales_report(month):
                 'Buchungstext': row.get_description(revenue),
             })
 
-    path = f'{year}_{month}_export_zalando_sales_report.csv'
+    from_date = from_order_date.split()[0]
+    to_date = from_order_date.split()[0]
+    path = f'{from_date}_{to_date}_export_zalando_sales_report.csv'
     with open(path, 'w', encoding='UTF8') as fd:
         csv_writer = csv.DictWriter(
             fd, EXPORT_FIELDS,

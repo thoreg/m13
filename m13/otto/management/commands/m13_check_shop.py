@@ -91,8 +91,9 @@ class Command(BaseCommand):
                     msg = f'strange href: BEGIN:{href}:END '
                     try:
                         msg += f'parent: {href.parent}'
-                    except:
+                    except Exception as e:
                         msg += 'appending parent failed'
+                        msg += str(e)
 
                     return self.suspicious(msg)
 
