@@ -61,7 +61,7 @@ def export_sales_report(from_order_date, to_order_date):
             })
 
     from_date = from_order_date.split()[0]
-    to_date = from_order_date.split()[0]
+    to_date = to_order_date.split()[0]
     path = f'{from_date}_{to_date}_export_zalando_sales_report.csv'
     with open(path, 'w', encoding='UTF8') as fd:
         csv_writer = csv.DictWriter(
