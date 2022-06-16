@@ -10,7 +10,9 @@
             <td class="column-l">Retoure Stk: {{ category.stats.returned }}</td>
             <td class="column-xxl">Gewinn (Verkäufe): {{ category.stats.total_revenue }}</td>
             <td class="column-xxl">Verlust (Retouren): {{ category.stats.total_return_costs }}</td>
-            <td class="column-l">Differenz: {{ category.stats.total_diff }}</td>
+            <td class="column-l" v-bind:style="{ 'background-color': statusColor(category.stats.total_diff) }">
+              Differenz: {{ category.stats.total_diff }}
+            </td>
           </tr>
         </table>
       </div>
@@ -48,7 +50,7 @@
             <td>{{ article.returned }}</td>
             <td>{{ article.total_revenue }}</td>
             <td>{{ article.total_return_costs }}</td>
-            <td>{{ article.total_diff }}</td>
+            <td v-bind:style="{ 'background-color': statusColor(article.total_diff) }">{{ article.total_diff }}</td>
           </tr>
         </table>
       </div>
@@ -89,7 +91,7 @@
       <td>{{ product.returned }}</td>
       <td>{{ product.total_revenue }}</td>
       <td>{{ product.total_return_costs }}</td>
-      <td>{{ product.total_diff }}</td>
+      <td v-bind:style="{ 'background-color': statusColor(product.total_diff) }">{{ product.total_diff }}</td>
     </tr>
   </table>
 
@@ -111,6 +113,13 @@ export default {
     }
   },
   methods: {
+      statusColor(value) {
+        console.log('VALUE: ');
+        console.log(value);
+        if (value < 0) {
+          return 'red'
+        }
+      },
       getProducts() {
         fetch(`/api/zalando/finance/products/?page=${this.currentPage}`)
           .then(response => {
