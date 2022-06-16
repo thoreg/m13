@@ -27,10 +27,10 @@
             <th>19% MwSt.</th>
             <th>Gemeinkosten</th>
             <th>Gewinn nach Steuern</th>
-            <th>Stückzahl Verkauf</th>
-            <th>Stückzahl Retoure</th>
-            <th>Gewinn an Verkäufen</th>
-            <th>Verlust an Retouren</th>
+            <th>Verkauf Stk</th>
+            <th>Retoure Stk</th>
+            <th>Gewinn (Verkäufe)</th>
+            <th>Verlust (Retouren)</th>
             <th>Differenz</th>
           </thead>
           <tr v-for="article in category.content" v-bind:key="article">
@@ -96,6 +96,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'ZalandoCalculator',
   props: {
@@ -116,11 +117,11 @@ export default {
             return response.json()
           })
           .then(data => {
-            console.log(data);
+            // console.log(data);
             this.products.push(...data.results);
             for(let i=0; i < data.results.length; i++) {
               const entry = data.results[i];
-              console.log(entry);
+              // console.log(entry);
               if (entry.category_name != 'N/A') {
                 if (entry.category_name in this.categories) {
                   this.categories[entry.category_name].content.push(entry)
@@ -151,7 +152,21 @@ export default {
                 this.categories[entry.category_name].stats.total_diff += entry.total_diff;
                 this.categories[entry.category_name].stats.total_diff = Math.round(
                   (this.categories[entry.category_name].stats.total_diff + Number.EPSILON) * 1000) / 1000;
-              }
+                // Sort the skus within the category
+
+                this.categories[entry.category_name].content.sort((a, b) => {
+                  var keyA = a.article, keyB = b.article;
+
+                  if (keyA < keyB) {
+                    return -1;
+                  }
+                  if (keyA > keyB) {
+                    return 1;
+                  }
+                  return 0;
+                });
+
+              } // end => entry.category_name != 'N/A'
             }
           })
           .catch(error => {
@@ -160,7 +175,8 @@ export default {
       },
       toggleCategory() {
         this.isOpen = !this.isOpen
-      }
+      },
+
   },
   // We can not reference 'data' within (itself) data section -> data which is based on data belongs
   // to the 'computed' section (no self reference with 'this' within data() section)
