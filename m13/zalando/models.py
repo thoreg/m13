@@ -326,3 +326,17 @@ class ZProduct(TimeStampedModel):
     def total_diff(self):
         """..."""
         return self.total_revenue - self.total_return_costs
+
+
+class ZCost(TimeStampedModel):
+    """Control for zalando specific prices."""
+    shipping = models.DecimalField(max_digits=6, decimal_places=2)
+    returnc = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def save(self, *args, **kwargs):
+        super(ZCost, self).save(*args, **kwargs)
+
+        ZProduct.objects.all().update(
+            return_costs=self.returnc,
+            shipping_costs=self.shipping
+        )

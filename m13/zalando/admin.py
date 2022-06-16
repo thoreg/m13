@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import DailyShipmentReport, PriceTool, TransactionFileUpload, ZProduct
+from .models import DailyShipmentReport, PriceTool, TransactionFileUpload, ZCost, ZProduct
 
 
 class PriceToolAdmin(admin.ModelAdmin):
@@ -60,7 +60,15 @@ class ZProductAdmin(admin.ModelAdmin):
     ]
 
 
+class ZCostAdmin(admin.ModelAdmin):
+    list_display = (
+        'shipping',
+        'returnc'
+    )
+
+
 admin.site.register(DailyShipmentReport, DailyShipmentReportAdmin)
 admin.site.register(PriceTool, PriceToolAdmin)
 admin.site.register(TransactionFileUpload, TransactionFileUploadAdmin)
 admin.site.register(ZProduct, ZProductAdmin)
+admin.site.register(ZCost, ZCostAdmin)
