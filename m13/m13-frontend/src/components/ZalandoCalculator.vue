@@ -8,7 +8,7 @@
             <td class="column-l">{{ category.name }}</td>
             <td class="column-l">Verkauf Stk: {{ category.stats.shipped }}</td>
             <td class="column-l">Retoure Stk: {{ category.stats.returned }}</td>
-            <td class="column-l">Gewinn (Verkäufe): {{ category.stats.total_revenue }}</td>
+            <td class="column-xxl">Gewinn (Verkäufe): {{ category.stats.total_revenue }}</td>
             <td class="column-xxl">Verlust (Retouren): {{ category.stats.total_return_costs }}</td>
             <td class="column-l">Differenz: {{ category.stats.total_diff }}</td>
           </tr>
