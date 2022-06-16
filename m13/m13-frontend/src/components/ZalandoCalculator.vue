@@ -114,8 +114,6 @@ export default {
   },
   methods: {
       statusColor(value) {
-        console.log('VALUE: ');
-        console.log(value);
         if (value < 0) {
           return 'red'
         }
