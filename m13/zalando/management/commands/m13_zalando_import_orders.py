@@ -1,9 +1,8 @@
 import logging
 
-from django.conf import settings
-from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
 
+from m13.lib.email import send_traceback_as_email
 from zalando.services.orders import process_new_oea_records
 
 LOG = logging.getLogger(__name__)
@@ -17,9 +16,5 @@ class Command(BaseCommand):
         try:
             process_new_oea_records()
         except Exception as exc:
-            send_mail(
-                'M13BM - Import of Zalando Orders failed',
-                f'{str(exc)}',
-                settings.FROM_EMAIL_ADDRESS,
-                settings.ADMINS,
-                fail_silently=False)
+            LOG.exception(exc)
+            send_traceback_as_email('M13BM - Import of Zalando Orders failed')
