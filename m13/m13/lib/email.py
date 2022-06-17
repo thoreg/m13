@@ -12,22 +12,22 @@ def send_traceback_as_email(subject, message=None):
         msg += f"\n\n{message}\n\n"
 
     exc_type, exc_value, exc_traceback = sys.exc_info()
-    msg += "*** print_tb:"
+    msg += "\n*** print_tb:\n"
     traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
     msg += "*** print_exception:"
     # exc_type below is ignored on 3.5 and later
     traceback.print_exception(exc_type, exc_value, exc_traceback,
                               limit=2, file=sys.stdout)
-    msg += "*** print_exc:"
+    msg += "\n*** print_exc:\n"
     traceback.print_exc(limit=2, file=sys.stdout)
-    msg += "*** format_exc, first and last line:"
+    msg += "\n*** format_exc, first and last line:\n"
     formatted_lines = traceback.format_exc().splitlines()
     msg += formatted_lines[0]
     msg += formatted_lines[-1]
 
-    msg += "*** extract_tb:"
+    msg += "\n*** extract_tb:\n"
     msg += repr(traceback.extract_tb(exc_traceback))
-    msg += "*** format_tb:"
+    msg += "\n*** format_tb:\n"
     msg += repr(traceback.format_tb(exc_traceback))
     msg += f"*** tb_lineno: {exc_traceback.tb_lineno}"
 
