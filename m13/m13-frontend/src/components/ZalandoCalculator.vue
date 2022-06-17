@@ -1,7 +1,7 @@
 <template>
   <h1>{{ msg }}</h1>
   <section class="overview">
-    <div class="header" v-bind:style="{ 'background-color': statusColor(absolute.diff) }"">
+    <div class="header" v-bind:style="{ 'background-color': statusColor(absolute.diff) }">
       _absolute_diff: {{ absolute.diff }}
     </div>
   </section>
