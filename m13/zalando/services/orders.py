@@ -178,10 +178,15 @@ def process_new_oea_records():
 
         for oi in entry['items']:
             oi['timestamp'] = entry['timestamp']
-            process_orderitem(order, oi, {
-                'carrier': dd['delivery_carrier_name'],
-                'tracking_number': dd['delivery_tracking_number']
-            })
+            try:
+                process_orderitem(order, oi, {
+                    'carrier': dd['delivery_carrier_name'],
+                    'tracking_number': dd['delivery_tracking_number']
+                })
+            except KeyError:
+                LOG.error('KeyError in zalando orderitem processing')
+                LOG.error(entry)
+
         address_data = entry.get('customer_billing_address')
         if address_data:
             order.delivery_address = get_address(address_data)
