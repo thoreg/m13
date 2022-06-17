@@ -1,7 +1,7 @@
 <template>
   <h1>{{ msg }}</h1>
   <section class="overview">
-    <div class="header">
+    <div class="header" v-bind:style="{ 'background-color': statusColor(getAbsoluteDiff) }">
       _absolute_diff: {{ getAbsoluteDiff }}
     </div>
   </section>
@@ -202,9 +202,10 @@ export default {
         }
       },
       getAbsoluteDiff() {
-
-
         let absoluteDiff = 0;
+        for (const category in this.categories) {
+          absoluteDiff += this.categories[category].stats.total_diff;
+        }
         absoluteDiff = Math.round((absoluteDiff + Number.EPSILON) * 1000) / 1000;
         return absoluteDiff;
       }
@@ -292,7 +293,7 @@ a {
 }
 .overview .header {
   text-align: right;
-  padding: 1em;
+  padding: 2em;
   font-weight: bold;
 }
 </style>
