@@ -1,8 +1,8 @@
 <template>
   <h1>{{ msg }}</h1>
   <section class="overview">
-    <div class="header" v-bind:style="{ 'background-color': statusColor(absolute.diff) }">
-      _absolute_diff: {{ absolute.diff }}
+    <div class="header">
+      _absolute_diff: {{ getAbsoluteDiff }}
     </div>
   </section>
   <section>
@@ -167,7 +167,6 @@ export default {
                 this.categories[entry.category_name].stats.total_diff += entry.total_diff;
                 this.categories[entry.category_name].stats.total_diff = Math.round(
                   (this.categories[entry.category_name].stats.total_diff + Number.EPSILON) * 1000) / 1000;
-                this.absolute.diff += this.categories[entry.category_name].stats.total_diff
 
                 // Sort the skus within the category
                 this.categories[entry.category_name].content.sort((a, b) => {
@@ -201,6 +200,13 @@ export default {
         return {
           'is-closed': this.isOpen
         }
+      },
+      getAbsoluteDiff() {
+
+
+        let absoluteDiff = 0;
+        absoluteDiff = Math.round((absoluteDiff + Number.EPSILON) * 1000) / 1000;
+        return absoluteDiff;
       }
   },
   // The steps in Vue lifecycle are:
