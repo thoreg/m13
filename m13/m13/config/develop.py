@@ -3,6 +3,8 @@ import sys
 
 from .base import *
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -22,6 +24,7 @@ DEBUG = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+STATIC_ROOT = 'var/static_root/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, '..', 'static'),
 ]

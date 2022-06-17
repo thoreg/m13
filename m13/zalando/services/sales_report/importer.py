@@ -4,7 +4,7 @@ Reports from Zalando about sales and returns are stored in Dropbox from where
 they are grabbed for further processing.
 
 """
-import logging
+
 import os
 import tempfile
 import zipfile
@@ -16,8 +16,6 @@ from django.utils import timezone as django_utils_timezone
 from m13.lib.csv_reader import read_csv
 from m13.lib.django.managers import BulkCreateManager
 from zalando.models import SalesReport, SalesReportImport
-
-LOG = logging.getLogger(__name__)
 
 AUTH_TOKEN = os.getenv("M13_DROPBOX_AUTH_TOKEN")
 REPORTS_PATH = os.getenv("M13_DROPBOX_ZALANDO_REPORTS_PATH")
@@ -32,18 +30,18 @@ class DownloadFailed(Exception):
 def import_sales_reports(month):
     """Return CSV file which contains the requested report."""
     if not all([AUTH_TOKEN, REPORTS_PATH]):
-        LOG.error("\nenv variables AUTH_TOKEN and REPORTS_PATH needed\n")
+        print("\nERROR - env variables AUTH_TOKEN and REPORTS_PATH needed\n")
         return []
 
-    LOG.info('Starting to connect to Dropbox')
+    print('Starting to connect to Dropbox')
     dbx = dropbox.Dropbox(AUTH_TOKEN)
-    LOG.info(f'Start checking files for month {month}')
+    print(f'Start checking files for month {month}')
     for file_path in _get_files_from_dropbox(dbx, month):
         _download_and_extract_file(dbx, file_path)
 
     for file in os.listdir(EXTRACT_DIR):
         path = f"{EXTRACT_DIR}/{file}"
-        LOG.info(f"Import {path}")
+        print(f"Import {path}")
         _import_sales_report(path, month)
 
 
@@ -52,9 +50,9 @@ def _get_files_from_dropbox(dbx, month):
     result = []
 
     path = f"{REPORTS_PATH}/{month}"
-    LOG.info(f"Checking path {path}")
+    print(f"Checking path {path}")
     for entry in dbx.files_list_folder(path).entries:
-        LOG.info(f"Found {entry.name}")
+        print(f"Found {entry.name}")
         result.append(f"{path}/{entry.name}")
 
     return result
@@ -62,11 +60,11 @@ def _get_files_from_dropbox(dbx, month):
 
 def _download_and_extract_file(dbx, path):
     """Return content of requested file."""
-    LOG.info(f'Download {path}')
+    print(f'Download {path}')
     metadata, f = dbx.files_download(path)
 
     if metadata.name.endswith('PDF'):
-        LOG.info(f'Skipping PDF file {metadata.name}')
+        print(f'Skipping PDF file {metadata.name}')
         return
 
     with tempfile.NamedTemporaryFile() as temp:
@@ -89,13 +87,13 @@ def __as_datetime_with_tz(datetime_string, dt_format="%d.%m.%Y"):
 def _import_sales_report(path, month):
     """..."""
     if not path.endswith('.CSV'):
-        LOG.info(f'Path does not end with CSV - path: {path}')
+        print(f'Path does not end with CSV - path: {path}')
         return
 
     month = int(month.replace("/", ""))
     sri, created = SalesReportImport.objects.get_or_create(name=path, month=month)
     if not created:
-        LOG.info(f"Looks like {path} for {month} is already known dude")
+        print(f"Looks like {path} for {month} is already known dude")
         return
 
     bulk_mgr = BulkCreateManager(chunk_size=20)

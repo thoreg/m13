@@ -17,12 +17,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from m13.lib.file_upload import handle_uploaded_file
-from zalando.services.efficiency_check import get_article_stats, import_daily_shipment_report
+from zalando.services.efficiency_check import get_product_stats, import_daily_shipment_report
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
 from .models import (DailyShipmentReport, FeedUpload, OEAWebhookMessage, OrderItem, PriceTool,
                      Product, StatsOrderItems, TransactionFileUpload, ZCalculator)
+from .services import efficiency_check
 
 LOG = logging.getLogger(__name__)
 
@@ -196,7 +197,7 @@ def upload_files(request):
 @login_required
 def calculator(request):
     """Overview of all zalando calculator values."""
-    article_stats = get_article_stats()
+    article_stats = get_product_stats()
     calculated_values = ZCalculator.objects.all()
 
     values = {}
@@ -230,3 +231,9 @@ def calculator(request):
         # 'article_stats': article_stats,
         'calculated': values
     })
+
+
+@login_required()
+def article_stats(request):
+    """Return the article stats as JSON."""
+    return JsonResponse(efficiency_check.get_product_stats(), safe=False)

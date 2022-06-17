@@ -9,11 +9,16 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'month',
+            'from',
             type=str,
-            help="Month of interest, e.g. 2022/01",
+            help="e.g. '2022-05-01 00:00:00'",
+        )
+        parser.add_argument(
+            'to',
+            type=str,
+            help="e.g. '2022-05-31 23:59:59'",
         )
 
     def handle(self, *args, **kwargs):
         """..."""
-        sales_report.exporter.export_sales_report(kwargs['month'])
+        sales_report.exporter.export_sales_report(kwargs['from'], kwargs['to'])
