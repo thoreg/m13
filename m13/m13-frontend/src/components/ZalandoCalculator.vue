@@ -1,5 +1,10 @@
 <template>
   <h1>{{ msg }}</h1>
+  <section class="overview">
+    <div class="header" v-bind:style="{ 'background-color': statusColor(absolute.diff) }"">
+      _absolute_diff: {{ absolute.diff }}
+    </div>
+  </section>
   <section>
     <article class="category" :class="categoryClasses" v-for="category in categories" v-bind:key="category">
       <div class="category-header" @click="toggleCategory">
@@ -109,6 +114,9 @@ export default {
       products: [],
       currentPage: 1,
       categories: {},
+      absolute: {
+        diff: 0
+      },
       isOpen: true,
     }
   },
@@ -159,8 +167,9 @@ export default {
                 this.categories[entry.category_name].stats.total_diff += entry.total_diff;
                 this.categories[entry.category_name].stats.total_diff = Math.round(
                   (this.categories[entry.category_name].stats.total_diff + Number.EPSILON) * 1000) / 1000;
-                // Sort the skus within the category
+                this.absolute.diff += this.categories[entry.category_name].stats.total_diff
 
+                // Sort the skus within the category
                 this.categories[entry.category_name].content.sort((a, b) => {
                   var keyA = a.article, keyB = b.article;
 
@@ -209,13 +218,19 @@ export default {
     // console.log('App component mounted');
     this.getProducts();
 
-    window.onscroll = () => {
-      let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
-      if (bottomOfWindow) {
-        this.currentPage += 1;
-        this.getProducts();
-      }
-    }
+    // window.onscroll = () => {
+    //   let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+    //   if (bottomOfWindow) {
+    //     this.currentPage += 1;
+    //     this.getProducts();
+    //   }
+    // }
+
+    const array = [1, 2, 3, 4];
+    array.forEach(() => {
+      this.currentPage += 1;
+      this.getProducts();
+    });
   },
 }
 </script>
@@ -268,5 +283,10 @@ a {
 }
 .column-xxl {
   min-width: 18em;
+}
+.overview .header {
+  text-align: right;
+  padding: 1em;
+  font-weight: bold;
 }
 </style>
