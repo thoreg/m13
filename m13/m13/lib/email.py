@@ -26,5 +26,5 @@ def send_traceback_as_email(subject, message=None):
         subject,
         msg,
         settings.FROM_EMAIL_ADDRESS,
-        settings.ADMINS,
+        settings.ADMINS[0][1],
         fail_silently=False)
