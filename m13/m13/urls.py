@@ -19,6 +19,8 @@ urlpatterns = [
     path('api/zalando/finance/products/<str:pk>/', zalando_viewsets.ZProductDetail.as_view()),
     path('api/zalando/finance/products/', zalando_viewsets.ZProductList.as_view()),
     path('api/zalando/finance/article-stats/', zalando_views.article_stats),
+    path('api/zalando/finance/rawdailyshipments/',
+         zalando_viewsets.RawDailyShipmentReportList.as_view()),
     path('api/', include(router.urls)),
     path('addi/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),

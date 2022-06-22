@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from zalando.models import ZProduct
+from zalando.models import RawDailyShipmentReport, ZProduct
 
 
 class ZProductSerializer(serializers.ModelSerializer):
@@ -34,3 +34,10 @@ class ZProductSerializer(serializers.ModelSerializer):
             'total_return_costs',
             'total_diff',
         )
+
+
+class RawDailyShipmentReportSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RawDailyShipmentReport
+        fields = '__all__'
