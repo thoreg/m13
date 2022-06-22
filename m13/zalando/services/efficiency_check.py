@@ -4,7 +4,8 @@ from django.db import connection
 
 from m13.lib.csv_reader import read_csv
 from m13.lib.psql import dictfetchall
-from zalando.models import DailyShipmentReport, TransactionFileUpload, ZProduct
+from zalando.models import (DailyShipmentReport, RawDailyShipmentReport, TransactionFileUpload,
+                            ZProduct)
 
 LOG = logging.getLogger(__name__)
 
@@ -40,6 +41,18 @@ def import_daily_shipment_report(file: TransactionFileUpload) -> None:
             return_reason=line['Return Reason'],
             returned=returned,
             shipment=shipped)
+
+        RawDailyShipmentReport.objects.get_or_create(
+            article_number=line['Article Number'],
+            cancel=canceled,
+            channel_order_number=line['Channel Order Number'],
+            order_created=line['Order Created'],
+            order_event_time=line['Order Event Time'],
+            price_in_cent=price_in_cent,
+            return_reason=line['Return Reason'],
+            returned=returned,
+            shipment=shipped)
+
     # Update the product stats after each import
     get_product_stats()
 

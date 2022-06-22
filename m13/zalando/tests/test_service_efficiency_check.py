@@ -1,7 +1,8 @@
 import pytest
 from django.test import TestCase
 
-from zalando.models import DailyShipmentReport, TransactionFileUpload, ZProduct
+from zalando.models import (DailyShipmentReport, RawDailyShipmentReport, TransactionFileUpload,
+                            ZProduct)
 from zalando.services.efficiency_check import get_product_stats, import_daily_shipment_report
 
 
@@ -31,8 +32,10 @@ class TestWhateverFunctions(TestCase):
         import_daily_shipment_report(self.file0)
 
         daily_shipment_reports = DailyShipmentReport.objects.values()
+        raw_daily_shipment_reports = RawDailyShipmentReport.objects.values()
         # Four lines within the input file
         assert len(daily_shipment_reports) == 4
+        assert len(raw_daily_shipment_reports) == 4
 
         assert daily_shipment_reports[0]['shipment'] is True
         assert daily_shipment_reports[0]['returned'] is False
@@ -58,6 +61,8 @@ class TestWhateverFunctions(TestCase):
 
         daily_shipment_reports = DailyShipmentReport.objects.values()
         assert len(daily_shipment_reports) == 12
+        raw_daily_shipment_reports = RawDailyShipmentReport.objects.values()
+        assert len(raw_daily_shipment_reports) == 12
 
         article_stats = get_product_stats()
 
