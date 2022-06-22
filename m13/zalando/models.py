@@ -144,40 +144,6 @@ def _r(value):
     return round(value, 2)
 
 
-class ZCalculator(TimeStampedModel):
-    article = models.OneToOneField(
-        Article,
-        on_delete=models.PROTECT,
-        primary_key=True,
-    )
-    costs_production = models.DecimalField(max_digits=6, decimal_places=2)              # B2
-    vk_zalando = models.DecimalField(max_digits=6, decimal_places=2)                    # C2
-    shipping_costs = models.DecimalField(default=3.55, max_digits=5, decimal_places=2)  # D2
-    return_costs = models.DecimalField(default=3.55, max_digits=5, decimal_places=2)    # E2
-
-    @property
-    def eight_percent_provision(self):                                                  # F2
-        """8% =SUM(C2/1,08-C2)"""
-        return _r(self.vk_zalando / Decimal('1.08') - self.vk_zalando)
-
-    @property
-    def nineteen_percent_vat(self):                                                     # G2
-        """19% =SUM(C2/1,19-C2)"""
-        return _r(self.vk_zalando / Decimal('1.19') - self.vk_zalando)
-
-    @property
-    def generic_costs(self):                                                            # H2
-        """Generic costs =SUM(C2*1,03-C2)"""
-        return _r(self.vk_zalando * Decimal('1.03') - self.vk_zalando)
-
-    @property
-    def profit_after_taxes(self):                                                       # I2
-        """=SUM(C2-B2-D2+F2+G2+H2)"""
-        base = self.vk_zalando - self.costs_production - self.shipping_costs
-        return _r(
-            base + self.eight_percent_provision + self.nineteen_percent_vat + self.generic_costs)
-
-
 class SalesReportImport(TimeStampedModel):
     """Model to track report imports"""
 
@@ -340,3 +306,16 @@ class ZCost(TimeStampedModel):
             return_costs=self.returnc,
             shipping_costs=self.shipping
         )
+
+
+class RawDailyShipmentReport(TimeStampedModel):
+    """Relevant data from daily shipment reports from Zalando."""
+    article_number = models.CharField(max_length=36)
+    cancel = models.BooleanField(default=False)
+    channel_order_number = models.CharField(max_length=16)
+    order_created = models.DateTimeField()
+    order_event_time = models.DateTimeField()
+    price_in_cent = models.PositiveIntegerField()
+    return_reason = models.CharField(max_length=256)
+    returned = models.BooleanField(default=False)
+    shipment = models.BooleanField(default=False)
