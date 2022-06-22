@@ -143,6 +143,14 @@ export default {
                   return 0;
                 });
 
+                // Sort the categories by name
+                this.categories = Object.keys(this.categories)
+                  .sort()
+                  .reduce((accumulator, key) => {
+                    accumulator[key] = this.categories[key];
+
+                    return accumulator;
+                  }, {});
               } // end => entry.category_name != 'N/A'
             }
           })
