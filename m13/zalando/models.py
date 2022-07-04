@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
-from core.models import Article, Category
+from core.models import Category
 
 from .constants import ACCOUNT_ONLINE_FEE, NINETEEN_PERCENT_GERMANY_ZALANDO, NINETEEN_PERCENT_VAT
 
@@ -146,13 +146,10 @@ def _r(value):
 
 class SalesReportImport(TimeStampedModel):
     """Model to track report imports"""
-
     name = models.CharField(max_length=256, unique=True)
     """File name of the report"""
-    processed = models.DateTimeField(null=True, blank=True)
-    """Timestamp when this report has been processed"""
     month = models.PositiveIntegerField()
-    """YYYYMM month which this report is about"""
+    """YYYYMM month which this report is about - corresponds to folder name from Dropbox"""
 
 
 class SalesReportExport(TimeStampedModel):
@@ -182,6 +179,9 @@ class SalesReport(TimeStampedModel):
     partner_units = models.PositiveSmallIntegerField()
     partner_revenue = models.DecimalField(max_digits=10, decimal_places=5)
     partner_provision = models.DecimalField(max_digits=10, decimal_places=5)
+
+    import_reference = models.ForeignKey(SalesReportImport, on_delete=models.PROTECT, null=True)
+    """Reference to the file from which the record was imported"""
 
     @property
     def debit_or_credit_indicator_fees(self):
@@ -319,3 +319,11 @@ class RawDailyShipmentReport(TimeStampedModel):
     return_reason = models.CharField(max_length=256)
     returned = models.BooleanField(default=False)
     shipment = models.BooleanField(default=False)
+
+    @property
+    def category_name(self):
+        try:
+            zproduct = ZProduct.objects.get(article=self.article_number)
+            return zproduct.category_name
+        except ZProduct.DoesNotExist:
+            return 'N/A'
