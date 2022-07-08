@@ -1,4 +1,5 @@
 import logging
+from pprint import pprint
 
 from django.db import connection
 
@@ -15,8 +16,6 @@ def import_all_unprocessed_daily_shipment_reports():
     files = TransactionFileUpload.objects.filter(processed=False)
     for file in files:
         import_daily_shipment_report(file)
-        file.processed = True
-        file.save()
 
 
 def import_daily_shipment_report(file: TransactionFileUpload) -> None:
@@ -42,7 +41,12 @@ def import_daily_shipment_report(file: TransactionFileUpload) -> None:
             returned=returned,
             shipment=shipped)
 
+        product, _created = ZProduct.objects.get_or_create(
+            article=line['Article Number'],
+        )
+
         RawDailyShipmentReport.objects.get_or_create(
+            zproduct=product,
             article_number=line['Article Number'],
             cancel=canceled,
             channel_order_number=line['Channel Order Number'],
@@ -52,6 +56,9 @@ def import_daily_shipment_report(file: TransactionFileUpload) -> None:
             return_reason=line['Return Reason'],
             returned=returned,
             shipment=shipped)
+
+    file.processed = True
+    file.save()
 
     # Update the product stats after each import
     get_product_stats()
@@ -94,3 +101,31 @@ def get_product_stats():
             zp.save()
 
     return article_stats
+
+
+def get_product_stats_v1(start_date):
+    """Return dictionary with aggregated values for number of shipped, returned and canceled."""
+    params = {
+        'start_date': start_date
+    }
+    with connection.cursor() as cursor:
+        query = '''
+            SELECT
+                article_number,
+                COUNT(shipment) FILTER (WHERE shipment) AS shipped,
+                COUNT(returned) FILTER (WHERE returned) AS returned,
+                COUNT(cancel) FILTER (WHERE cancel) AS canceled
+            FROM
+                zalando_dailyshipmentreport_raw
+            WHERE
+                order_event_time > %(start_date)s
+            GROUP BY
+                article_number
+            ORDER BY
+                returned DESC
+        '''
+        # pprint(cursor.mogrify(query, params).decode('utf8'))
+        cursor.execute(query, params)
+        result = dictfetchall(cursor)
+
+    return result

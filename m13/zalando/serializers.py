@@ -43,7 +43,7 @@ class RawDailyShipmentReportSerializer(serializers.ModelSerializer):
             'article_number',
             'cancel',
             'channel_order_number',
-            'category_name',
+            # 'category_name',
             'order_created',
             'order_event_time',
             'price_in_cent',

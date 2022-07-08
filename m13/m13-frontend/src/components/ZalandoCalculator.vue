@@ -68,7 +68,14 @@
 export default {
   name: 'ZalandoCalculator',
   props: {
-    msg: String
+    msg: String,
+    from: String,
+    to: String
+  },
+  watch: {
+    from: function(newVal, oldVal) {
+      console.log('[ from ] changed: ', newVal, ' | was: ', oldVal)
+    },
   },
   data() {
     return {
@@ -187,13 +194,14 @@ export default {
   // - beforeDestroy, destroyed.
   created() {
     // In Server Side Rendering created() is used over mounted() because mounted() is not present in it.
-    // console.log('App component created');
+    // console.log('Zalando calculator App component created');
   },
   mounted() {
     // the mounted hook can be used to run code after the component has finished the initial
     // rendering and created the DOM nodes
     // console.log('App component mounted');
     this.getProducts();
+    // console.log('Zalando calculator App component mounted');
 
     // window.onscroll = () => {
     //   let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
@@ -203,11 +211,11 @@ export default {
     //   }
     // }
 
-    const array = [1, 2, 3, 4];
-    array.forEach(() => {
-      this.currentPage += 1;
-      this.getProducts();
-    });
+    // const array = [1, 2, 3, 4];
+    // array.forEach(() => {
+    //   this.currentPage += 1;
+    //   this.getProducts();
+    // });
   },
 }
 </script>

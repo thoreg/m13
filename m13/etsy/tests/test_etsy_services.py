@@ -4,7 +4,6 @@ from unittest.mock import patch
 
 import pytest
 from django.urls import reverse
-from freezegun import freeze_time
 
 from etsy.models import Address, Order, OrderItem
 from etsy.services.orders import process_receipts
