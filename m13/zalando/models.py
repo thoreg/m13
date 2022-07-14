@@ -200,7 +200,7 @@ class SalesReport(TimeStampedModel):
     @property
     def short_order_date(self):
         """Accounting request format: DDMM"""
-        return '{d.day:02}{d.month:02}'.format(d=self.created_date)
+        return '{d.day:02}{d.month:02}'.format(d=self.order_date)
 
     def get_bu_key(self, revenue=False):
         """Return 9 for target account 3101."""

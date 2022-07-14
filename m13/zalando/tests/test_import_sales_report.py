@@ -1,4 +1,4 @@
-
+from decimal import Decimal
 from datetime import datetime, timezone
 
 import pytest
@@ -23,3 +23,20 @@ def test_import_sales_report():
     assert sales_report_import.month == 202205
 
     assert SalesReport.objects.filter(import_reference=sales_report_import.id).count() == 9
+
+    sri = SalesReport.objects.all()[0]
+
+    assert sri.created_date == datetime(2022, 5, 23, 0, 0, tzinfo=timezone.utc)
+    assert sri.currency == 'EUR'
+    assert sri.ean == '781491969891'
+    assert sri.id == 1
+    assert sri.import_reference_id == 1
+    assert sri.month == 5
+    assert sri.order_date == datetime(2022, 5, 22, 0, 0, tzinfo=timezone.utc)
+    assert sri.order_number == '10103408696726'
+    assert sri.partner_provision == Decimal('6.49500')
+    assert sri.partner_revenue == Decimal('64.95000')
+    assert sri.partner_units == 1
+    assert sri.shipping_return_date == datetime(2022, 5, 23, 0, 0, tzinfo=timezone.utc)
+    assert sri.year == 2022
+    assert sri.short_order_date == '2205'
