@@ -3,7 +3,6 @@ from unittest.mock import patch
 
 import pytest
 from django.urls import reverse
-from freezegun import freeze_time
 
 ETSY_GET_URLS = [
     ('etsy_index', 200),

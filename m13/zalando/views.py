@@ -3,7 +3,7 @@ import datetime as dt
 import json
 import logging
 from datetime import date, datetime, timedelta
-from pprint import pformat
+from pprint import pformat, pprint
 from secrets import compare_digest
 
 from django.conf import settings
@@ -17,13 +17,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from m13.lib.file_upload import handle_uploaded_file
-from zalando.services.efficiency_check import get_product_stats, import_daily_shipment_report
+from zalando.services.daily_shipment_reports import get_product_stats, import_daily_shipment_report
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
 from .models import (DailyShipmentReport, FeedUpload, OEAWebhookMessage, OrderItem, PriceTool,
-                     Product, StatsOrderItems, TransactionFileUpload, ZCalculator)
-from .services import efficiency_check
+                     Product, StatsOrderItems, TransactionFileUpload, ZProduct)
+from .services import daily_shipment_reports
 
 LOG = logging.getLogger(__name__)
 
@@ -197,43 +197,107 @@ def upload_files(request):
 @login_required
 def calculator(request):
     """Overview of all zalando calculator values."""
-    article_stats = get_product_stats()
-    calculated_values = ZCalculator.objects.all()
-
-    values = {}
-    for cv_obj in calculated_values:
-        values[cv_obj.article.sku] = {
-            'obj': cv_obj,
-        }
-
-    for entry in article_stats:
-        if entry['article_number'] in values:
-            values[entry['article_number']].update(entry)
-            obj = values[entry['article_number']]['obj']
-
-            values[entry['article_number']]['profit_on_sales'] = (
-                # =I2*(J2-K2)
-                obj.profit_after_taxes * (entry['shipped'] - entry['returned'])
-            )
-
-            values[entry['article_number']]['loss_on_retour'] = (
-                # =(D2+E2+H2)*K2
-                (obj.shipping_costs + obj.return_costs + obj.generic_costs) * entry['returned']
-            )
-
-            tmp = values[entry['article_number']]
-            values[entry['article_number']]['diff'] = (
-                # =L2-M2
-                tmp['profit_on_sales'] - tmp['loss_on_retour']
-            )
-
-    return render(request, 'zalando/finance/z_calculator.html', {
-        # 'article_stats': article_stats,
-        'calculated': values
-    })
+    return render(request, 'zalando/finance/z_calculator.html', {})
 
 
 @login_required()
 def article_stats(request):
     """Return the article stats as JSON."""
-    return JsonResponse(efficiency_check.get_product_stats(), safe=False)
+    return JsonResponse(daily_shipment_reports.get_product_stats(), safe=False)
+
+
+@login_required
+def calculator_v1(request):
+    """Overview of all zalando calculator values."""
+    return render(request, 'zalando/finance/z_calculator_v1.html', {})
+
+
+@login_required()
+def product_stats_v1(request):
+    """Return the article stats as JSON."""
+    start_date = request.GET.get('start')
+    if not start_date:
+        start_date = date.today() - timedelta(weeks=4)
+
+    zproducts = ZProduct.objects.select_related('category').all()
+    zproduct_by_sku = {}
+    for zp in zproducts:
+        zproduct_by_sku[zp.article] = {
+            'category': zp.category.name if zp.category else 'N/A',
+            'costs_production': zp.costs_production,
+            'eight_percent_provision': zp.eight_percent_provision,
+            'generic_costs': zp.generic_costs,
+            'nineteen_percent_vat': zp.nineteen_percent_vat,
+            'profit_after_taxes': zp.profit_after_taxes,
+            'return_costs': zp.return_costs,
+            'shipping_costs': zp.shipping_costs,
+            'vk_zalando': zp.vk_zalando
+        }
+
+    product_shipping_stats = daily_shipment_reports.get_product_stats_v1(start_date)
+    for pss in product_shipping_stats:
+        sku = pss['article_number']
+        pss.update({
+            'category': zproduct_by_sku[sku]['category'],
+            'costs_production': zproduct_by_sku[sku]['costs_production'],
+            'eight_percent_provision': zproduct_by_sku[sku]['eight_percent_provision'],
+            'generic_costs': zproduct_by_sku[sku]['generic_costs'],
+            'nineteen_percent_vat': zproduct_by_sku[sku]['nineteen_percent_vat'],
+            'profit_after_taxes': zproduct_by_sku[sku]['profit_after_taxes'],
+            'return_costs': zproduct_by_sku[sku]['return_costs'],
+            'shipping_costs': zproduct_by_sku[sku]['shipping_costs'],
+            'vk_zalando': zproduct_by_sku[sku]['vk_zalando']
+        })
+
+    pss_by_category = {}
+    for pss in product_shipping_stats:
+        category = pss['category']
+        if category not in pss_by_category:
+            pss_by_category[category] = {
+                'name': category,
+                'stats': {
+                    'shipped': pss['shipped'],
+                    'returned': pss['returned'],
+                    'canceled': pss['canceled'],
+                    'total_revenue': 0,
+                    'total_return_costs': 0,
+                    'total_diff': 0,
+                },
+                'content': [pss]
+            }
+        else:
+            pss_by_category[category]['stats']['shipped'] += pss['shipped']
+            pss_by_category[category]['stats']['returned'] += pss['returned']
+            pss_by_category[category]['stats']['canceled'] += pss['canceled']
+            pss_by_category[category]['content'].append(pss)
+
+        if pss['vk_zalando']:
+            # Update product (specific) shipping stats (psss)
+            pss['total_revenue'] = (
+                pss['profit_after_taxes'] * (pss['shipped'] - pss['returned'])
+            )
+            pss['total_return_costs'] = (
+                pss['returned'] * (pss['shipping_costs'] + pss['return_costs'] + pss['generic_costs'])
+            )
+            pss['total_diff'] = pss['total_revenue'] - pss['total_return_costs']
+
+            # Update category (specific) shipping stats (csss)
+            pss_by_category[category]['stats']['total_revenue'] = (
+                pss['profit_after_taxes'] * (
+                    pss_by_category[category]['stats']['shipped']
+                    - pss_by_category[category]['stats']['returned']
+                )
+            )
+            pss_by_category[category]['stats']['total_return_costs'] = (
+                pss_by_category[category]['stats']['returned'] * (
+                    pss['shipping_costs']
+                    + pss['return_costs']
+                    + pss['generic_costs']
+                )
+            )
+            pss_by_category[category]['stats']['total_diff'] = (
+                pss_by_category[category]['stats']['total_revenue']
+                - pss_by_category[category]['stats']['total_return_costs']
+            )
+
+    return JsonResponse(pss_by_category, safe=False)

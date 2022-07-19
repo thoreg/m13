@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'mathfilters',
     'corsheaders',
+    'django_filters',
 
     'otto',
     'zalando',
@@ -106,6 +107,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
     'PAGE_SIZE': 100
 }
 

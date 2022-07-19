@@ -121,6 +121,7 @@ def _import_sales_report(path, month):
                 partner_units=int(row["PARTNER_UNITS"]),
                 partner_revenue=__as_float(row["PARTNER_REVENUE"]),
                 partner_provision=__as_float(partner_provision),
+                import_reference=sri,
             )
         )
 

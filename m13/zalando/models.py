@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
-from core.models import Article, Category
+from core.models import Category
 
 from .constants import ACCOUNT_ONLINE_FEE, NINETEEN_PERCENT_GERMANY_ZALANDO, NINETEEN_PERCENT_VAT
 
@@ -126,6 +126,9 @@ class TransactionFileUpload(TimeStampedModel):
     def __repr__(self):
         return f'ZalandoTransactionFile({self.original_csv})'
 
+    class Meta:
+        db_table = 'zalando_dailyshipmentreport_file_upload'
+
 
 class DailyShipmentReport(TimeStampedModel):
     """Relevant data from daily shipment reports from Zalando."""
@@ -144,49 +147,12 @@ def _r(value):
     return round(value, 2)
 
 
-class ZCalculator(TimeStampedModel):
-    article = models.OneToOneField(
-        Article,
-        on_delete=models.PROTECT,
-        primary_key=True,
-    )
-    costs_production = models.DecimalField(max_digits=6, decimal_places=2)              # B2
-    vk_zalando = models.DecimalField(max_digits=6, decimal_places=2)                    # C2
-    shipping_costs = models.DecimalField(default=3.55, max_digits=5, decimal_places=2)  # D2
-    return_costs = models.DecimalField(default=3.55, max_digits=5, decimal_places=2)    # E2
-
-    @property
-    def eight_percent_provision(self):                                                  # F2
-        """8% =SUM(C2/1,08-C2)"""
-        return _r(self.vk_zalando / Decimal('1.08') - self.vk_zalando)
-
-    @property
-    def nineteen_percent_vat(self):                                                     # G2
-        """19% =SUM(C2/1,19-C2)"""
-        return _r(self.vk_zalando / Decimal('1.19') - self.vk_zalando)
-
-    @property
-    def generic_costs(self):                                                            # H2
-        """Generic costs =SUM(C2*1,03-C2)"""
-        return _r(self.vk_zalando * Decimal('1.03') - self.vk_zalando)
-
-    @property
-    def profit_after_taxes(self):                                                       # I2
-        """=SUM(C2-B2-D2+F2+G2+H2)"""
-        base = self.vk_zalando - self.costs_production - self.shipping_costs
-        return _r(
-            base + self.eight_percent_provision + self.nineteen_percent_vat + self.generic_costs)
-
-
 class SalesReportImport(TimeStampedModel):
     """Model to track report imports"""
-
     name = models.CharField(max_length=256, unique=True)
     """File name of the report"""
-    processed = models.DateTimeField(null=True, blank=True)
-    """Timestamp when this report has been processed"""
     month = models.PositiveIntegerField()
-    """YYYYMM month which this report is about"""
+    """YYYYMM month which this report is about - corresponds to folder name from Dropbox"""
 
 
 class SalesReportExport(TimeStampedModel):
@@ -217,6 +183,9 @@ class SalesReport(TimeStampedModel):
     partner_revenue = models.DecimalField(max_digits=10, decimal_places=5)
     partner_provision = models.DecimalField(max_digits=10, decimal_places=5)
 
+    import_reference = models.ForeignKey(SalesReportImport, on_delete=models.PROTECT, null=True)
+    """Reference to the file from which the record was imported"""
+
     @property
     def debit_or_credit_indicator_fees(self):
         """Return indicator if this value is debit or credit for fees."""
@@ -234,7 +203,7 @@ class SalesReport(TimeStampedModel):
     @property
     def short_order_date(self):
         """Accounting request format: DDMM"""
-        return '{d.day:02}{d.month:02}'.format(d=self.created_date)
+        return '{d.day:02}{d.month:02}'.format(d=self.order_date)
 
     def get_bu_key(self, revenue=False):
         """Return 9 for target account 3101."""
@@ -340,3 +309,20 @@ class ZCost(TimeStampedModel):
             return_costs=self.returnc,
             shipping_costs=self.shipping
         )
+
+
+class RawDailyShipmentReport(TimeStampedModel):
+    """Relevant data from daily shipment reports from Zalando."""
+    zproduct = models.ForeignKey('ZProduct', on_delete=models.PROTECT)
+    article_number = models.CharField(max_length=32)
+    cancel = models.BooleanField(default=False)
+    channel_order_number = models.CharField(max_length=16)
+    order_created = models.DateTimeField()
+    order_event_time = models.DateTimeField()
+    price_in_cent = models.PositiveIntegerField()
+    return_reason = models.CharField(max_length=256)
+    returned = models.BooleanField(default=False)
+    shipment = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'zalando_dailyshipmentreport_raw'

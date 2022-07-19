@@ -1,5 +1,5 @@
 <template>
-  <h1>{{ msg }}</h1>
+  <div>
   <section class="overview">
     <div class="header" v-bind:style="{ 'background-color': statusColor(getAbsoluteDiff) }">
       _absolute_diff: {{ getAbsoluteDiff }}
@@ -61,53 +61,21 @@
       </div>
     </article>
   </section>
-  <hr style="margin: 5em 0;">
-  <h2>_original_table</h2>
-  <table>
-    <thead>
-      <th>Artikel</th>
-      <th>Kategorie</th>
-      <th>Herstellungskosten</th>
-      <th>VK (Zalando)</th>
-      <th>Retourenkosten</th>
-      <th>Versandkosten</th>
-      <th>8% Provision</th>
-      <th>19% MwSt.</th>
-      <th>Gemeinkosten</th>
-      <th>Gewinn nach Steuern</th>
-      <th>Stückzahl Verkauf</th>
-      <th>Stückzahl Retoure</th>
-      <th>Gewinn an Verkäufen</th>
-      <th>Verlust an Retouren</th>
-      <th>Differenz</th>
-    </thead>
-    <tr v-for="product in products" v-bind:key="product">
-      <td>{{ product.article }}</td>
-      <td>{{ product.category_name }}</td>
-      <td>{{ product.costs_production }}</td>
-      <td>{{ product.vk_zalando }}</td>
-      <td>{{ product.return_costs }}</td>
-      <td>{{ product.shipping_costs }}</td>
-      <td>{{ product.eight_percent_provision }}</td>
-      <td>{{ product.nineteen_percent_vat }}</td>
-      <td>{{ product.generic_costs }}</td>
-      <td>{{ product.profit_after_taxes }}</td>
-      <td>{{ product.shipped }}</td>
-      <td>{{ product.returned }}</td>
-      <td>{{ product.total_revenue }}</td>
-      <td>{{ product.total_return_costs }}</td>
-      <td v-bind:style="{ 'background-color': statusColor(product.total_diff) }">{{ product.total_diff }}</td>
-    </tr>
-  </table>
-
+</div>
 </template>
 
 <script>
-
 export default {
   name: 'ZalandoCalculator',
   props: {
-    msg: String
+    msg: String,
+    from: String,
+    to: String
+  },
+  watch: {
+    from: function(newVal, oldVal) {
+      console.log('[ from ] changed: ', newVal, ' | was: ', oldVal)
+    },
   },
   data() {
     return {
@@ -118,6 +86,7 @@ export default {
         diff: 0
       },
       isOpen: true,
+      vModelExample: null,
     }
   },
   methods: {
@@ -181,6 +150,14 @@ export default {
                   return 0;
                 });
 
+                // Sort the categories by name
+                this.categories = Object.keys(this.categories)
+                  .sort()
+                  .reduce((accumulator, key) => {
+                    accumulator[key] = this.categories[key];
+
+                    return accumulator;
+                  }, {});
               } // end => entry.category_name != 'N/A'
             }
           })
@@ -217,13 +194,14 @@ export default {
   // - beforeDestroy, destroyed.
   created() {
     // In Server Side Rendering created() is used over mounted() because mounted() is not present in it.
-    // console.log('App component created');
+    // console.log('Zalando calculator App component created');
   },
   mounted() {
     // the mounted hook can be used to run code after the component has finished the initial
     // rendering and created the DOM nodes
     // console.log('App component mounted');
     this.getProducts();
+    // console.log('Zalando calculator App component mounted');
 
     // window.onscroll = () => {
     //   let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
@@ -233,11 +211,11 @@ export default {
     //   }
     // }
 
-    const array = [1, 2, 3, 4];
-    array.forEach(() => {
-      this.currentPage += 1;
-      this.getProducts();
-    });
+    // const array = [1, 2, 3, 4];
+    // array.forEach(() => {
+    //   this.currentPage += 1;
+    //   this.getProducts();
+    // });
   },
 }
 </script>

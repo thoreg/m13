@@ -13,11 +13,13 @@ from .views import index
 
 router = routers.DefaultRouter()
 router.register(r'otto/orderitems', OttoOrderItemsViewSet)
+router.register(r'zalando/raw-daily-shipement-reports', zalando_viewsets.RawDailyShipmentReportList)
 
 urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('api/zalando/finance/products/<str:pk>/', zalando_viewsets.ZProductDetail.as_view()),
     path('api/zalando/finance/products/', zalando_viewsets.ZProductList.as_view()),
+    path('api/v1/zalando/finance/products/', zalando_views.product_stats_v1),
     path('api/zalando/finance/article-stats/', zalando_views.article_stats),
     path('api/', include(router.urls)),
     path('addi/', admin.site.urls),
