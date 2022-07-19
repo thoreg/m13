@@ -1,5 +1,5 @@
-from decimal import Decimal
 from datetime import datetime, timezone
+from decimal import Decimal
 
 import pytest
 from freezegun import freeze_time

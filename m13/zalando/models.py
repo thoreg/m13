@@ -126,6 +126,9 @@ class TransactionFileUpload(TimeStampedModel):
     def __repr__(self):
         return f'ZalandoTransactionFile({self.original_csv})'
 
+    class Meta:
+        db_table = 'zalando_dailyshipmentreport_file_upload'
+
 
 class DailyShipmentReport(TimeStampedModel):
     """Relevant data from daily shipment reports from Zalando."""
@@ -310,7 +313,8 @@ class ZCost(TimeStampedModel):
 
 class RawDailyShipmentReport(TimeStampedModel):
     """Relevant data from daily shipment reports from Zalando."""
-    article_number = models.CharField(max_length=36)
+    zproduct = models.ForeignKey('ZProduct', on_delete=models.PROTECT)
+    article_number = models.CharField(max_length=32)
     cancel = models.BooleanField(default=False)
     channel_order_number = models.CharField(max_length=16)
     order_created = models.DateTimeField()
@@ -320,10 +324,5 @@ class RawDailyShipmentReport(TimeStampedModel):
     returned = models.BooleanField(default=False)
     shipment = models.BooleanField(default=False)
 
-    @property
-    def category_name(self):
-        try:
-            zproduct = ZProduct.objects.get(article=self.article_number)
-            return zproduct.category_name
-        except ZProduct.DoesNotExist:
-            return 'N/A'
+    class Meta:
+        db_table = 'zalando_dailyshipmentreport_raw'

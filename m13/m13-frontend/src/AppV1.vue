@@ -2,21 +2,23 @@
 <div>
   <h1>{{ msg }}</h1>
   <Datepicker v-model="dateRange" range :presetRanges="presetRanges" />
-  <p>
-    Selected Date Range: {{ dateRange }}
+  <p v-if="dateRange">
+    Datum gewählt: {{ dateRange }}
+  </p>
+  <p v-else>
+    Kein Datum gewählt - Standard: Daten der letzten vier Wochen
   </p>
   <p>
     {{ getProductDataByDateRange }}
   </p>
 
-
-  <ZalandoCalculator msg="Zalando Calculator" v-if="dateRange" :from="computedFrom" :to="computedTo"/>
-  <ZalandoCalculator msg="Zalando Calculator" v-else />
+  <ZalandoCalculatorV1 msg="Zalando Calculator V1" v-if="dateRange" :from-date="computedFrom" :to-date="computedTo"/>
+  <ZalandoCalculatorV1 msg="Zalando Calculator V1" v-else />
 </div>
 </template>
 
 <script>
-import ZalandoCalculator from './components/ZalandoCalculator.vue'
+import ZalandoCalculatorV1 from './components/ZalandoCalculatorV1.vue'
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
@@ -27,27 +29,31 @@ export default {
   name: 'App',
   components: {
     Datepicker,
-    ZalandoCalculator
+    ZalandoCalculatorV1
   },
   setup() {
     const date = ref();
 
     const presetRanges = ref([
       {
-        label: 'This month',
+        label: 'Dieser Monat',
         range: [startOfMonth(new Date()), endOfMonth(new Date())]
       },
       {
-        label: 'Last month',
+        label: 'Letzter Monat',
         range: [startOfMonth(subMonths(new Date(), 1)), endOfMonth(subMonths(new Date(), 1))],
       },
       {
-        label: 'Last 3 months',
+        label: 'Letzten 3 Monate',
         range: [startOfMonth(subMonths(new Date(), 3)), endOfMonth(new Date())],
       },
       {
-        label: 'This year',
+        label: 'Dieses Jahr',
         range: [startOfYear(new Date()), endOfYear(new Date())]
+      },
+      {
+        label: 'Anbeginn der Zeit',
+        range: [new Date('2021-06-01T00:00:00'), endOfYear(new Date())]
       },
     ]);
 
@@ -59,7 +65,7 @@ export default {
   data() {
     return {
       dateRange: '',
-      msg: 'Zalando Calculator'
+      msg: 'Zalando Calculator V1'
     }
   },
   computed: {
@@ -79,7 +85,7 @@ export default {
       if (this.dateRange) {
         console.log(`date picked - from: ${this.dateRange[0]} to: ${this.dateRange[1]}`);
       }
-      return 0;
+      return null;
     }
   }
 }

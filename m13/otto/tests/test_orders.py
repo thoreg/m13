@@ -63,6 +63,7 @@ OTTO_URLS = [
 @pytest.mark.parametrize('otto_url', OTTO_URLS)
 @pytest.mark.django_db
 def test_otto_views(client, django_user_model, otto_url):
+    """Login and check if url is available/resolvable."""
     username = "user1"
     password = "bar"
     user = django_user_model.objects.create_user(

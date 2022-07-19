@@ -8,7 +8,6 @@ test:
 test_over:
 	py.test --overwrite
 
-
 style:
 	isort .
 	flake8 .

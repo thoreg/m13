@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div id="main">
+  <div id="appv1"></div>
+  <hr>
+  <hr>
+  <div id="app"></div>
+</div>
+{% endblock %}
+
+{% block footer %}
+  <script type="text/javascript" src="{% static 'src/vue/dist/js/chunk-vendors.js' %}"></script>
+  <script type="text/javascript" src="{% static 'src/vue/dist/js/appv1.js' %}"></script>
+  <script type="text/javascript" src="{% static 'src/vue/dist/js/app.js' %}"></script>
+  <link href="{% static 'src/vue/dist/css/app.css' %}" rel=stylesheet>
+{% endblock %}

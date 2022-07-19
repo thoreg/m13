@@ -51,5 +51,9 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True
         },
+        'django.db': {
+            # print out all sql queries
+            'level': 'DEBUG'
+        },
     }
 }
