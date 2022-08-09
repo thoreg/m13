@@ -256,6 +256,13 @@ def product_stats_v1(request):
 
     pss_by_category = {}
     for pss in product_shipping_stats:
+        try:
+            category = pss['category']
+        except KeyError:
+            LOG.exception('no category in pss')
+            LOG.error(pss)
+            continue
+
         category = pss['category'][:MAX_LENGTH_CATEGORY]
         if category not in pss_by_category:
             pss_by_category[category] = {
