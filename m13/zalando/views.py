@@ -239,17 +239,20 @@ def product_stats_v1(request):
     product_shipping_stats = daily_shipment_reports.get_product_stats_v1(start_date)
     for pss in product_shipping_stats:
         sku = pss['article_number']
-        pss.update({
-            'category': zproduct_by_sku[sku]['category'],
-            'costs_production': zproduct_by_sku[sku]['costs_production'],
-            'eight_percent_provision': zproduct_by_sku[sku]['eight_percent_provision'],
-            'generic_costs': zproduct_by_sku[sku]['generic_costs'],
-            'nineteen_percent_vat': zproduct_by_sku[sku]['nineteen_percent_vat'],
-            'profit_after_taxes': zproduct_by_sku[sku]['profit_after_taxes'],
-            'return_costs': zproduct_by_sku[sku]['return_costs'],
-            'shipping_costs': zproduct_by_sku[sku]['shipping_costs'],
-            'vk_zalando': zproduct_by_sku[sku]['vk_zalando']
-        })
+        try:
+            pss.update({
+                'category': zproduct_by_sku[sku]['category'],
+                'costs_production': zproduct_by_sku[sku]['costs_production'],
+                'eight_percent_provision': zproduct_by_sku[sku]['eight_percent_provision'],
+                'generic_costs': zproduct_by_sku[sku]['generic_costs'],
+                'nineteen_percent_vat': zproduct_by_sku[sku]['nineteen_percent_vat'],
+                'profit_after_taxes': zproduct_by_sku[sku]['profit_after_taxes'],
+                'return_costs': zproduct_by_sku[sku]['return_costs'],
+                'shipping_costs': zproduct_by_sku[sku]['shipping_costs'],
+                'vk_zalando': zproduct_by_sku[sku]['vk_zalando']
+            })
+        except KeyError:
+            LOG.exception(f'sku: {sku} not in zproduct?')
 
     pss_by_category = {}
     for pss in product_shipping_stats:
