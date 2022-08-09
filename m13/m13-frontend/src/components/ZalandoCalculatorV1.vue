@@ -6,8 +6,8 @@
     </div>
   </section>
   <section>
-    <article class="category" v-for="(value, category) in products" :key="category">
-      <div class="category-header">
+    <article class="category" :class="categoryClasses" v-for="(value, category) in products" :key="category">
+      <div class="category-header" @click="toggleCategory">
         <table class="category-overview">
           <tr>
             <td class="column-l">{{ value.name }}</td>
@@ -136,11 +136,19 @@ export default {
         .catch(error => {
           console.log(error)
         })
-      }
+      },
+      toggleCategory() {
+        this.isOpen = !this.isOpen
+      },
   },
   // We can not reference 'data' within (itself) data section -> data which is based on data belongs
   // to the 'computed' section (no self reference with 'this' within data() section)
   computed: {
+      categoryClasses() {
+        return {
+          'is-closed': this.isOpen
+        }
+      },
       getAbsoluteDiff() {
         let absoluteDiff = 0;
         for (const product in this.products) {
