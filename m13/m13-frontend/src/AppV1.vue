@@ -8,11 +8,7 @@
   <p v-else>
     Kein Datum gewählt - Standard: Daten der letzten vier Wochen
   </p>
-  <p>
-    {{ getProductDataByDateRange }}
-  </p>
-
-  <ZalandoCalculatorV1 msg="Zalando Calculator V1" v-if="dateRange" :from-date="computedFrom" :to-date="computedTo"/>
+  <ZalandoCalculatorV1 msg="Zalando Calculator V1" v-if="dateRange" :from-date="computedFrom"/>
   <ZalandoCalculatorV1 msg="Zalando Calculator V1" v-else />
 </div>
 </template>
@@ -33,7 +29,6 @@ export default {
   },
   setup() {
     const date = ref();
-
     const presetRanges = ref([
       {
         label: 'Dieser Monat',
@@ -75,18 +70,6 @@ export default {
       }
       return null;
     },
-    computedTo() {
-      if (this.dateRange) {
-        return this.dateRange[1].toISOString().substring(0, 10);
-      }
-      return null;
-    },
-    getProductDataByDateRange() {
-      if (this.dateRange) {
-        console.log(`date picked - from: ${this.dateRange[0]} to: ${this.dateRange[1]}`);
-      }
-      return null;
-    }
   }
 }
 </script>

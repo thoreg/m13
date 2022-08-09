@@ -278,7 +278,7 @@ class TestWhateverFunctions(APITestCase):
                     'total_revenue': 0}}}
 
         # Same shit but different - category defined for two of the products
-        category = Category.objects.create(name='Woman Bomber Jacken (2022)')
+        category = Category.objects.create(name='THIS_IS_A_VERY_VERY_LONG_CATEGORY_NAME')
         for sku in ['women-bom-vi-s', 'women-bom-da-l']:
             zproduct = ZProduct.objects.get(article=sku)
             zproduct.category = category
@@ -330,11 +330,11 @@ class TestWhateverFunctions(APITestCase):
                     'total_revenue': 0
                 }
             },
-            'Woman Bomber Jacken (2022)': {
+            'THIS_IS_A_VERY_VER': {
                 'content': [{
                     'article_number': 'women-bom-vi-s',
                     'canceled': 0,
-                    'category': 'Woman Bomber Jacken (2022)',
+                    'category': 'THIS_IS_A_VERY_VERY_LONG_CATEGORY_NAME',
                     'costs_production': '49.50',
                     'eight_percent_provision': '-5.18',
                     'generic_costs': '2.10',
@@ -351,7 +351,7 @@ class TestWhateverFunctions(APITestCase):
                 }, {
                     'article_number': 'women-bom-da-l',
                     'canceled': 0,
-                    'category': 'Woman Bomber Jacken (2022)',
+                    'category': 'THIS_IS_A_VERY_VERY_LONG_CATEGORY_NAME',
                     'costs_production': '49.50',
                     'eight_percent_provision': '-5.18',
                     'generic_costs': '2.10',
@@ -365,7 +365,7 @@ class TestWhateverFunctions(APITestCase):
                     'total_return_costs': '0.00',
                     'total_revenue': '2.69',
                     'vk_zalando': '69.99'}],
-                'name': 'Woman Bomber Jacken (2022)',
+                'name': 'THIS_IS_A_VERY_VER',
                 'stats': {
                     'canceled': 0,
                     'returned': 0,
@@ -419,11 +419,11 @@ class TestWhateverFunctions(APITestCase):
                     'total_revenue': 0
                 }
             },
-            'Woman Bomber Jacken (2022)': {
+            'THIS_IS_A_VERY_VER': {
                 'content': [{
                     'article_number': 'women-bom-vi-s',
                     'canceled': 0,
-                    'category': 'Woman Bomber Jacken (2022)',
+                    'category': 'THIS_IS_A_VERY_VERY_LONG_CATEGORY_NAME',
                     'costs_production': '49.50',
                     'eight_percent_provision': '-5.18',
                     'generic_costs': '2.10',
@@ -440,7 +440,7 @@ class TestWhateverFunctions(APITestCase):
                 }, {
                     'article_number': 'women-bom-da-l',
                     'canceled': 0,
-                    'category': 'Woman Bomber Jacken (2022)',
+                    'category': 'THIS_IS_A_VERY_VERY_LONG_CATEGORY_NAME',
                     'costs_production': '49.50',
                     'eight_percent_provision': '-5.18',
                     'generic_costs': '2.10',
@@ -454,7 +454,7 @@ class TestWhateverFunctions(APITestCase):
                     'total_return_costs': '0.00',
                     'total_revenue': '8.07',
                     'vk_zalando': '69.99'}],
-                'name': 'Woman Bomber Jacken (2022)',
+                'name': 'THIS_IS_A_VERY_VER',
                 'stats': {
                     'canceled': 0,
                     'returned': 1,

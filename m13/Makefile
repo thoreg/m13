@@ -11,3 +11,5 @@ test_over:
 style:
 	isort .
 	flake8 .
+
+check: clean style test

@@ -27,6 +27,8 @@ from .services import daily_shipment_reports
 
 LOG = logging.getLogger(__name__)
 
+MAX_LENGTH_CATEGORY = 18
+
 
 @login_required
 def price_feed(request):
@@ -251,7 +253,7 @@ def product_stats_v1(request):
 
     pss_by_category = {}
     for pss in product_shipping_stats:
-        category = pss['category']
+        category = pss['category'][:MAX_LENGTH_CATEGORY]
         if category not in pss_by_category:
             pss_by_category[category] = {
                 'name': category,
@@ -277,7 +279,8 @@ def product_stats_v1(request):
                 pss['profit_after_taxes'] * (pss['shipped'] - pss['returned'])
             )
             pss['total_return_costs'] = (
-                pss['returned'] * (pss['shipping_costs'] + pss['return_costs'] + pss['generic_costs'])
+                pss['returned'] * (
+                    pss['shipping_costs'] + pss['return_costs'] + pss['generic_costs'])
             )
             pss['total_diff'] = pss['total_revenue'] - pss['total_return_costs']
 

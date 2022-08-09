@@ -70,7 +70,6 @@ export default {
   props: {
     msg: String,
     fromDate: String,
-    toDate: String
   },
   watch: {
     fromDate: {
@@ -112,13 +111,11 @@ export default {
         })
         .then(data => {
           this.products = data;
-
           // Sort the skus within the category
           for(const idx in this.products) {
             const product = this.products[idx];
             product.content.sort((a, b) => {
               var keyA = a.article_number, keyB = b.article_number;
-
               if (keyA < keyB) {
                 return -1;
               }
@@ -128,13 +125,11 @@ export default {
               return 0;
             });
           }
-
           // Sort the categories by name
           this.products = Object.keys(this.products)
             .sort()
             .reduce((accumulator, key) => {
               accumulator[key] = this.products[key];
-
               return accumulator;
             }, {});
         })
@@ -183,28 +178,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-
 .category-header {
   text-align: left;
   font-weight: bold;
   font-size: 1.3em;
   cursor: pointer;
 }
-
 .category-body {
   padding: 0;
   max-height: 100em;
@@ -214,7 +193,6 @@ a {
 .is-closed .category-body {
   max-height: 0;
 }
-
 .column-s {
   min-width: 12em;
 }
