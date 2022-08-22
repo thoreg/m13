@@ -60,9 +60,9 @@ def test_zalando_oem_endpoint(client, django_user_model, settings):
 
     # POST but token not defined
     response = client.post(r_url, HTTP_X_API_KEY='123')
-    assert response.status_code == 200
-    assert response.reason_phrase == 'OK'
-    assert response.content == b'Token not defined.'
+    assert response.status_code == 403
+    assert response.reason_phrase == 'Forbidden'
+    assert response.content == b'Incorrect token in header'
 
     # POST - token defined but wrong given
     settings.ZALANDO_OEM_WEBHOOK_TOKEN = '1234'

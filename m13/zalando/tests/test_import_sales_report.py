@@ -39,4 +39,4 @@ def test_import_sales_report():
     assert sri.partner_units == 1
     assert sri.shipping_return_date == datetime(2022, 5, 23, 0, 0, tzinfo=timezone.utc)
     assert sri.year == 2022
-    assert sri.short_order_date == '2205'
+    assert sri.short_order_date == '2305'
