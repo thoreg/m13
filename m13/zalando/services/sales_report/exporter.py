@@ -35,7 +35,7 @@ def export_sales_report(from_order_date, to_order_date):
         SalesReport
         .objects
         .filter(shipping_return_date__range=(from_order_date, to_order_date))
-        .order_by('shipping_return_date__range')
+        .order_by('shipping_return_date')
     )
 
     for row in data:
