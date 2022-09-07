@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ORDER_LIST>
+    <ORDER xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <ORDER_DATA>
+            <ORDER_DATE>2022-09-02</ORDER_DATE>
+            <TB_ID>409</TB_ID>
+            <CHANNEL_SIGN>mydk</CHANNEL_SIGN>
+            <CHANNEL_ID>D103772601</CHANNEL_ID>
+            <CHANNEL_NO>598741724</CHANNEL_NO>
+            <PAID>0</PAID>
+            <APPROVED>1</APPROVED>
+            <ITEM_COUNT>2</ITEM_COUNT>
+            <TOTAL_ITEM_AMOUNT>129.90</TOTAL_ITEM_AMOUNT>
+            <DATE_CREATED>2022-09-02T09:16:01</DATE_CREATED>
+        </ORDER_DATA>
+        <SHIP_TO>
+            <TB_ID>395</TB_ID>
+            <CHANNEL_NO>1671233496</CHANNEL_NO>
+            <TITLE>Frau</TITLE>
+            <FIRSTNAME>M.</FIRSTNAME>
+            <LASTNAME>F.</LASTNAME>
+            <NAME>M. F.</NAME>
+            <STREET_NO>A. A. 21</STREET_NO>
+            <ZIP>29690</ZIP>
+            <CITY>Schwarmstedt</CITY>
+            <COUNTRY>DE</COUNTRY>
+            <PHONE_PRIVATE>030110</PHONE_PRIVATE>
+            <EMAIL>m.f@gmail.com</EMAIL>
+        </SHIP_TO>
+        <SHIPMENT>
+            <PRICE>0</PRICE>
+        </SHIPMENT>
+        <PAYMENT>
+            <TYPE>mydk</TYPE>
+            <COSTS>0</COSTS>
+            <DIRECTDEBIT>
+            </DIRECTDEBIT>
+        </PAYMENT>
+        <HISTORY>
+            <EVENT>
+                <EVENT_ID>2183</EVENT_ID>
+                <EVENT_TYPE>ORDER_APPROVED</EVENT_TYPE>
+                <DATE_CREATED>2022-09-02T09:16:01</DATE_CREATED>
+            </EVENT>
+        </HISTORY>
+        <ITEMS>
+            <ITEM>
+                <TB_ID>527</TB_ID>
+                <CHANNEL_ID>1</CHANNEL_ID>
+                <SKU>women-bom-bo-l</SKU>
+                <CHANNEL_SKU>20919197</CHANNEL_SKU>
+                <EAN>0781491969945</EAN>
+                <QUANTITY>1</QUANTITY>
+                <BILLING_TEXT>Women Bomberjacke - Übergangsjacke Übergangsjacken </BILLING_TEXT>
+                <TRANSFER_PRICE>54.580</TRANSFER_PRICE>
+                <ITEM_PRICE>64.95</ITEM_PRICE>
+                <DATE_CREATED>2022-09-02T09:16:01</DATE_CREATED>
+            </ITEM>
+            <ITEM>
+                <TB_ID>529</TB_ID>
+                <CHANNEL_ID>2</CHANNEL_ID>
+                <SKU>women-bom-bo-xl</SKU>
+                <CHANNEL_SKU>20919200</CHANNEL_SKU>
+                <EAN>0781491969952</EAN>
+                <QUANTITY>1</QUANTITY>
+                <BILLING_TEXT>Women Bomberjacke - Übergangsjacke Übergangsjacken </BILLING_TEXT>
+                <TRANSFER_PRICE>54.580</TRANSFER_PRICE>
+                <ITEM_PRICE>64.95</ITEM_PRICE>
+                <DATE_CREATED>2022-09-02T09:16:01</DATE_CREATED>
+            </ITEM>
+        </ITEMS>
+    </ORDER>
+
+    <ORDER xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <ORDER_DATA>
+            <ORDER_DATE>2022-09-04</ORDER_DATE>
+            <TB_ID>411</TB_ID>
+            <CHANNEL_SIGN>mydk</CHANNEL_SIGN>
+            <CHANNEL_ID>D103786118</CHANNEL_ID>
+            <CHANNEL_NO>598800112</CHANNEL_NO>
+            <PAID>0</PAID>
+            <APPROVED>1</APPROVED>
+            <ITEM_COUNT>1</ITEM_COUNT>
+            <TOTAL_ITEM_AMOUNT>104.95</TOTAL_ITEM_AMOUNT>
+            <DATE_CREATED>2022-09-04T21:45:43</DATE_CREATED>
+        </ORDER_DATA>
+        <SHIP_TO>
+            <TB_ID>397</TB_ID>
+            <CHANNEL_NO>1702860538</CHANNEL_NO>
+            <TITLE>Herr</TITLE>
+            <FIRSTNAME>P.</FIRSTNAME>
+            <LASTNAME>S.</LASTNAME>
+            <NAME>P. S.</NAME>
+            <STREET_NO>C. B. S. 8</STREET_NO>
+            <ZIP>07749</ZIP>
+            <CITY>Jena</CITY>
+            <COUNTRY>DE</COUNTRY>
+            <EMAIL>ps@web.de</EMAIL>
+        </SHIP_TO>
+        <SHIPMENT>
+            <PRICE>0</PRICE>
+        </SHIPMENT>
+        <PAYMENT>
+            <TYPE>mydk</TYPE>
+            <COSTS>0</COSTS>
+            <DIRECTDEBIT>
+            </DIRECTDEBIT>
+        </PAYMENT>
+        <HISTORY>
+            <EVENT>
+                <EVENT_ID>2185</EVENT_ID>
+                <EVENT_TYPE>ORDER_APPROVED</EVENT_TYPE>
+                <DATE_CREATED>2022-09-04T21:45:43</DATE_CREATED>
+            </EVENT>
+        </HISTORY>
+        <ITEMS>
+            <ITEM>
+                <TB_ID>531</TB_ID>
+                <CHANNEL_ID>1</CHANNEL_ID>
+                <SKU>ROLLTOP-MU</SKU>
+                <CHANNEL_SKU>20919043</CHANNEL_SKU>
+                <EAN>0781491968887</EAN>
+                <QUANTITY>1</QUANTITY>
+                <BILLING_TEXT>Wasserabweisender Roll-Top Rucksack (20L) Tagesrucksäcke </BILLING_TEXT>
+                <TRANSFER_PRICE>88.190</TRANSFER_PRICE>
+                <ITEM_PRICE>104.95</ITEM_PRICE>
+                <DATE_CREATED>2022-09-04T21:45:43</DATE_CREATED>
+            </ITEM>
+        </ITEMS>
+    </ORDER>
+
+</ORDER_LIST>

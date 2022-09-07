@@ -34,7 +34,8 @@ INSTALLED_APPS = [
     'zalando',
     'etsy',
     'shipping',
-    'core'
+    'core',
+    'mirapodo'
 ]
 
 MIDDLEWARE = [
