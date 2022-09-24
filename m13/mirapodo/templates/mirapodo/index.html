@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block header %}
+<div id="header">
+  <form action={% url 'mirapodo_import_orders' %}>
+    <button type="submit" class="m13-btn" title="Bestellungen von Mirapodo importieren">
+      BESTELLUNGEN IMPORTIEREN
+    </button>
+  </form>
+  {% comment %} <form action={% url '_orderitems_csv' %}>
+    <button type="submit" class="m13-btn" title="Alle aktuellen Bestellungen als CSV laden">
+      DOWNLOAD BESTELLUNGEN CSV
+    </button>
+  </form> {% endcomment %}
+</div>
+<div id="header_right">
+  {% comment %} _processable: {{ number_of_processable }} {% endcomment %}
+</div>
+{% endblock %}
+
+{% block content %}
+  <div id="main">
+    <table>
+      <thead>
+        <th>order_number</th>
+        <th>sku</th>
+        {% comment %} <th>status</th>
+        <th>expected delivery date</th> {% endcomment %}
+        <th>product title</th>
+        <th>customer name</th>
+        <th>customer address</th>
+        <th>created</th>
+      </thead>
+      <tbody>
+      {% for oi in order_items %}
+        <tr>
+          <td>{{ oi.order.marketplace_order_id }}</td>
+          <td>{{ oi.sku }}</td>
+          {% comment %} <td>{{ oi.fulfillment_status }}</td>
+          <td>{{ oi.expected_delivery_date|date:"Y-m-d" }}</td> {% endcomment %}
+          <td>{{ oi.billing_text }}</td>
+          <td>
+            {{ oi.order.delivery_address.first_name }}
+            {{ oi.order.delivery_address.last_name }}
+          </td>
+          <td>
+            {{ oi.order.delivery_address.street }}
+            {{ oi.order.delivery_address.house_number }}
+            {{ oi.order.delivery_address.zip_code }}
+            {{ oi.order.delivery_address.city }}
+            {{ oi.order.delivery_address.country_code }}
+          </td>
+          <td>
+            {{ oi.created | date:"c" }}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
