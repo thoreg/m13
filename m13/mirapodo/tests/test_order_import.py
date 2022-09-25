@@ -1,6 +1,7 @@
 
 import datetime
 from decimal import Decimal
+from django.urls import reverse
 
 import pytest
 from freezegun import freeze_time
@@ -8,6 +9,23 @@ from freezegun.api import FakeDatetime
 
 from mirapodo.models import Address, Order, OrderItem
 from mirapodo.services.orders import import_orders
+
+MIRAPODO_URLS = [
+    'mirapodo_index',
+]
+
+@pytest.mark.parametrize('m_url', MIRAPODO_URLS)
+@pytest.mark.django_db
+def test_mirapodo_views(client, django_user_model, m_url):
+    username = "user1"
+    password = "bar"
+    user = django_user_model.objects.create_user(
+        username=username, password=password)
+    client.force_login(user)
+
+    r_url = reverse(m_url)
+    response = client.get(r_url)
+    assert response.status_code == 200
 
 
 def verify_addresses(addresses):
