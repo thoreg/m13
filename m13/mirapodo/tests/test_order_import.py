@@ -1,9 +1,9 @@
 
 import datetime
 from decimal import Decimal
-from django.urls import reverse
 
 import pytest
+from django.urls import reverse
 from freezegun import freeze_time
 from freezegun.api import FakeDatetime
 
@@ -13,6 +13,7 @@ from mirapodo.services.orders import import_orders
 MIRAPODO_URLS = [
     'mirapodo_index',
 ]
+
 
 @pytest.mark.parametrize('m_url', MIRAPODO_URLS)
 @pytest.mark.django_db

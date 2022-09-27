@@ -103,27 +103,20 @@ def import_orders(xml_string):
 
 
 def fetch_orders():
-    """..."""
-
-    print(f'ORDER_IMPORT_URL: {ORDER_IMPORT_URL}')
-    print(f'USER_NAME: {USER_NAME}')
-    print(f'PASSWD: {PASSWD}')
-    print(f'HNR: {HNR}')
-
-    for tb_id in range(0, 500):
-        print(f'Fetching order no: {tb_id}')
-        try:
-            response = requests.get(
-                f'{ORDER_IMPORT_URL}/{tb_id}',
-                auth=(USER_NAME, PASSWD)
-            )
-            # If the response was successful, no Exception will be raised
-            response.raise_for_status()
-        except HTTPError as http_err:
-            print(f'HTTP error occurred: {http_err}')
-        except Exception as err:
-            print(f'Other error occurred: {err}')
-        else:
-            import_orders(response.content)
-
-        time.sleep(1)
+    """Fetch receivable orders from marketplace Mirapodo."""
+    try:
+        response = requests.get(
+            f'{ORDER_IMPORT_URL}',
+            auth=(USER_NAME, PASSWD)
+        )
+        # If the response was successful, no Exception will be raised
+        response.raise_for_status()
+    except HTTPError as http_err:
+        print(f'HTTP error occurred: {http_err}')
+    except Exception as err:
+        print(f'Other error occurred: {err}')
+    else:
+        if not response.content:
+            LOG.info('No new orders on Mirapodo')
+            return
+        import_orders(response.content)

@@ -23,6 +23,7 @@
     <table>
       <thead>
         <th>order_number</th>
+        <th>status</th>
         <th>sku</th>
         {% comment %} <th>status</th>
         <th>expected delivery date</th> {% endcomment %}
@@ -35,6 +36,7 @@
       {% for oi in order_items %}
         <tr>
           <td>{{ oi.order.marketplace_order_id }}</td>
+          <td>{{ oi.order.internal_status }}</td>
           <td>{{ oi.sku }}</td>
           {% comment %} <td>{{ oi.fulfillment_status }}</td>
           <td>{{ oi.expected_delivery_date|date:"Y-m-d" }}</td> {% endcomment %}

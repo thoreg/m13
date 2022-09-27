@@ -13,6 +13,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import OrderItem
+from .services.orders import fetch_orders
 
 LOG = logging.getLogger(__name__)
 
@@ -167,9 +168,6 @@ def orderitems_csv(request):
 
 @login_required
 def import_orders(request):
-    """Import orders from OTTO via button click"""
-    management.call_command('import_orders', status='PROCESSABLE', verbosity=2)
-    management.call_command('import_orders', status='SENT', verbosity=2)
-    management.call_command('import_orders', status='RETURNED', verbosity=2)
-
+    """Import orders from Mirapodo via button click"""
+    fetch_orders()
     return index(request)
