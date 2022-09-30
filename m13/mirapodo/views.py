@@ -104,7 +104,7 @@ def orderitems_csv(request):
                 1,
                 'Versandposition',
                 f'MIRAPODO {current_order.marketplace_order_id}',
-                'mirapodo@manufaktur13.de'
+                current_order.mail
             ])
 
         writer.writerow([
@@ -121,7 +121,7 @@ def orderitems_csv(request):
             1,
             'Artikel',
             f'MIRAPODO {oi.order.marketplace_order_id}',
-            'mirapodo@manufaktur13.de'
+            oi.order.mail
         ])
 
         current_order_id = oi.order.marketplace_order_id
@@ -143,7 +143,7 @@ def orderitems_csv(request):
             1,
             'Versandposition',
             f'MIRAPODO {current_order.marketplace_order_id}',
-            'mirapodo@manufaktur13.de'
+            current_order.mail
         ])
 
     return response
