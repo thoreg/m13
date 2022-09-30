@@ -36,16 +36,6 @@ def index(request):
     return render(request, 'mirapodo/index.html', context)
 
 
-def _get_delivery_info(name):
-    """Return something human readable for delivery information."""
-    MAP = {
-        'DELIVERY_FEE_STANDARD': 'Hermes HSI',
-        # 'DELIVERY_FEE_STANDARD': 'Hermes S',
-        # 'DELIVERY_FEE_STANDARD': 'DHL Paket',
-    }
-    return MAP.get(name, name)
-
-
 def _get_country_information(country_code):
     """..."""
     MAP = {
@@ -88,22 +78,20 @@ def orderitems_csv(request):
         'EMAIL'
     ])
 
+    #    .filter(internal_status='IMPORTED')
     orderitems = (OrderItem.objects
-                           .filter(fulfillment_status='PROCESSABLE')
+                           .filter(order__internal_status='IMPORTED')
                            .select_related('order__delivery_address')
-                           .order_by('order__marketplace_order_number'))
+                           .order_by('order__marketplace_order_id'))
     print(f'Found {len(orderitems)} orderitems')
 
     current_order = None
     current_order_id = None
     for oi in orderitems:
-
         # Append shipping information at the end of an order (after all orderitems)
-        if current_order_id and current_order_id != oi.order.marketplace_order_number:
-            price = '%0.2f' % current_order.delivery_fee[0]['deliveryFeeAmount']['amount']
-            price = price.replace('.', ',')
+        if current_order_id and current_order_id != oi.order.marketplace_order_id:
             writer.writerow([
-                current_order.marketplace_order_number,
+                current_order.marketplace_order_id,
                 current_order.delivery_address.first_name,
                 current_order.delivery_address.last_name,
                 f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}',
@@ -111,19 +99,16 @@ def orderitems_csv(request):
                 current_order.delivery_address.city,
                 _get_country_information(current_order.delivery_address.country_code),
                 ' ',
-                _get_delivery_info(current_order.delivery_fee[0]['name']),
-                price,
+                oi.order.delivery_fee,
+                0,
                 1,
                 'Versandposition',
-                f'OTTO {current_order.marketplace_order_id}',
-                'otto@manufaktur13.de'
+                f'MIRAPODO {current_order.marketplace_order_id}',
+                'mirapodo@manufaktur13.de'
             ])
 
-        price = '%0.2f' % round(oi.price_in_cent / 100, 2)
-        price = price.replace('.', ',')
-
         writer.writerow([
-            oi.order.marketplace_order_number,
+            oi.order.marketplace_order_id,
             oi.order.delivery_address.first_name,
             oi.order.delivery_address.last_name,
             f'{oi.order.delivery_address.street} {oi.order.delivery_address.house_number}',
@@ -131,23 +116,21 @@ def orderitems_csv(request):
             oi.order.delivery_address.city,
             _get_country_information(oi.order.delivery_address.country_code),
             oi.sku,
-            oi.product_title,
-            price,
+            oi.billing_text,
+            oi.item_price,
             1,
             'Artikel',
-            f'OTTO {oi.order.marketplace_order_id}',
-            'otto@manufaktur13.de'
+            f'MIRAPODO {oi.order.marketplace_order_id}',
+            'mirapodo@manufaktur13.de'
         ])
 
-        current_order_id = oi.order.marketplace_order_number
+        current_order_id = oi.order.marketplace_order_id
         current_order = deepcopy(oi.order)
 
     if current_order:
         # extra locke for the last shipping position
-        price = '%0.2f' % current_order.delivery_fee[0]['deliveryFeeAmount']['amount']
-        price = price.replace('.', ',')
         writer.writerow([
-            current_order.marketplace_order_number,
+            current_order.marketplace_order_id,
             current_order.delivery_address.first_name,
             current_order.delivery_address.last_name,
             f'{current_order.delivery_address.street} {current_order.delivery_address.house_number}',
@@ -155,12 +138,12 @@ def orderitems_csv(request):
             current_order.delivery_address.city,
             _get_country_information(current_order.delivery_address.country_code),
             ' ',
-            _get_delivery_info(current_order.delivery_fee[0]['name']),
-            price,
+            oi.order.delivery_fee,  # Always HERMES HSI
+            0,                      # Price HERMES HSI
             1,
             'Versandposition',
-            f'OTTO {current_order.marketplace_order_id}',
-            'otto@manufaktur13.de'
+            f'MIRAPODO {current_order.marketplace_order_id}',
+            'mirapodo@manufaktur13.de'
         ])
 
     return response

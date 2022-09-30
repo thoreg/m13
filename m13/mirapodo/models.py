@@ -49,6 +49,7 @@ class Order(TimeStampedModel):
     )
 
     delivery_fee = models.CharField(max_length=32)
+    mail = models.EmailField()
 
 
 class OrderItem(TimeStampedModel):

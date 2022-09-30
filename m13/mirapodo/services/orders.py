@@ -52,7 +52,8 @@ def import_order(order_dict):
             'delivery_address': delivery_address,
             'delivery_fee': DELIVERY_FEE_STANDARD,
             'invoice_address': delivery_address,
-            'order_date': order_data.get('DATE_CREATED')
+            'order_date': order_data.get('DATE_CREATED'),
+            'mail': address_data.get('EMAIL', 'not_available@manufaktur13.de')
         }
     )
     if created:

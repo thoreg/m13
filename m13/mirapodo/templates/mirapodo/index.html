@@ -7,11 +7,11 @@
       BESTELLUNGEN IMPORTIEREN
     </button>
   </form>
-  {% comment %} <form action={% url '_orderitems_csv' %}>
+  <form action={% url 'mirapodo_orderitems_csv' %}>
     <button type="submit" class="m13-btn" title="Alle aktuellen Bestellungen als CSV laden">
       DOWNLOAD BESTELLUNGEN CSV
     </button>
-  </form> {% endcomment %}
+  </form>
 </div>
 <div id="header_right">
   {% comment %} _processable: {{ number_of_processable }} {% endcomment %}

@@ -70,6 +70,7 @@ def verify_orders(orders):
         'id': 1,
         'internal_status': 'IMPORTED',
         'invoice_address_id': 1,
+        'mail': 'm.f@gmail.com',
         'marketplace_order_id': '409',
         'modified': datetime.datetime(2022, 9, 7, 0, 0, tzinfo=datetime.timezone.utc),
         'order_date': datetime.datetime(2022, 9, 2, 7, 16, 1, tzinfo=datetime.timezone.utc)
@@ -79,6 +80,7 @@ def verify_orders(orders):
         'id': 2,
         'internal_status': 'IMPORTED',
         'invoice_address_id': 2,
+        'mail': 'ps@web.de',
         'marketplace_order_id': '411',
         'modified': datetime.datetime(2022, 9, 7, 0, 0, tzinfo=datetime.timezone.utc),
         'order_date': datetime.datetime(2022, 9, 4, 19, 45, 43, tzinfo=datetime.timezone.utc)}]
@@ -198,6 +200,7 @@ def test_import_single_order():
         'id': 1,
         'internal_status': 'IMPORTED',
         'invoice_address_id': 1,
+        'mail': 'Anna.muster@gmx.de',
         'marketplace_order_id': '2',
         'modified': datetime.datetime(2022, 9, 7, 0, 0, tzinfo=datetime.timezone.utc),
         'order_date': datetime.datetime(2021, 5, 7, 10, 32, 8, tzinfo=datetime.timezone.utc)
