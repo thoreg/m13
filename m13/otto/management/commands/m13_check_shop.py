@@ -30,6 +30,12 @@ WHITE_LIST = [
     'https://www.instagram.com/manufaktur13/',
     'https://www.youtube.com/channel/UCLHKAq7rTPTOcPTGXygkeLg',
     'javascript:void(0);',
+    '#slides__0',
+    '#slides__1',
+    '#slides__2',
+    '#slides__3',
+    '#slides__4',
+    '#slides__5',
 ]
 
 
@@ -40,6 +46,7 @@ class Command(BaseCommand):
     def suspicious(self, msg):
         """Send out email on threat detection."""
         msg = f'SNEAKY PETE detected - suspicious: "{msg}"'
+        print(msg)
 
         if not settings.FROM_EMAIL_ADDRESS:
             LOG.critical(msg)
