@@ -1,13 +1,12 @@
 """Import Orders from marketplace Mirapodo"""
 import logging
 import os
-import time
 from pprint import pprint
 
 import requests
 import xmltodict
 from colorama import Fore, Style
-from lxml import etree
+
 from requests.exceptions import HTTPError
 
 from mirapodo.models import Address, Order, OrderItem

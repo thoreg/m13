@@ -1,4 +1,4 @@
-
+import csv
 import datetime
 from decimal import Decimal
 
@@ -12,6 +12,7 @@ from mirapodo.services.orders import import_orders
 
 MIRAPODO_URLS = [
     'mirapodo_index',
+    'mirapodo_orderitems_csv'
 ]
 
 
@@ -143,7 +144,7 @@ def _prune_db():
 
 @freeze_time('2022-09-07')
 @pytest.mark.django_db(reset_sequences=True)
-def test_import_orders():
+def test_import_orders(client, django_user_model, pytestconfig):
     """XML from order file gets imported properly."""
     _prune_db()
 
@@ -164,6 +165,30 @@ def test_import_orders():
     verify_addresses(Address.objects.all().values())
     verify_orders(Order.objects.all().values())
     verify_order_items(OrderItem.objects.all().values())
+
+    # Download imported orders as CSV
+    username = "user1"
+    password = "bar"
+    user = django_user_model.objects.create_user(
+        username=username, password=password)
+    client.force_login(user)
+
+    r_url = reverse('mirapodo_orderitems_csv')
+    response = client.get(r_url)
+    assert response.status_code == 200
+
+    decoded_content = response.content.decode('utf-8')
+
+    oi_csv_path = 'mirapodo/tests/data/orderitems.csv'
+    if pytestconfig.getoption('--overwrite'):
+        with open(oi_csv_path, 'w') as f:
+            f.write(decoded_content)
+        assert False, 'Mirapodo order items dump updated'
+
+    with open(oi_csv_path, 'r') as oi_csv:
+        expected = oi_csv.read()
+
+    assert decoded_content.replace('\r', '') == expected
 
 
 @freeze_time('2022-09-07')
