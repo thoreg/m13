@@ -1,5 +1,4 @@
 from datetime import date, timedelta
-from pprint import pprint
 
 import django_filters.rest_framework
 from rest_framework import generics

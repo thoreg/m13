@@ -22,14 +22,13 @@ import logging
 import os
 import sys
 import urllib.parse
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from functools import reduce
 
 import requests
 from colorama import Fore
 
 from core.models import Article, Product
-from otto.common import get_auth_token
 from otto.models import Address, Order, OrderItem
 
 LOG = logging.getLogger(__name__)

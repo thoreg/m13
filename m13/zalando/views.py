@@ -3,7 +3,6 @@ import datetime as dt
 import json
 import logging
 from datetime import date, datetime, timedelta
-from pprint import pformat, pprint
 from secrets import compare_digest
 
 from django.conf import settings
@@ -17,12 +16,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from m13.lib.file_upload import handle_uploaded_file
-from zalando.services.daily_shipment_reports import get_product_stats, import_daily_shipment_report
+from zalando.services.daily_shipment_reports import import_daily_shipment_report
 from zalando.services.prices import update_z_factor
 
 from .forms import PriceToolForm, UploadFileForm
-from .models import (DailyShipmentReport, FeedUpload, OEAWebhookMessage, OrderItem, PriceTool,
-                     Product, StatsOrderItems, TransactionFileUpload, ZProduct)
+from .models import (FeedUpload, OEAWebhookMessage, OrderItem, PriceTool, Product, StatsOrderItems,
+                     TransactionFileUpload, ZProduct)
 from .services import daily_shipment_reports
 
 LOG = logging.getLogger(__name__)

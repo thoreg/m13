@@ -6,7 +6,6 @@ import requests
 from colorama import Fore
 from requests.models import codes
 
-from etsy.common import get_auth_token
 from etsy.models import Address, Order, OrderItem
 from m13.common import timestamp_from_epoch
 

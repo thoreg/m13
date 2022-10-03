@@ -1,6 +1,5 @@
 import hashlib
 
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
 from zalando.models import DailyShipmentReport, TransactionFileUpload

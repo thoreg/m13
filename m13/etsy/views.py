@@ -9,15 +9,12 @@ import logging
 import os
 from copy import deepcopy
 from datetime import datetime
-from pprint import pformat
 
 import requests
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
-
-from m13.common import base64_encode
 
 from .common import get_auth_token
 from .forms import UploadFileForm

@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models.aggregates import Count
 from django_extensions.db.models import TimeStampedModel
 
 

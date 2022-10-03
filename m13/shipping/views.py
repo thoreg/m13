@@ -2,7 +2,7 @@ import logging
 from copy import deepcopy
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -18,6 +18,7 @@ LOG = logging.getLogger(__name__)
 
 @login_required
 def index(request):
+    """..."""
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -33,6 +34,7 @@ def index(request):
 
 @login_required
 def upload_shipping_infos_success(request):
+    """..."""
     otto_shipments = (
         OttoShipment.objects.all().order_by('-created').values_list(
             'created',

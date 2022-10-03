@@ -1,5 +1,4 @@
 import logging
-from pprint import pprint
 
 from django.db import connection
 

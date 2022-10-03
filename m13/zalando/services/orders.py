@@ -58,11 +58,9 @@ The order is ready to be shipped to the customer.):
 
 """
 import logging
-from datetime import datetime
 
 from django.utils import timezone
 
-from m13.common import time_str2object
 from zalando.models import Address, OEAWebhookMessage, Order, OrderItem
 
 LOG = logging.getLogger(__name__)

@@ -6,7 +6,6 @@ from pprint import pprint
 import requests
 import xmltodict
 from colorama import Fore, Style
-
 from requests.exceptions import HTTPError
 
 from mirapodo.models import Address, Order, OrderItem

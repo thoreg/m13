@@ -1,10 +1,7 @@
-import datetime
 import logging
 import os
 
 import requests
-from colorama import Fore
-from requests.models import codes
 
 from etsy.models import AuthToken
 

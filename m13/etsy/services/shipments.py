@@ -31,9 +31,7 @@ REQUEST BODY SCHEMA: application/x-www-form-urlencoded
 import csv
 import logging
 import os
-from datetime import datetime
 from io import TextIOWrapper
-from pprint import pprint
 
 import requests
 

@@ -3,14 +3,9 @@ import logging
 from copy import deepcopy
 from datetime import datetime
 
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core import management
-from django.core.mail import EmailMessage
-from django.db import connection
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.urls import reverse
 
 from .models import OrderItem
 from .services.orders import fetch_orders
