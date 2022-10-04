@@ -64,3 +64,11 @@ class OrderItem(TimeStampedModel):
     sku = models.CharField(max_length=16)
     position_item_id = models.CharField(max_length=16)
     transfer_price = models.DecimalField(max_digits=5, decimal_places=2)
+
+
+class Shipment(TimeStampedModel):
+    order = models.ForeignKey(Order, on_delete=models.PROTECT)
+    carrier = models.CharField(max_length=128)
+    tracking_info = models.CharField(max_length=256)
+    response_status_code = models.PositiveSmallIntegerField()
+    response = models.TextField()

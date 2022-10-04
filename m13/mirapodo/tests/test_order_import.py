@@ -136,8 +136,8 @@ def verify_order_items(order_items):
 
 
 def _prune_db():
-    Order.objects.all().delete()
     OrderItem.objects.all().delete()
+    Order.objects.all().delete()
     Address.objects.all().delete()
 
 
