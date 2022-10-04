@@ -43,7 +43,7 @@ def import_order(order_dict):
         zip_code=address_data.get('ZIP'),
     )
 
-    marketplace_order_id = order_data.get('TB_ID')
+    marketplace_order_id = f"TB_{order_data.get('TB_ID')}"
     order, created = Order.objects.get_or_create(
         marketplace_order_id=marketplace_order_id,
         defaults={
