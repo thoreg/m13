@@ -119,3 +119,21 @@ def fetch_orders():
             LOG.info('No new orders on Mirapodo')
             return
         import_orders(response.content)
+
+
+def fetch_order_by_id(order_id):
+    """Fetch specific order by id and print out all the information from the marketplace."""
+    try:
+        response = requests.get(
+            f'{ORDER_IMPORT_URL}/{order_id}',
+            auth=(USER_NAME, PASSWD)
+        )
+        # If the response was successful, no Exception will be raised
+        response.raise_for_status()
+    except HTTPError as http_err:
+        print(f'HTTP error occurred: {http_err}')
+    except Exception as err:
+        print(f'Other error occurred: {err}')
+    else:
+        parsed = xmltodict.parse(response.content)
+        pprint(parsed)
