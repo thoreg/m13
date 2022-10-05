@@ -6,3 +6,6 @@ omit =
     */**/__init__.py
     */migrations/*
     **/test_*
+    **/wsgi.py
+    **/asgi.py
+    **/production.py

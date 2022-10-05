@@ -13,3 +13,7 @@ style:
 	flake8 .
 
 check: clean style test
+
+py-cov:
+	rm -rf htmlcov
+	pytest --cov-report=html --cov=.
