@@ -20,5 +20,5 @@ jobs:
         pip install flake8
     - name: Analysing the code with pylint
       run: |
-        ls -al
+        ls -al m13/
         flake8 --config tox.ini
