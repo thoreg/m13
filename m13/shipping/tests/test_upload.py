@@ -4,6 +4,7 @@ import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
+from mirapodo.models import Order as MirapodoOrder
 from mirapodo.models import Shipment as MirapodoShipment
 from otto.models import Shipment as OttoShipment
 
@@ -13,6 +14,12 @@ SHIPPING_URLS = [
 ]
 
 SHIPMENTS_FILE = 'shipping/tests/data/Versandadressen.csv'
+
+
+class MockResponse:
+    def __init__(self, status_code, text):
+        self.text = text
+        self.status_code = status_code
 
 
 @pytest.mark.parametrize('shipping_url', SHIPPING_URLS)
@@ -48,7 +55,8 @@ def test_handle_uploaded_file(client, django_user_model):
 
     with (
         patch('otto.services.shipments.do_post', return_value=(201, {})) as mocked_otto_do_post,
-        patch('mirapodo.services.shipments.do_post', return_value=(202, {})) as mocked_mirapodo_do_post,
+        patch('mirapodo.services.shipments._post',
+              return_value=MockResponse(200, 'success')) as mocked_mirapodo_do_post,
     ):
         client.post(
             shipping_info_upload_url,
@@ -76,4 +84,12 @@ def test_handle_uploaded_file(client, django_user_model):
         '01145166000368',
         '02245166000399',
     ])
-    assert [sh.response_status_code for sh in mirapodo_shipments] == [202, 202]
+    assert [sh.response_status_code for sh in mirapodo_shipments] == [200, 200]
+
+    mirapodo_orders = MirapodoOrder.objects.all()
+    assert [o.internal_status for o in mirapodo_orders] == ([
+        'IMPORTED',
+        'IMPORTED',
+        'SHIPPED',
+        'SHIPPED',
+    ])

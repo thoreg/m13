@@ -82,6 +82,11 @@ def get_payload(order, tracking_info):
     return payload
 
 
+def _post(url, auth, data, headers):
+    """Do the actual call to the external API."""
+    return requests.post(url, auth=auth, data=data, headers=headers)
+
+
 def do_post(order, tracking_info):
     """Submit xml data to the POST endpoint."""
     headers = {'Content-Type': 'application/xml'}
@@ -90,7 +95,7 @@ def do_post(order, tracking_info):
     print(f"SHIPMENTS_URL: {SHIPMENTS_URL}")
     print(f"type payload: {type(payload)}")
 
-    response = requests.post(
+    response = _post(
         f'{SHIPMENTS_URL}',
         auth=(USER_NAME, PASSWD),
         data=payload,
@@ -98,10 +103,12 @@ def do_post(order, tracking_info):
     )
 
     msg = f"resp: {response.status_code} : {response.text}"
-    if not response.status_code == codes.ok:
-        LOG.error(msg)
-    else:
+    if response.status_code == codes.ok:
         LOG.info(msg)
+        order.internal_status = Order.Status.SHIPPED
+        order.save()
+    else:
+        LOG.error(msg)
 
     return (response.status_code, response.text)
 
