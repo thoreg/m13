@@ -47,7 +47,7 @@ CARRIER = "HERMES"
 
 def get_payload(order, tracking_info):
     """Return the payload for all orderitems of the given order."""
-    order_id = order.marketplace_order_id
+    order_id = order.marketplace_order_id.lstrip("TB_")
     quantity = 0
 
     for oi in order.orderitem_set.all():
