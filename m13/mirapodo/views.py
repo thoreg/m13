@@ -112,7 +112,7 @@ def orderitems_csv(request):
             _get_country_information(oi.order.delivery_address.country_code),
             oi.sku,
             oi.billing_text,
-            oi.item_price,
+            str(oi.item_price).replace('.', ','),
             1,
             'Artikel',
             f'MIRAPODO {oi.order.marketplace_order_id}',
