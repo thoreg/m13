@@ -221,6 +221,8 @@ def product_stats_v1(request):
         start_date = date.today() - timedelta(weeks=4)
 
     zproducts = ZProduct.objects.select_related('category').all()
+    LOG.info(f'Found {len(zproducts)} zproducts')
+
     zproduct_by_sku = {}
     for zp in zproducts:
         zproduct_by_sku[zp.article] = {
@@ -236,6 +238,8 @@ def product_stats_v1(request):
         }
 
     product_shipping_stats = daily_shipment_reports.get_product_stats_v1(start_date)
+    LOG.info(f'Got {len(product_shipping_stats)} product shipping stats entries')
+
     for pss in product_shipping_stats:
         sku = pss['article_number']
         try:
@@ -312,4 +316,5 @@ def product_stats_v1(request):
                 - pss_by_category[category]['stats']['total_return_costs']
             )
 
+    LOG.info(f'Got {len(pss_by_category)} pss_by_category entries')
     return JsonResponse(pss_by_category, safe=False)
