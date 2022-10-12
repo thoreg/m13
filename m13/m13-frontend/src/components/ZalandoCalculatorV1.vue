@@ -6,8 +6,8 @@
     </div>
   </section>
   <section>
-    <article class="category" :class="categoryClasses" v-for="(value, category) in products" :key="category">
-      <div class="category-header" @click="toggleCategory">
+    <article class="category closed" v-for="(value, category) in products" :key="category">
+      <div class="category-header" @click="toggleCategory($event)">
         <table class="category-overview">
           <tr>
             <td class="column-l">{{ value.name }}</td>
@@ -86,8 +86,7 @@ export default {
       products: {},
       absolute: {
         diff: 0
-      },
-      isOpen: true,
+      }
     }
   },
   methods: {
@@ -137,18 +136,31 @@ export default {
           console.log(error)
         })
       },
-      toggleCategory() {
-        this.isOpen = !this.isOpen
+      toggleCategory(event) {
+        // Find the surrounding article and toggle 'closed' class
+        // Everything is closed on initial page load
+        function findUpTag(el, tag) {
+          while (el.parentNode) {
+          el = el.parentNode;
+          if (el.tagName === tag)
+            return el;
+          }
+          return null;
+        }
+        let product = findUpTag(event.target, "ARTICLE");
+        if (product) {
+          const isClosed = product.classList.contains('closed');
+          if(!isClosed) {
+            product.classList.add('closed');
+          } else {
+            product.classList.remove('closed');
+          }
+        }
       },
   },
   // We can not reference 'data' within (itself) data section -> data which is based on data belongs
   // to the 'computed' section (no self reference with 'this' within data() section)
   computed: {
-      categoryClasses() {
-        return {
-          'is-closed': this.isOpen
-        }
-      },
       getAbsoluteDiff() {
         let absoluteDiff = 0;
         for (const product in this.products) {
@@ -190,7 +202,7 @@ export default {
   overflow: hidden;
   transition: 0.3s ease all;
 }
-.is-closed .category-body {
+.closed .category-body {
   max-height: 0;
 }
 .column-s {
