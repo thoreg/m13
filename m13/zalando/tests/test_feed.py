@@ -11,7 +11,7 @@ ZALANDO_URLS = [
     'zalando_price_feed',
     'zalando_index',
     'zalando_finance_upload_files',
-    'zalando_finance_calculator',
+    'zalando_finance_calculator_v1',
 ]
 
 

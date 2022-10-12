@@ -9,6 +9,5 @@ urlpatterns = [
     path('stats/orderitems', views.stats_orderitems, name='zalando_stats_orderitems'),
     path('finance/upload', views.upload_files, name='zalando_finance_upload_files'),
     path('finance/calculator/v1', views.calculator_v1, name='zalando_finance_calculator_v1'),
-    path('finance/calculator', views.calculator, name='zalando_finance_calculator'),
     path('', views.index, name='zalando_index')
 ]

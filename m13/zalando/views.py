@@ -195,12 +195,6 @@ def upload_files(request):
     })
 
 
-@login_required
-def calculator(request):
-    """Overview of all zalando calculator values."""
-    return render(request, 'zalando/finance/z_calculator.html', {})
-
-
 @login_required()
 def article_stats(request):
     """Return the article stats as JSON."""
