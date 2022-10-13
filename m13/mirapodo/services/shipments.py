@@ -14,7 +14,7 @@ with the following payload
         <QUANTITY>1</QUANTITY>                                      - Liefermenge -
         <CARRIER_PARCEL_TYPE>DHL_STD_NATIONAL</CARRIER_PARCEL_TYPE> - Versandart -
         <IDCODE>123456789</IDCODE>                                  - Shipcode -
-        <IDCODE_RETURN_PROPOSAL></IDCODE_RETURN_PROPOSAL>
+        <IDCODE_RETURN_PROPOSAL>1</IDCODE_RETURN_PROPOSAL>          - BOGUS BILLO VALUE
     </MESSAGE>
 </MESSAGES_LIST>
 
@@ -42,7 +42,7 @@ USER_NAME = os.environ['M13_MIRAPODO_USER_NAME']
 HNR = os.environ['M13_MIRAPODO_HNR']
 PASSWD = os.environ['M13_MIRAPODO_PASSWORD']
 SHIPMENTS_URL = f"https://rest.trade-server.net/{HNR}/messages/?"
-CARRIER = "HERMES"
+CARRIER = "HERMES_STD_NATIONAL"
 
 
 def get_payload(order, tracking_info):
@@ -69,7 +69,7 @@ def get_payload(order, tracking_info):
                 <QUANTITY>{quantity}</QUANTITY>
                 <CARRIER_PARCEL_TYPE>{CARRIER}</CARRIER_PARCEL_TYPE>
                 <IDCODE>{tracking_info}</IDCODE>
-                <IDCODE_RETURN_PROPOSAL></IDCODE_RETURN_PROPOSAL>
+                <IDCODE_RETURN_PROPOSAL>1</IDCODE_RETURN_PROPOSAL>
             </MESSAGE>
         </MESSAGES_LIST>
     """
@@ -105,8 +105,6 @@ def do_post(order, tracking_info):
     msg = f"resp: {response.status_code} : {response.text}"
     if response.status_code == codes.ok:
         LOG.info(msg)
-        order.internal_status = Order.Status.SHIPPED
-        order.save()
     else:
         LOG.error(msg)
 
@@ -135,7 +133,7 @@ def handle_uploaded_file(csv_file):
             LOG.error(f'Tracking info not found - row: {row}')
             continue
 
-        marketplace_order_id = row[0].lstrip("TB_")
+        marketplace_order_id = row[0]
         try:
             order = (
                 Order.objects.select_related('delivery_address')
@@ -155,3 +153,5 @@ def handle_uploaded_file(csv_file):
             response_status_code=status_code,
             response=response
         )
+        order.internal_status = Order.Status.SHIPPED
+        order.save()
