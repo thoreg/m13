@@ -243,6 +243,7 @@ class ZProduct(TimeStampedModel):
     shipped = models.PositiveIntegerField(null=True, blank=True)
     returned = models.PositiveIntegerField(null=True, blank=True)
     canceled = models.PositiveIntegerField(null=True, blank=True)
+    pimped = models.BooleanField(default=False)
 
     @property
     def eight_percent_provision(self):                                                  # F2
