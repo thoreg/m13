@@ -45,6 +45,7 @@ class ZProductAdmin(admin.ModelAdmin):
         'category',
         'costs_production',
         'vk_zalando',
+        'pimped',
         'shipped',
         'returned',
         'shipping_costs',

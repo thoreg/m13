@@ -3,16 +3,37 @@ from unittest.mock import patch
 
 import pytest
 from django.core.management import call_command
-from core.models import Category
 
+from core.models import Category
+from m13.lib.csv_reader import read_csv
 from zalando.models import PriceTool, ZProduct
 from zalando.services.feed import ZalandoException, pimp_prices
-from m13.lib.csv_reader import read_csv
 
 
 @pytest.mark.django_db
 def test_pimp_prices():
     """Pimp original stock n price feed."""
+    #
+    # Prepare two products - one price gets overwritten, one not
+    #
+    c1 = Category.objects.create(
+        name='test_category_1'
+    )
+    ZProduct.objects.create(
+        article="CORJACKET-BO-M",
+        category=c1,
+        costs_production='14.99',
+        vk_zalando='24.99',
+        pimped=True
+    )
+    ZProduct.objects.create(
+        article="CORJACKET-BO-S",
+        category=c1,
+        costs_production='14.99',
+        vk_zalando='24.99',
+        pimped=False
+    )
+
     with open('zalando/tests/data/original_stock_price_feed.csv', 'r') as f:
         cr = csv.reader(f.read().splitlines(), delimiter=';')
         lines = list(cr)
@@ -150,11 +171,11 @@ def test_pimp_prices():
         'article_number': 'CORJACKET-BO-M',
         'article_size': 'M',
         'ean': '0781491971740',
-        'price': '69.95',
+        'price': '24.99',
         'product_name': 'Oversized Cord Jacke (Black Out) - M',
         'product_number': 'CORJACKET-BO-M',
         'quantity': '0',
-        'retail_price': '69.95',
+        'retail_price': '24.99',
         'store': '001',
         'store_article_location': 'Manufaktur13 - Chop Shop'
     }]

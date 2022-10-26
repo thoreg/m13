@@ -9,7 +9,7 @@ from django.conf import settings
 
 from m13.common import now_as_str
 from zalando.constants import SKU_BLACKLIST
-from zalando.models import FeedUpload, PriceTool, Product
+from zalando.models import FeedUpload, PriceTool, Product, ZProduct
 
 LOG = logging.getLogger(__name__)
 
@@ -196,13 +196,24 @@ def pimp_prices(lines):
         # 2 price
         # 3 retail_price
         # 7 name
+
+        try:
+            # Special overwrite on certain products - just take hard the vk_zalando
+            # without further any further modification
+            zproduct = ZProduct.objects.get(
+                article=row[5],
+                pimped=True
+            )
+            price = zproduct.vk_zalando
+
+        except ZProduct.DoesNotExist:
+            _price = float(row[2].replace(',', '.'))
+            price = _get_price(_price, FACTOR)
+
         ean = row[1]
-        _price = float(row[2].replace(',', '.'))
-        original_price = _price
-        price = _get_price(_price, FACTOR)
-        retail_price = _get_price(float(row[3].replace(',', '.')), FACTOR)
+        retail_price = price
         product_name = row[7]
-        LOG.debug(f'{product_name}: {original_price} -> {price}')
+        LOG.debug(f'{product_name}: {row[2]} -> {price}')
         Product.objects.get_or_create(ean=ean, defaults={
             'title': product_name
         })
