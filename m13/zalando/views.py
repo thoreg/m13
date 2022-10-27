@@ -286,9 +286,7 @@ def product_stats_v1(request):
             # Calculation of revenue only makes sense when there were sales in the selected time range
             pss['total_revenue'] = 0
             if pss['shipped']:
-                pss['total_revenue'] = (
-                    pss['profit_after_taxes'] * (pss['shipped'] - pss['returned'])
-                )
+                pss['total_revenue'] = pss['profit_after_taxes'] * pss['shipped']
 
             pss['total_return_costs'] = (
                 pss['returned'] * (

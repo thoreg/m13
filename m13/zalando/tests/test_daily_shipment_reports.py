@@ -433,9 +433,9 @@ class TestWhateverFunctions(APITestCase):
                     'returned': 1,
                     'shipped': 2,
                     'shipping_costs': '3.55',
-                    'total_diff': '-6.51',
+                    'total_diff': '-3.82',
                     'total_return_costs': '9.20',
-                    'total_revenue': '2.69',
+                    'total_revenue': '5.38',
                     'vk_zalando': '69.99'
                 }, {
                     'article_number': 'women-bom-da-l',
