@@ -34,7 +34,7 @@ from io import TextIOWrapper
 import requests
 from requests.models import codes
 
-from mirapodo.models import Order, Shipment
+from mirapodo.models import Order, OrderItem, Shipment
 
 LOG = logging.getLogger(__name__)
 
@@ -45,16 +45,12 @@ SHIPMENTS_URL = f"https://rest.trade-server.net/{HNR}/messages/?"
 CARRIER = "HERMES_STD_NATIONAL"
 
 
-def get_payload(order, tracking_info):
+def get_payload(orderitem, tracking_info):
     """Return the payload for all orderitems of the given order."""
-    order_id = order.marketplace_order_id.lstrip("TB_")
-    quantity = 0
-
-    for oi in order.orderitem_set.all():
-        LOG.info(oi.__dict__)
-        quantity += 1
-        sku = oi.sku
-        orderitem_id = oi.position_item_id
+    order_id = orderitem.order.marketplace_order_id.lstrip("TB_")
+    quantity = 1
+    sku = orderitem.sku
+    orderitem_id = orderitem.position_item_id
 
     # TODO: handling of more than one orderitem
 
@@ -87,28 +83,31 @@ def _post(url, auth, data, headers):
     return requests.post(url, auth=auth, data=data, headers=headers)
 
 
-def do_post(order, tracking_info):
+def do_posts(order, tracking_info):
     """Submit xml data to the POST endpoint."""
     headers = {'Content-Type': 'application/xml'}
-    payload = get_payload(order, tracking_info)
 
-    print(f"SHIPMENTS_URL: {SHIPMENTS_URL}")
-    print(f"type payload: {type(payload)}")
+    for orderitem in order.orderitem_set.all():
+        payload = get_payload(orderitem, tracking_info)
 
-    response = _post(
-        f'{SHIPMENTS_URL}',
-        auth=(USER_NAME, PASSWD),
-        data=payload,
-        headers=headers
-    )
+        print(f"SHIPMENTS_URL: {SHIPMENTS_URL}")
+        print(f"type payload: {type(payload)}")
 
-    msg = f"resp: {response.status_code} : {response.text}"
-    if response.status_code == codes.ok:
-        LOG.info(msg)
-    else:
-        LOG.error(msg)
+        response = _post(
+            f'{SHIPMENTS_URL}',
+            auth=(USER_NAME, PASSWD),
+            data=payload,
+            headers=headers
+        )
 
-    return (response.status_code, response.text)
+        msg = f"resp: {response.status_code} : {response.text}"
+        if response.status_code == codes.ok:
+            LOG.info(msg)
+        else:
+            LOG.error(msg)
+            return 409, 'ERROR'
+
+    return 200, 'SUCCESS'
 
 
 def handle_uploaded_file(csv_file):
@@ -144,7 +143,7 @@ def handle_uploaded_file(csv_file):
 
         LOG.info(f'o: {marketplace_order_id} t: {tracking_info}')
 
-        status_code, response = do_post(order, tracking_info)
+        status_code, response = do_posts(order, tracking_info)
 
         Shipment.objects.create(
             order=order,
@@ -155,3 +154,5 @@ def handle_uploaded_file(csv_file):
         )
         order.internal_status = Order.Status.SHIPPED
         order.save()
+
+        OrderItem.objects.filter(order=order).update(internal_status='SHIPPED')

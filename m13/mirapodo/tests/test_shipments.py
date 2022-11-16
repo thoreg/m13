@@ -1,16 +1,16 @@
 
 import pytest
 
-from mirapodo.models import Order
+from mirapodo.models import OrderItem
 from mirapodo.services.shipments import get_payload
 
 
 @pytest.mark.django_db
 def test_get_payload():
     """Right payload data is created from order+tracking_info."""
-    order = Order.objects.all().order_by('-order_date')[0]
+    oi = OrderItem.objects.all().order_by('-order__id')[0]
 
-    payload = get_payload(order, 12345)
+    payload = get_payload(oi, 12345)
 
     assert payload == (
         '<?xml version="1.0" encoding="utf-8"?><MESSAGES_LIST><MESSAGE>'
