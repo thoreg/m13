@@ -65,6 +65,19 @@ class OrderItem(TimeStampedModel):
     position_item_id = models.CharField(max_length=16)
     transfer_price = models.DecimalField(max_digits=5, decimal_places=2)
 
+    class Status(models.TextChoices):
+        IMPORTED = "IMPORTED", "Imported"
+        IN_PROGRESS = "IN_PROGRESS", "In Progress"
+        SHIPPED = "SHIPPED", "Shipped"
+        FINISHED = "FINISHED", "Finished"
+        CANCELED = "CANCELED", "Canceled"
+
+    internal_status = models.CharField(
+        max_length=11,
+        choices=Status.choices,
+        default=Status.IMPORTED,
+    )
+
 
 class Shipment(TimeStampedModel):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)

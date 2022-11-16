@@ -3,14 +3,6 @@ from django.contrib import admin
 from .models import Order, OrderItem
 
 
-class OrderAdmin(admin.ModelAdmin):
-    list_display = (
-        'marketplace_order_id',
-        'internal_status',
-        'created'
-    )
-
-
 class OrderItemAdmin(admin.ModelAdmin):
     def get_marketplace_order_id(self, obj):
         return obj.order.marketplace_order_id
@@ -22,6 +14,24 @@ class OrderItemAdmin(admin.ModelAdmin):
         'item_price',
         'created'
     )
+
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+
+
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [
+        OrderItemInline
+    ]
+    list_display = (
+        'marketplace_order_id',
+        'internal_status',
+        'created'
+    )
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 admin.site.register(Order, OrderAdmin)
