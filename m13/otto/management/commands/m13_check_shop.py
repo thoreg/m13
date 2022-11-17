@@ -36,6 +36,8 @@ WHITE_LIST = [
     '#slides__3',
     '#slides__4',
     '#slides__5',
+    'https://devowl.io/de/wordpress-real-cookie-banner/',
+    '#consent-change',
 ]
 
 
