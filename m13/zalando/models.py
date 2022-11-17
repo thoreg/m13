@@ -282,7 +282,7 @@ class ZProduct(TimeStampedModel):
     def total_revenue(self):
         """Revenue from all sold items."""
         if self.vk_zalando:
-            return self.profit_after_taxes * (self.shipped - self.returned)
+            return self.profit_after_taxes * self.shipped
         return 0
 
     @property
