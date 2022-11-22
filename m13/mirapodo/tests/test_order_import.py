@@ -2,6 +2,7 @@ import datetime
 from decimal import Decimal
 
 import pytest
+import xmltodict
 from django.urls import reverse
 from freezegun import freeze_time
 from freezegun.api import FakeDatetime
@@ -154,15 +155,16 @@ def test_import_orders(client, django_user_model, pytestconfig):
         xml_string = f.read()
 
     # basic import
-    import_orders(xml_string)
+    parsed_order = xmltodict.parse(xml_string)
+    import_orders(parsed_order)
 
     verify_addresses(Address.objects.all().values())
     verify_orders(Order.objects.all().values())
     verify_order_items(OrderItem.objects.all().values())
 
     # multiple import does not mess up things
-    import_orders(xml_string)
-    import_orders(xml_string)
+    import_orders(parsed_order)
+    import_orders(parsed_order)
 
     verify_addresses(Address.objects.all().values())
     verify_orders(Order.objects.all().values())
@@ -203,7 +205,8 @@ def test_import_single_order():
         xml_string = f.read()
 
     # basic import
-    import_orders(xml_string)
+    parsed_order = xmltodict.parse(xml_string)
+    import_orders(parsed_order)
 
     assert [a for a in Address.objects.all().values()] == [{
         'addition': '2',

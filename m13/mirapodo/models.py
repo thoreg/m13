@@ -78,6 +78,11 @@ class OrderItem(TimeStampedModel):
         default=Status.IMPORTED,
     )
 
+    def mark_as_shipped(self):
+        """Status update when tracking info was transmitted to marketplace."""
+        self.internal_status = self.Status.SHIPPED
+        self.save()
+
 
 class Shipment(TimeStampedModel):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
