@@ -34,7 +34,7 @@ from io import TextIOWrapper
 import requests
 from requests.models import codes
 
-from mirapodo.models import Order, OrderItem, Shipment
+from mirapodo.models import Order, Shipment
 
 LOG = logging.getLogger(__name__)
 
@@ -45,37 +45,42 @@ SHIPMENTS_URL = f"https://rest.trade-server.net/{HNR}/messages/?"
 CARRIER = "HERMES_STD_NATIONAL"
 
 
-def get_payload(orderitem, tracking_info):
-    """Return the payload for all orderitems of the given order."""
-    order_id = orderitem.order.marketplace_order_id.lstrip("TB_")
-    quantity = 1
-    sku = orderitem.sku
-    orderitem_id = orderitem.position_item_id
+class ApiCallFailed(Exception):
+    pass
 
-    # TODO: handling of more than one orderitem
 
-    payload = f"""
-        <?xml version="1.0" encoding="utf-8"?>
-        <MESSAGES_LIST>
-            <MESSAGE>
-                <MESSAGE_TYPE>SHIP</MESSAGE_TYPE>
-                <TB_ORDER_ID>{order_id}</TB_ORDER_ID>
-                <TB_ORDER_ITEM_ID>{orderitem_id}</TB_ORDER_ITEM_ID>
-                <SKU>{sku}</SKU>
-                <QUANTITY>{quantity}</QUANTITY>
-                <CARRIER_PARCEL_TYPE>{CARRIER}</CARRIER_PARCEL_TYPE>
-                <IDCODE>{tracking_info}</IDCODE>
-                <IDCODE_RETURN_PROPOSAL>1</IDCODE_RETURN_PROPOSAL>
-            </MESSAGE>
-        </MESSAGES_LIST>
-    """
+def _strip_payload(payload):
+    """Remove newline and whitespace to get something mirapodo understands."""
     payload = payload.strip()
     payload = payload.replace('\n', '')
     payload = ' '.join(payload.split())
     payload = payload.replace('> <', '><')
-
-    LOG.info(f'Return payload: {payload}')
     return payload
+
+
+def _get_playload_start():
+    return '<?xml version="1.0" encoding="utf-8"?><MESSAGES_LIST>'
+
+
+def _get_playload_end():
+    return '</MESSAGES_LIST>'
+
+
+def get_payload(orderitem, tracking_info):
+    """Return the payload for all orderitems of the given order."""
+    order_id = orderitem.order.marketplace_order_id.lstrip("TB_")
+    return f"""
+        <MESSAGE>
+            <MESSAGE_TYPE>SHIP</MESSAGE_TYPE>
+            <TB_ORDER_ID>{order_id}</TB_ORDER_ID>
+            <TB_ORDER_ITEM_ID>{orderitem.position_item_id}</TB_ORDER_ITEM_ID>
+            <SKU>{orderitem.sku}</SKU>
+            <QUANTITY>{orderitem.quantity}</QUANTITY>
+            <CARRIER_PARCEL_TYPE>{CARRIER}</CARRIER_PARCEL_TYPE>
+            <IDCODE>{tracking_info}</IDCODE>
+            <IDCODE_RETURN_PROPOSAL>1</IDCODE_RETURN_PROPOSAL>
+        </MESSAGE>
+    """
 
 
 def _post(url, auth, data, headers):
@@ -83,29 +88,40 @@ def _post(url, auth, data, headers):
     return requests.post(url, auth=auth, data=data, headers=headers)
 
 
-def do_posts(order, tracking_info):
-    """Submit xml data to the POST endpoint."""
+def upload_tracking_info(order, tracking_info):
+    """Update tracking info per orderitem.
+
+    Submit xml data to the POST endpoint.
+    """
     headers = {'Content-Type': 'application/xml'}
 
+    payload = _get_playload_start()
+
     for orderitem in order.orderitem_set.all():
-        payload = get_payload(orderitem, tracking_info)
+        payload += get_payload(orderitem, tracking_info)
 
-        print(f"SHIPMENTS_URL: {SHIPMENTS_URL}")
-        print(f"type payload: {type(payload)}")
+    payload += _get_playload_end()
+    payload = _strip_payload(payload)
 
-        response = _post(
-            f'{SHIPMENTS_URL}',
-            auth=(USER_NAME, PASSWD),
-            data=payload,
-            headers=headers
-        )
+    print(f"SHIPMENTS_URL: {SHIPMENTS_URL}")
+    print(f"PAYLOAD: {payload}")
 
-        msg = f"resp: {response.status_code} : {response.text}"
-        if response.status_code == codes.ok:
-            LOG.info(msg)
-        else:
-            LOG.error(msg)
-            return 409, 'ERROR'
+    response = _post(
+        f'{SHIPMENTS_URL}',
+        auth=(USER_NAME, PASSWD),
+        data=payload,
+        headers=headers
+    )
+
+    msg = f"resp: {response.status_code} : {response.text}"
+    if response.status_code == codes.ok:
+        LOG.info(msg)
+        LOG.info('mark all orderitems as shipped')
+        for orderitem in order.orderitem_set.all():
+            orderitem.mark_as_shipped()
+    else:
+        LOG.error(msg)
+        raise ApiCallFailed('API call to mirapodo failed')
 
     return 200, 'SUCCESS'
 
@@ -143,7 +159,11 @@ def handle_uploaded_file(csv_file):
 
         LOG.info(f'o: {marketplace_order_id} t: {tracking_info}')
 
-        status_code, response = do_posts(order, tracking_info)
+        try:
+            status_code, response = upload_tracking_info(order, tracking_info)
+        except ApiCallFailed:
+            status_code = 409
+            response = 'API call failed - please check logs'
 
         Shipment.objects.create(
             order=order,
@@ -154,5 +174,3 @@ def handle_uploaded_file(csv_file):
         )
         order.internal_status = Order.Status.SHIPPED
         order.save()
-
-        OrderItem.objects.filter(order=order).update(internal_status='SHIPPED')

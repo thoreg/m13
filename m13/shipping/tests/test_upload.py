@@ -80,7 +80,7 @@ def test_handle_uploaded_file(client, django_user_model):
 
     # Verification MIRAPODO
     mirapodo_shipments = MirapodoShipment.objects.all()
-    assert mocked_mirapodo_do_post.call_count == 3
+    assert mocked_mirapodo_do_post.call_count == 2
     assert [sh.tracking_info for sh in mirapodo_shipments] == ([
         '01145166000368',
         '02245166000399',

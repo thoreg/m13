@@ -90,13 +90,11 @@ def import_order(order_dict):
         _get_or_create_orderitem(order_items)
 
 
-def import_orders(xml_string):
+def import_orders(parsed):
     """Walk through all orders within a given xml string and trigger import."""
-    parsed = xmltodict.parse(xml_string)
-
     if isinstance(parsed['ORDER_LIST']['ORDER'], list):
-        for order_xml in parsed['ORDER_LIST']['ORDER']:
-            import_order(order_xml)
+        for order_dict in parsed['ORDER_LIST']['ORDER']:
+            import_order(order_dict)
     else:
         import_order(parsed['ORDER_LIST']['ORDER'])
 
@@ -118,7 +116,8 @@ def fetch_orders():
         if not response.content:
             LOG.info('No new orders on Mirapodo')
             return
-        import_orders(response.content)
+        parsed_order = xmltodict.parse(response.content)
+        import_orders(parsed_order)
 
 
 def fetch_order_by_id(order_id):
