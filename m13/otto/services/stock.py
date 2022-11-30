@@ -53,7 +53,11 @@ def sync_stock():
 
             resp = requests.post(f'{OTTO_QUANTITIES_URL}', headers=headers, json=payload)
             if resp.status_code != requests.codes.ok:
-                LOG.error(resp.json()['errors'][0]['detail'])
+                try:
+                    LOG.error(resp.json()['errors'][0]['detail'])
+                except KeyError:
+                    LOG.error(resp.json())
+
                 continue
 
             LOG.info(f'updated - sku: {sku} quantity : {quantity}')
