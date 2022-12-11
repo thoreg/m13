@@ -296,7 +296,10 @@ def product_stats_v1(request):
 
             if pss['shipped']:
                 pss_by_category[category]['stats']['total_revenue'] = (
-                    pss['profit_after_taxes'] * pss_by_category[category]['stats']['shipped']
+                    pss['profit_after_taxes'] * (
+                        pss_by_category[category]['stats']['shipped']
+                        - pss_by_category[category]['stats']['returned']
+                    )
                 )
 
             pss_by_category[category]['stats']['total_return_costs'] = (
