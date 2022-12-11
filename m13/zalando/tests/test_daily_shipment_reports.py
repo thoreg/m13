@@ -158,6 +158,7 @@ class TestWhateverFunctions(APITestCase):
                      'returned': 1,
                      'shipped': 2,
                      'shipping_costs': '3.55',
+                     'umsatz': 0,
                      'vk_zalando': None},
                     {'article_number': 'women-bom-da-l',
                      'canceled': 0,
@@ -171,6 +172,7 @@ class TestWhateverFunctions(APITestCase):
                      'returned': 0,
                      'shipped': 3,
                      'shipping_costs': '3.55',
+                     'umsatz': 0,
                      'vk_zalando': None},
                     {'article_number': 'pizza_2_w-l',
                      'canceled': 0,
@@ -184,6 +186,7 @@ class TestWhateverFunctions(APITestCase):
                      'returned': 0,
                      'shipped': 3,
                      'shipping_costs': '3.55',
+                     'umsatz': 0,
                      'vk_zalando': None},
                     {'article_number': 'stra_wings_w-l',
                      'canceled': 1,
@@ -197,6 +200,7 @@ class TestWhateverFunctions(APITestCase):
                      'returned': 0,
                      'shipped': 2,
                      'shipping_costs': '3.55',
+                     'umsatz': 0,
                      'vk_zalando': None}],
                 'name': 'N/A',
                 'stats': {
@@ -205,14 +209,15 @@ class TestWhateverFunctions(APITestCase):
                     'shipped': 10,
                     'total_diff': 0,
                     'total_return_costs': 0,
-                    'total_revenue': 0}}}
+                    'total_revenue': 0,
+                    'umsatz': 0
+                }}}
 
         #
         # No category - Filter by DateRange
         #
         response = self.client.get('/api/v1/zalando/finance/products/?start=2022-06-01')
         assert response.status_code == HTTP_200_OK
-
         assert response.json() == {
             'N/A': {
                 'content': [
@@ -228,6 +233,7 @@ class TestWhateverFunctions(APITestCase):
                      'returned': 0,
                      'shipped': 1,
                      'shipping_costs': '3.55',
+                     'umsatz': 0,
                      'vk_zalando': None},
                     {'article_number': 'women-bom-da-l',
                      'canceled': 0,
@@ -241,6 +247,7 @@ class TestWhateverFunctions(APITestCase):
                      'returned': 0,
                      'shipped': 1,
                      'shipping_costs': '3.55',
+                     'umsatz': 0,
                      'vk_zalando': None},
                     {'article_number': 'pizza_2_w-l',
                      'canceled': 0,
@@ -254,6 +261,7 @@ class TestWhateverFunctions(APITestCase):
                      'returned': 0,
                      'shipped': 1,
                      'shipping_costs': '3.55',
+                     'umsatz': 0,
                      'vk_zalando': None},
                     {'article_number': 'stra_wings_w-l',
                      'canceled': 0,
@@ -267,6 +275,7 @@ class TestWhateverFunctions(APITestCase):
                      'returned': 0,
                      'shipped': 1,
                      'shipping_costs': '3.55',
+                     'umsatz': 0,
                      'vk_zalando': None}],
                 'name': 'N/A',
                 'stats': {
@@ -275,7 +284,9 @@ class TestWhateverFunctions(APITestCase):
                     'shipped': 4,
                     'total_diff': 0,
                     'total_return_costs': 0,
-                    'total_revenue': 0}}}
+                    'total_revenue': 0,
+                    'umsatz': 0,
+                }}}
 
         # Same shit but different - category defined for two of the products
         category = Category.objects.create(name='THIS_IS_A_VERY_VERY_LONG_CATEGORY_NAME')
@@ -306,6 +317,7 @@ class TestWhateverFunctions(APITestCase):
                     'returned': 0,
                     'shipped': 1,
                     'shipping_costs': '3.55',
+                    'umsatz': 0,
                     'vk_zalando': None},
                    {'article_number': 'stra_wings_w-l',
                     'canceled': 0,
@@ -319,6 +331,7 @@ class TestWhateverFunctions(APITestCase):
                     'returned': 0,
                     'shipped': 1,
                     'shipping_costs': '3.55',
+                    'umsatz': 0,
                     'vk_zalando': None}],
                 'name': 'N/A',
                 'stats': {
@@ -327,7 +340,8 @@ class TestWhateverFunctions(APITestCase):
                     'shipped': 2,
                     'total_diff': 0,
                     'total_return_costs': 0,
-                    'total_revenue': 0
+                    'total_revenue': 0,
+                    'umsatz': 0,
                 }
             },
             'THIS_IS_A_VERY_VER': {
@@ -347,6 +361,7 @@ class TestWhateverFunctions(APITestCase):
                     'total_diff': '2.69',
                     'total_return_costs': '0.00',
                     'total_revenue': '2.69',
+                    'umsatz': '69.99',
                     'vk_zalando': '69.99'
                 }, {
                     'article_number': 'women-bom-da-l',
@@ -364,6 +379,7 @@ class TestWhateverFunctions(APITestCase):
                     'total_diff': '2.69',
                     'total_return_costs': '0.00',
                     'total_revenue': '2.69',
+                    'umsatz': '69.99',
                     'vk_zalando': '69.99'}],
                 'name': 'THIS_IS_A_VERY_VER',
                 'stats': {
@@ -372,7 +388,8 @@ class TestWhateverFunctions(APITestCase):
                     'shipped': 2,
                     'total_diff': '5.38',
                     'total_return_costs': '0.00',
-                    'total_revenue': '5.38'}
+                    'total_revenue': '5.38',
+                    'umsatz': '139.98'}
             }
         }
         #
@@ -395,6 +412,7 @@ class TestWhateverFunctions(APITestCase):
                     'returned': 0,
                     'shipped': 3,
                     'shipping_costs': '3.55',
+                    'umsatz': 0,
                     'vk_zalando': None},
                    {'article_number': 'stra_wings_w-l',
                     'canceled': 1,
@@ -408,6 +426,7 @@ class TestWhateverFunctions(APITestCase):
                     'returned': 0,
                     'shipped': 2,
                     'shipping_costs': '3.55',
+                    'umsatz': 0,
                     'vk_zalando': None}],
                 'name': 'N/A',
                 'stats': {
@@ -416,7 +435,8 @@ class TestWhateverFunctions(APITestCase):
                     'shipped': 5,
                     'total_diff': 0,
                     'total_return_costs': 0,
-                    'total_revenue': 0
+                    'total_revenue': 0,
+                    'umsatz': 0,
                 }
             },
             'THIS_IS_A_VERY_VER': {
@@ -436,6 +456,7 @@ class TestWhateverFunctions(APITestCase):
                     'total_diff': '-6.51',
                     'total_return_costs': '9.20',
                     'total_revenue': '2.69',
+                    'umsatz': '139.98',
                     'vk_zalando': '69.99'
                 }, {
                     'article_number': 'women-bom-da-l',
@@ -453,6 +474,7 @@ class TestWhateverFunctions(APITestCase):
                     'total_diff': '8.07',
                     'total_return_costs': '0.00',
                     'total_revenue': '8.07',
+                    'umsatz': '209.97',
                     'vk_zalando': '69.99'}],
                 'name': 'THIS_IS_A_VERY_VER',
                 'stats': {
@@ -461,6 +483,7 @@ class TestWhateverFunctions(APITestCase):
                     'shipped': 5,
                     'total_diff': '1.56',
                     'total_return_costs': '9.20',
-                    'total_revenue': '10.76'}
+                    'total_revenue': '10.76',
+                    'umsatz': '349.95'}
             }
         }

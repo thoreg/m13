@@ -271,6 +271,7 @@ def product_stats_v1(request):
                     'total_revenue': 0,
                     'total_return_costs': 0,
                     'total_diff': 0,
+                    'umsatz': 0,
                 },
                 'content': [pss]
             }
@@ -280,15 +281,16 @@ def product_stats_v1(request):
             pss_by_category[category]['stats']['canceled'] += pss['canceled']
             pss_by_category[category]['content'].append(pss)
 
+        pss['umsatz'] = 0
         if pss['vk_zalando']:
             # Update product (specific) shipping stats and category (specific) shipping stats
-
             # Calculation of revenue only makes sense when there were sales in the selected time range
             pss['total_revenue'] = 0
             if pss['shipped']:
                 pss['total_revenue'] = (
                     pss['profit_after_taxes'] * (pss['shipped'] - pss['returned'])
                 )
+                pss['umsatz'] = pss['vk_zalando'] * pss['shipped']
 
             pss['total_return_costs'] = (
                 pss['returned'] * (
@@ -302,6 +304,9 @@ def product_stats_v1(request):
                         pss_by_category[category]['stats']['shipped']
                         - pss_by_category[category]['stats']['returned']
                     )
+                )
+                pss_by_category[category]['stats']['umsatz'] = (
+                    pss['vk_zalando'] * pss_by_category[category]['stats']['shipped']
                 )
 
             pss_by_category[category]['stats']['total_return_costs'] = (

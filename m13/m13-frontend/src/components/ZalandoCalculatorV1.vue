@@ -15,6 +15,7 @@
             <td class="column-l">Retoure Stk: {{ value.stats.returned }}</td>
             <td class="column-xxl">Gewinn (Verkäufe): {{ value.stats.total_revenue }}</td>
             <td class="column-xxl">Verlust (Retouren): {{ value.stats.total_return_costs }}</td>
+            <td class="column-xxl">Umsatz: {{ value.stats.umsatz }}</td>
             <td class="column-l" v-bind:style="{ 'background-color': statusColor(value.stats.total_diff) }">
               Differenz: {{ value.stats.total_diff }}
             </td>
@@ -38,6 +39,7 @@
             <th>Retoure Stk</th>
             <th>Gewinn (Verkäufe)</th>
             <th>Verlust (Retouren)</th>
+            <th>Umsatz</th>
             <th>Differenz</th>
           </thead>
           <tr v-for="article in value.content" v-bind:key="article">
@@ -55,6 +57,7 @@
             <td>{{ article.returned }}</td>
             <td>{{ article.total_revenue }}</td>
             <td>{{ article.total_return_costs }}</td>
+            <td>{{ article.umsatz }}</td>
             <td v-bind:style="{ 'background-color': statusColor(article.total_diff) }">{{ article.total_diff }}</td>
           </tr>
         </table>
