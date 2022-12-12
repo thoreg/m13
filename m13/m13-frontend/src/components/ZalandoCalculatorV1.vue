@@ -2,6 +2,7 @@
   <div>
   <section class="overview">
     <div class="header" v-bind:style="{ 'background-color': statusColor(getAbsoluteDiff) }">
+      _absolute_sales: {{ getAbsoluteSales }}
       _absolute_diff: {{ getAbsoluteDiff }}
     </div>
   </section>
@@ -15,7 +16,7 @@
             <td class="column-l">Retoure Stk: {{ value.stats.returned }}</td>
             <td class="column-xxl">Gewinn (Verkäufe): {{ value.stats.total_revenue }}</td>
             <td class="column-xxl">Verlust (Retouren): {{ value.stats.total_return_costs }}</td>
-            <td class="column-xxl">Umsatz: {{ value.stats.umsatz }}</td>
+            <td class="column-xxl">Umsatz: {{ value.stats.sales }}</td>
             <td class="column-l" v-bind:style="{ 'background-color': statusColor(value.stats.total_diff) }">
               Differenz: {{ value.stats.total_diff }}
             </td>
@@ -57,7 +58,7 @@
             <td>{{ article.returned }}</td>
             <td>{{ article.total_revenue }}</td>
             <td>{{ article.total_return_costs }}</td>
-            <td>{{ article.umsatz }}</td>
+            <td>{{ article.sales }}</td>
             <td v-bind:style="{ 'background-color': statusColor(article.total_diff) }">{{ article.total_diff }}</td>
           </tr>
         </table>
@@ -171,6 +172,14 @@ export default {
         }
         absoluteDiff = Math.round((absoluteDiff + Number.EPSILON) * 1000) / 1000;
         return absoluteDiff;
+      },
+      getAbsoluteSales() {
+        let absoluteSales = 0;
+        for (const product in this.products) {
+          absoluteSales += parseFloat(this.products[product].stats.sales);
+        }
+        absoluteSales = Math.round((absoluteSales + Number.EPSILON) * 1000) / 1000;
+        return absoluteSales;
       }
   },
   // The steps in Vue lifecycle are:
