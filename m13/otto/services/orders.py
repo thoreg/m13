@@ -148,12 +148,26 @@ def save_orders(orders_as_json):
             print(Fore.YELLOW + f'Order {marketplace_order_id} already known')
 
         for oi in entry.get('positionItems'):
+
+            fulfillment_status = oi.get('fulfillmentStatus')
+            expected_delivery_date = oi.get('expectedDeliveryDate')
+
+            if not expected_delivery_date:
+                if fulfillment_status == "RETURNED":
+                    expected_delivery_date = oi.get('returnedDate')
+                elif fulfillment_status == "CANCELLED_BY_MARKETPLACE":
+                    expected_delivery_date = oi.get('cancellationDate')
+
+                if not expected_delivery_date:
+                    LOG.error("otto - STILL empty expected_delivery_date")
+                    LOG.error(oi)
+
             order_item, created = OrderItem.objects.get_or_create(
                 order=order,
                 position_item_id=oi.get('positionItemId'),
                 defaults={
                     'cancellation_date': oi.get('cancellationDate'),
-                    'expected_delivery_date': oi.get('expectedDeliveryDate'),
+                    'expected_delivery_date': expected_delivery_date,
                     'fulfillment_status': oi.get('fulfillmentStatus'),
                     'price_in_cent':
                         oi.get('itemValueGrossPrice').get('amount') * 100,
