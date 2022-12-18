@@ -21,7 +21,7 @@ class Article(TimeStampedModel):
     sku = models.CharField(max_length=32, unique=True)
 
     class Meta:
-        ordering = ['sku']
+        ordering = ["sku"]
 
     def __str__(self):
         # return self.product.name

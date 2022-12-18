@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zalando', '0004_rename_ongoing_pricetool_active'),
+        ("zalando", "0004_rename_ongoing_pricetool_active"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='feedupload',
-            name='z_factor',
+            model_name="feedupload",
+            name="z_factor",
             field=models.DecimalField(decimal_places=2, default=1.2, max_digits=3),
             preserve_default=False,
         ),

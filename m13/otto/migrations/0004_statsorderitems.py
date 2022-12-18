@@ -6,22 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('otto', '0003_statsorderitems'),
+        ("otto", "0003_statsorderitems"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='StatsOrderItems',
+            name="StatsOrderItems",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('month', models.DateTimeField()),
-                ('status', models.CharField(max_length=16)),
-                ('count', models.IntegerField()),
-                ('revenue', models.FloatField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("month", models.DateTimeField()),
+                ("status", models.CharField(max_length=16)),
+                ("count", models.IntegerField()),
+                ("revenue", models.FloatField()),
             ],
             options={
-                'db_table': 'otto_orderitem_stats',
-                'managed': False,
+                "db_table": "otto_orderitem_stats",
+                "managed": False,
             },
         ),
     ]

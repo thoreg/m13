@@ -12,24 +12,29 @@ from zalando import viewsets as zalando_viewsets
 from .views import index
 
 router = routers.DefaultRouter()
-router.register(r'otto/orderitems', OttoOrderItemsViewSet)
-router.register(r'zalando/raw-daily-shipement-reports', zalando_viewsets.RawDailyShipmentReportList)
+router.register(r"otto/orderitems", OttoOrderItemsViewSet)
+router.register(
+    r"zalando/raw-daily-shipement-reports", zalando_viewsets.RawDailyShipmentReportList
+)
 
 urlpatterns = [
-    path('__debug__/', include('debug_toolbar.urls')),
-    path('api/zalando/finance/products/<str:pk>/', zalando_viewsets.ZProductDetail.as_view()),
-    path('api/zalando/finance/products/', zalando_viewsets.ZProductList.as_view()),
-    path('api/v1/zalando/finance/products/', zalando_views.product_stats_v1),
-    path('api/zalando/finance/article-stats/', zalando_views.article_stats),
-    path('api/', include(router.urls)),
-    path('addi/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
-    path('mirapodo/', include('mirapodo.urls')),
-    path('otto/', include('otto.urls')),
-    path('z/', include('zalando.urls')),
-    path('etsy/', include('etsy.urls')),
-    path('shipping/', include('shipping.urls')),
-    path('', index)
+    path("__debug__/", include("debug_toolbar.urls")),
+    path(
+        "api/zalando/finance/products/<str:pk>/",
+        zalando_viewsets.ZProductDetail.as_view(),
+    ),
+    path("api/zalando/finance/products/", zalando_viewsets.ZProductList.as_view()),
+    path("api/v1/zalando/finance/products/", zalando_views.product_stats_v1),
+    path("api/zalando/finance/article-stats/", zalando_views.article_stats),
+    path("api/", include(router.urls)),
+    path("addi/", admin.site.urls),
+    path("api-auth/", include("rest_framework.urls")),
+    path("mirapodo/", include("mirapodo.urls")),
+    path("otto/", include("otto.urls")),
+    path("z/", include("zalando.urls")),
+    path("etsy/", include("etsy.urls")),
+    path("shipping/", include("shipping.urls")),
+    path("", index),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-handler404 = 'm13.views.page_not_found_view'
+handler404 = "m13.views.page_not_found_view"

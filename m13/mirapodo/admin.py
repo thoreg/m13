@@ -8,11 +8,11 @@ class OrderItemAdmin(admin.ModelAdmin):
         return obj.order.marketplace_order_id
 
     list_display = (
-        'get_marketplace_order_id',
-        'billing_text',
-        'sku',
-        'item_price',
-        'created'
+        "get_marketplace_order_id",
+        "billing_text",
+        "sku",
+        "item_price",
+        "created",
     )
 
 
@@ -21,14 +21,8 @@ class OrderItemInline(admin.TabularInline):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    inlines = [
-        OrderItemInline
-    ]
-    list_display = (
-        'marketplace_order_id',
-        'internal_status',
-        'created'
-    )
+    inlines = [OrderItemInline]
+    list_display = ("marketplace_order_id", "internal_status", "created")
 
     def has_change_permission(self, request, obj=None):
         return False

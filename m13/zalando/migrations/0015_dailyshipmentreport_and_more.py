@@ -7,37 +7,55 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zalando', '0014_alter_transactionfileupload_file_name'),
+        ("zalando", "0014_alter_transactionfileupload_file_name"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DailyShipmentReport',
+            name="DailyShipmentReport",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('article_number', models.CharField(max_length=36)),
-                ('cancel', models.BooleanField(default=False)),
-                ('channel_order_number', models.CharField(max_length=16)),
-                ('order_created', models.DateTimeField()),
-                ('price_in_cent', models.PositiveIntegerField()),
-                ('return_reason', models.CharField(max_length=256)),
-                ('returned', models.BooleanField(default=False)),
-                ('shipment', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    django_extensions.db.fields.CreationDateTimeField(
+                        auto_now_add=True, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    django_extensions.db.fields.ModificationDateTimeField(
+                        auto_now=True, verbose_name="modified"
+                    ),
+                ),
+                ("article_number", models.CharField(max_length=36)),
+                ("cancel", models.BooleanField(default=False)),
+                ("channel_order_number", models.CharField(max_length=16)),
+                ("order_created", models.DateTimeField()),
+                ("price_in_cent", models.PositiveIntegerField()),
+                ("return_reason", models.CharField(max_length=256)),
+                ("returned", models.BooleanField(default=False)),
+                ("shipment", models.BooleanField(default=False)),
             ],
             options={
-                'get_latest_by': 'modified',
-                'abstract': False,
+                "get_latest_by": "modified",
+                "abstract": False,
             },
         ),
         migrations.RenameField(
-            model_name='transactionfileupload',
-            old_name='status_code_processing',
-            new_name='processed',
+            model_name="transactionfileupload",
+            old_name="status_code_processing",
+            new_name="processed",
         ),
         migrations.RemoveField(
-            model_name='transactionfileupload',
-            name='status_code_upload',
+            model_name="transactionfileupload",
+            name="status_code_upload",
         ),
     ]

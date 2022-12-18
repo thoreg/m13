@@ -9,11 +9,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'month',
+            "month",
             type=str,
             help="Month of interest, e.g. 2022/01",
         )
 
     def handle(self, *args, **kwargs):
         """..."""
-        sales_report.importer.import_sales_reports(kwargs['month'])
+        sales_report.importer.import_sales_reports(kwargs["month"])

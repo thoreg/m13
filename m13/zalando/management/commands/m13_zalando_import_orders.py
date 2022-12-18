@@ -17,4 +17,4 @@ class Command(BaseCommand):
             process_new_oea_records()
         except Exception as exc:
             LOG.exception(exc)
-            send_traceback_as_email('M13BM - Import of Zalando Orders failed')
+            send_traceback_as_email("M13BM - Import of Zalando Orders failed")

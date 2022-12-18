@@ -49,7 +49,7 @@ from otto.models import Order, Shipment
 LOG = logging.getLogger(__name__)
 
 ALPHA = string.ascii_letters
-SHIPMENTS_URL = 'https://api.otto.market/v1/shipments'
+SHIPMENTS_URL = "https://api.otto.market/v1/shipments"
 
 
 def get_payload(order, tracking_info, carrier):
@@ -60,30 +60,29 @@ def get_payload(order, tracking_info, carrier):
         LOG.info(oi.__dict__)
 
     data = {
-        'trackingKey': {
-            'carrier': carrier,
-            'trackingNumber': tracking_info
-        },
-        'shipDate': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-        'shipFromAddress': {
-            'city': order.delivery_address.city,
-            'countryCode': order.delivery_address.country_code,
-            'zipCode': order.delivery_address.zip_code
+        "trackingKey": {"carrier": carrier, "trackingNumber": tracking_info},
+        "shipDate": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "shipFromAddress": {
+            "city": order.delivery_address.city,
+            "countryCode": order.delivery_address.country_code,
+            "zipCode": order.delivery_address.zip_code,
         },
     }
     order_items = []
     for oi in order.orderitem_set.all():
-        order_items.append({
-            'positionItemId': oi.position_item_id,
-            'salesOrderId': order.marketplace_order_id,
-            'returnTrackingKey': {
-                'carrier': carrier,
-                'trackingNumber': tracking_info
+        order_items.append(
+            {
+                "positionItemId": oi.position_item_id,
+                "salesOrderId": order.marketplace_order_id,
+                "returnTrackingKey": {
+                    "carrier": carrier,
+                    "trackingNumber": tracking_info,
+                },
             }
-        })
+        )
 
-    data['positionItems'] = order_items
-    LOG.info(f'Return data: {data}')
+    data["positionItems"] = order_items
+    LOG.info(f"Return data: {data}")
     return data
 
 
@@ -91,11 +90,12 @@ def do_post(token, order, tracking_info, carrier):
     payload = get_payload(order, tracking_info, carrier)
 
     LOG.info(
-        f'upload for o: {order.marketplace_order_number} t: {tracking_info} c: {carrier}')
+        f"upload for o: {order.marketplace_order_number} t: {tracking_info} c: {carrier}"
+    )
 
     headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json;charset=UTF-8',
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json;charset=UTF-8",
     }
 
     pprint(payload)
@@ -106,7 +106,7 @@ def do_post(token, order, tracking_info, carrier):
         json=payload,
     )
 
-    LOG.info(f'upload shipping information() r.status_code: {r.status_code}')
+    LOG.info(f"upload shipping information() r.status_code: {r.status_code}")
     LOG.info(r.json())
 
     return r.status_code, r.json()
@@ -122,8 +122,8 @@ def handle_uploaded_file(csv_file):
     text-mode files instead.
     """
     token = get_auth_token()
-    f = TextIOWrapper(csv_file.file, encoding='latin1')
-    reader = csv.reader(f, delimiter=';')
+    f = TextIOWrapper(csv_file.file, encoding="latin1")
+    reader = csv.reader(f, delimiter=";")
     for row in reader:
         # Check if row is considered to be an 'OTTO ROW'
         valid_row = False
@@ -131,30 +131,30 @@ def handle_uploaded_file(csv_file):
             valid_row = True
 
         if not valid_row:
-            LOG.info(f'Skip non otto row: {row}')
+            LOG.info(f"Skip non otto row: {row}")
             continue
 
         tracking_info = row[3]
         if not tracking_info:
-            LOG.error(f'Tracking info not found - row: {row}')
+            LOG.error(f"Tracking info not found - row: {row}")
             continue
 
         order_number = row[0]
         try:
-            order = (
-                Order.objects.select_related('delivery_address')
-                     .get(marketplace_order_number=order_number))
+            order = Order.objects.select_related("delivery_address").get(
+                marketplace_order_number=order_number
+            )
         except Order.DoesNotExist:
-            LOG.error(f'Order not found {order_number} - row {row}')
+            LOG.error(f"Order not found {order_number} - row {row}")
             continue
 
         carrier = row[4]
-        if carrier.startswith('DHL'):
-            carrier = 'DHL'
+        if carrier.startswith("DHL"):
+            carrier = "DHL"
         else:
-            carrier = 'HERMES'
+            carrier = "HERMES"
 
-        LOG.info(f'o: {order_number} t: {tracking_info} c: {carrier}')
+        LOG.info(f"o: {order_number} t: {tracking_info} c: {carrier}")
 
         status_code, response = do_post(token, order, tracking_info, carrier)
 
@@ -163,5 +163,5 @@ def handle_uploaded_file(csv_file):
             carrier=carrier,
             tracking_info=tracking_info,
             response_status_code=status_code,
-            response=response
+            response=response,
         )

@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zalando', '0012_transactionfileupload'),
+        ("zalando", "0012_transactionfileupload"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='transactionfileupload',
-            name='month',
+            model_name="transactionfileupload",
+            name="month",
         ),
         migrations.AddField(
-            model_name='transactionfileupload',
-            name='file_name',
-            field=models.CharField(default='', max_length=64),
+            model_name="transactionfileupload",
+            name="file_name",
+            field=models.CharField(default="", max_length=64),
             preserve_default=False,
         ),
     ]

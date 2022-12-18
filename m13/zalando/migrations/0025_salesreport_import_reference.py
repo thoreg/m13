@@ -7,13 +7,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zalando', '0024_rawdailyshipmentreport_delete_zcalculator'),
+        ("zalando", "0024_rawdailyshipmentreport_delete_zcalculator"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='salesreport',
-            name='import_reference',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='zalando.salesreportimport'),
+            model_name="salesreport",
+            name="import_reference",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="zalando.salesreportimport",
+            ),
         ),
     ]

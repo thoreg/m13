@@ -24,8 +24,7 @@ def test_process_oea_records_detail():
     OrderItem.objects.all().delete()
     OEAWebhookMessage.objects.all().delete()
 
-    call_command(
-        'loaddata', 'zalando/tests/fixtures/oea-msgs-small.fixture.json')
+    call_command("loaddata", "zalando/tests/fixtures/oea-msgs-small.fixture.json")
 
     assert OEAWebhookMessage.objects.all().filter(processed=None).count() == 8
 

@@ -14,52 +14,69 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 
-from zalando.services.feed import (download_feed, pimp_prices, save_original_feed,
-                                   upload_pimped_feed, validate_feed)
+from zalando.services.feed import (
+    download_feed,
+    pimp_prices,
+    save_original_feed,
+    upload_pimped_feed,
+    validate_feed,
+)
 
 LOG = logging.getLogger(__name__)
 
 
 HEADER = [
-    'store', 'ean', 'price', 'retail_price', 'quantity', 'article_number',
-    'article_color', 'product_name', 'store_article_location', 'product_number',
-    'article_size']
+    "store",
+    "ean",
+    "price",
+    "retail_price",
+    "quantity",
+    "article_number",
+    "article_color",
+    "product_name",
+    "store_article_location",
+    "product_number",
+    "article_size",
+]
 
 
 class Command(BaseCommand):
     """..."""
+
     help = "Update product feed at zalando"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--dry', type=int,
-            nargs='?',  # argument is optional
-            help='When dry run, the final feedupload is not done (only validation)',
-            default=0)
+            "--dry",
+            type=int,
+            nargs="?",  # argument is optional
+            help="When dry run, the final feedupload is not done (only validation)",
+            default=0,
+        )
 
     def handle(self, *args, **kwargs):
         """Download product feed from shop and transmit it to Z for validation"""
-        dry_run = kwargs.get('dry')
+        dry_run = kwargs.get("dry")
 
         try:
             csv_content_as_list = download_feed()
-            print(f'Houston we have a csv with {len(csv_content_as_list)} lines')
+            print(f"Houston we have a csv with {len(csv_content_as_list)} lines")
 
             dto = save_original_feed(csv_content_as_list)
             pimped_file_name = pimp_prices(dto.lines)
             status_code_validation = validate_feed(pimped_file_name)
 
             if dry_run:
-                LOG.info('Return early because of --dry-run')
+                LOG.info("Return early because of --dry-run")
                 return
             else:
-                LOG.info('Uploading transformed feed now')
+                LOG.info("Uploading transformed feed now")
 
             upload_pimped_feed(pimped_file_name, status_code_validation, dto)
 
         except Exception as exc:
             LOG.exception(exc)
-            now = datetime.now().strftime('%Y-%m-%d (%H:%M:%S)')
+            now = datetime.now().strftime("%Y-%m-%d (%H:%M:%S)")
             mail = EmailMessage(
                 f"{now} Zalando Feed Upload FAILED",
                 repr(exc),
@@ -67,4 +84,4 @@ class Command(BaseCommand):
                 settings.ZALANDO_LOVERS,
             )
             number_of_messages = mail.send()
-            LOG.info(f'Error EMail: {number_of_messages} send')
+            LOG.info(f"Error EMail: {number_of_messages} send")

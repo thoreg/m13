@@ -79,15 +79,15 @@ def get_address(address_data):
     """
     try:
         address, _ = Address.objects.get_or_create(
-            line=address_data['address_line_1'],
-            city=address_data['city'],
-            country_code=address_data['country_code'],
-            first_name=address_data['first_name'],
-            last_name=address_data['last_name'],
-            zip_code=address_data['zip_code']
+            line=address_data["address_line_1"],
+            city=address_data["city"],
+            country_code=address_data["country_code"],
+            first_name=address_data["first_name"],
+            last_name=address_data["last_name"],
+            zip_code=address_data["zip_code"],
         )
     except KeyError:
-        LOG.error(f'Something unforseen - address_data: {address_data}')
+        LOG.error(f"Something unforseen - address_data: {address_data}")
         return None
 
     return address
@@ -97,24 +97,26 @@ def process_orderitem(order, oi, delivery_infos):
     """Process orderitem from order event api."""
     order_item, created = OrderItem.objects.get_or_create(
         order=order,
-        position_item_id=oi['item_id'],
-        ean=oi['ean'],
+        position_item_id=oi["item_id"],
+        ean=oi["ean"],
         defaults={
-            'article_number': oi['article_number'],
-            'carrier': delivery_infos['carrier'],
-            'currency': oi['currency'],
-            'fulfillment_status': order.status,
-            'orig_created_timestamp': oi['timestamp'],
-            'orig_modified_timestamp': oi['timestamp'],
-            'price_in_cent': oi['price'] * 100,
-            'tracking_number': delivery_infos['tracking_number'],
-        }
+            "article_number": oi["article_number"],
+            "carrier": delivery_infos["carrier"],
+            "currency": oi["currency"],
+            "fulfillment_status": order.status,
+            "orig_created_timestamp": oi["timestamp"],
+            "orig_modified_timestamp": oi["timestamp"],
+            "price_in_cent": oi["price"] * 100,
+            "tracking_number": delivery_infos["tracking_number"],
+        },
     )
-    LOG.info(f'   iid: {oi["item_id"]} ean: {order_item.ean} created: {created} creation_datetime: {oi["timestamp"]}')
+    LOG.info(
+        f'   iid: {oi["item_id"]} ean: {order_item.ean} created: {created} creation_datetime: {oi["timestamp"]}'
+    )
 
     if not created:
         order_item.fulfillment_status = order.status
-        order_item.orig_modified_timestamp = oi['timestamp']
+        order_item.orig_modified_timestamp = oi["timestamp"]
         order_item.save()
 
 
@@ -130,28 +132,29 @@ def process_new_oea_records():
     for oea_msg in unprocessed:
         entry = oea_msg.payload
         order, created = Order.objects.get_or_create(
-            marketplace_order_id=entry['order_id'],
-            store_id=entry['store_id'],
+            marketplace_order_id=entry["order_id"],
+            store_id=entry["store_id"],
             defaults={
-                'marketplace_order_number': entry['order_number'],
-                'order_date': entry['timestamp'],
-                'created': entry['timestamp'],
-                'last_modified_date': entry['timestamp'],
-                'status': entry['state']
-            })
+                "marketplace_order_number": entry["order_number"],
+                "order_date": entry["timestamp"],
+                "created": entry["timestamp"],
+                "last_modified_date": entry["timestamp"],
+                "status": entry["state"],
+            },
+        )
 
         if created:
             LOG.info(
-                f'order: {order.marketplace_order_id} '
-                f'order_number: {order.marketplace_order_number} '
-                f'order.id: {order.id} order created'
+                f"order: {order.marketplace_order_id} "
+                f"order_number: {order.marketplace_order_number} "
+                f"order.id: {order.id} order created"
             )
 
         else:
             LOG.info(
-                f'order: {order.marketplace_order_id} '
-                f'order_number: {order.marketplace_order_number} '
-                f'order.id: {order.id} order - begin'
+                f"order: {order.marketplace_order_id} "
+                f"order_number: {order.marketplace_order_number} "
+                f"order.id: {order.id} order - begin"
             )
 
             # import ipdb; ipdb.set_trace()
@@ -160,43 +163,47 @@ def process_new_oea_records():
             #     mark_as_processed(oea_msg)
             #     continue
 
-            order.status = entry['state']
-            order.last_modified_date = entry['timestamp']
+            order.status = entry["state"]
+            order.last_modified_date = entry["timestamp"]
 
         # We are done here if order status is just 'assigned
-        if order.status == 'assigned':
-            LOG.info('\t\tfulfillment status is assigned - return early')
+        if order.status == "assigned":
+            LOG.info("\t\tfulfillment status is assigned - return early")
             mark_as_processed(oea_msg)
             continue
 
-        dd = entry.get('delivery_details')
+        dd = entry.get("delivery_details")
         if not dd:
             LOG.error('status is != "assigned" but no delivery infos')
             continue
 
-        for oi in entry['items']:
-            oi['timestamp'] = entry['timestamp']
+        for oi in entry["items"]:
+            oi["timestamp"] = entry["timestamp"]
             try:
-                process_orderitem(order, oi, {
-                    'carrier': dd['delivery_carrier_name'],
-                    'tracking_number': dd['delivery_tracking_number']
-                })
+                process_orderitem(
+                    order,
+                    oi,
+                    {
+                        "carrier": dd["delivery_carrier_name"],
+                        "tracking_number": dd["delivery_tracking_number"],
+                    },
+                )
             except KeyError:
-                LOG.error('KeyError in zalando orderitem processing')
+                LOG.error("KeyError in zalando orderitem processing")
                 LOG.error(entry)
 
-        address_data = entry.get('customer_billing_address')
+        address_data = entry.get("customer_billing_address")
         if address_data:
             order.delivery_address = get_address(address_data)
         else:
-            LOG.error(f'No address data found but expected entry: {entry}')
+            LOG.error(f"No address data found but expected entry: {entry}")
 
         order.save()
 
         LOG.info(
-            f'order: {order.marketplace_order_id} '
-            f'order_number: {order.marketplace_order_number} '
-            f'order.id: {order.id} order updated - end'
+            f"order: {order.marketplace_order_id} "
+            f"order_number: {order.marketplace_order_number} "
+            f"order.id: {order.id} order updated - end"
         )
 
         mark_as_processed(oea_msg)

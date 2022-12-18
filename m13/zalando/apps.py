@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class ZalandoConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'zalando'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "zalando"

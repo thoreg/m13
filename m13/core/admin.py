@@ -4,7 +4,7 @@ from .models import Article, Category, Product
 
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('product_name', 'category', 'sku', 'product_ean')
+    list_display = ("product_name", "category", "sku", "product_ean")
 
     @admin.display()
     def product_name(self, obj):
@@ -21,7 +21,7 @@ class ArticleAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'ean')
+    list_display = ("name", "category", "ean")
 
     @admin.display()
     def category(self, obj):
@@ -29,7 +29,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
+    list_display = ("name", "description")
 
 
 admin.site.register(Article, ArticleAdmin)

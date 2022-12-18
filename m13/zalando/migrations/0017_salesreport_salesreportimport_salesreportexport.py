@@ -8,61 +8,132 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zalando', '0016_zcalculator'),
+        ("zalando", "0016_zcalculator"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SalesReport',
+            name="SalesReport",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('year', models.PositiveSmallIntegerField()),
-                ('month', models.PositiveSmallIntegerField()),
-                ('created_date', models.DateTimeField()),
-                ('currency', models.CharField(choices=[('EUR', 'Euro')], default='EUR', max_length=3)),
-                ('order_number', models.CharField(max_length=32)),
-                ('ean', models.CharField(max_length=16)),
-                ('shipping_return_date', models.DateTimeField()),
-                ('order_date', models.DateTimeField()),
-                ('partner_units', models.PositiveSmallIntegerField()),
-                ('partner_revenue', models.DecimalField(decimal_places=5, max_digits=10)),
-                ('partner_provision', models.DecimalField(decimal_places=5, max_digits=10)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    django_extensions.db.fields.CreationDateTimeField(
+                        auto_now_add=True, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    django_extensions.db.fields.ModificationDateTimeField(
+                        auto_now=True, verbose_name="modified"
+                    ),
+                ),
+                ("year", models.PositiveSmallIntegerField()),
+                ("month", models.PositiveSmallIntegerField()),
+                ("created_date", models.DateTimeField()),
+                (
+                    "currency",
+                    models.CharField(
+                        choices=[("EUR", "Euro")], default="EUR", max_length=3
+                    ),
+                ),
+                ("order_number", models.CharField(max_length=32)),
+                ("ean", models.CharField(max_length=16)),
+                ("shipping_return_date", models.DateTimeField()),
+                ("order_date", models.DateTimeField()),
+                ("partner_units", models.PositiveSmallIntegerField()),
+                (
+                    "partner_revenue",
+                    models.DecimalField(decimal_places=5, max_digits=10),
+                ),
+                (
+                    "partner_provision",
+                    models.DecimalField(decimal_places=5, max_digits=10),
+                ),
             ],
             options={
-                'get_latest_by': 'modified',
-                'abstract': False,
+                "get_latest_by": "modified",
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='SalesReportImport',
+            name="SalesReportImport",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('name', models.CharField(max_length=256, unique=True)),
-                ('processed', models.DateTimeField(blank=True, null=True)),
-                ('month', models.PositiveIntegerField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    django_extensions.db.fields.CreationDateTimeField(
+                        auto_now_add=True, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    django_extensions.db.fields.ModificationDateTimeField(
+                        auto_now=True, verbose_name="modified"
+                    ),
+                ),
+                ("name", models.CharField(max_length=256, unique=True)),
+                ("processed", models.DateTimeField(blank=True, null=True)),
+                ("month", models.PositiveIntegerField()),
             ],
             options={
-                'get_latest_by': 'modified',
-                'abstract': False,
+                "get_latest_by": "modified",
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='SalesReportExport',
+            name="SalesReportExport",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('month', models.PositiveIntegerField()),
-                ('report', models.JSONField()),
-                ('import_reference', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='zalando.salesreportimport')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    django_extensions.db.fields.CreationDateTimeField(
+                        auto_now_add=True, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    django_extensions.db.fields.ModificationDateTimeField(
+                        auto_now=True, verbose_name="modified"
+                    ),
+                ),
+                ("month", models.PositiveIntegerField()),
+                ("report", models.JSONField()),
+                (
+                    "import_reference",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="zalando.salesreportimport",
+                    ),
+                ),
             ],
             options={
-                'get_latest_by': 'modified',
-                'abstract': False,
+                "get_latest_by": "modified",
+                "abstract": False,
             },
         ),
     ]

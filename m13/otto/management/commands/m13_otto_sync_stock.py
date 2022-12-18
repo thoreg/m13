@@ -5,6 +5,7 @@ from otto.services.stock import sync_stock
 
 class Command(BaseCommand):
     """Management command to sync stock with marketplace OTTO."""
+
     help = __doc__
 
     def handle(self, *args, **kwargs):

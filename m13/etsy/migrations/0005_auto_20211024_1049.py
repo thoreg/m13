@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('etsy', '0004_alter_authrequest_verifier'),
+        ("etsy", "0004_alter_authrequest_verifier"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='authrequest',
-            name='code_challenge',
+            model_name="authrequest",
+            name="code_challenge",
             field=models.BinaryField(max_length=128),
         ),
         migrations.AlterField(
-            model_name='authrequest',
-            name='verifier',
+            model_name="authrequest",
+            name="verifier",
             field=models.BinaryField(max_length=256),
         ),
     ]

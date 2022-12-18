@@ -6,33 +6,41 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zalando', '0018_zproduct'),
+        ("zalando", "0018_zproduct"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='zproduct',
-            name='article',
+            model_name="zproduct",
+            name="article",
             field=models.CharField(max_length=32, primary_key=True, serialize=False),
         ),
         migrations.AlterField(
-            model_name='zproduct',
-            name='costs_production',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=6, null=True),
+            model_name="zproduct",
+            name="costs_production",
+            field=models.DecimalField(
+                blank=True, decimal_places=2, max_digits=6, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='zproduct',
-            name='return_costs',
-            field=models.DecimalField(blank=True, decimal_places=2, default=3.55, max_digits=5, null=True),
+            model_name="zproduct",
+            name="return_costs",
+            field=models.DecimalField(
+                blank=True, decimal_places=2, default=3.55, max_digits=5, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='zproduct',
-            name='shipping_costs',
-            field=models.DecimalField(blank=True, decimal_places=2, default=3.55, max_digits=5, null=True),
+            model_name="zproduct",
+            name="shipping_costs",
+            field=models.DecimalField(
+                blank=True, decimal_places=2, default=3.55, max_digits=5, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='zproduct',
-            name='vk_zalando',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=6, null=True),
+            model_name="zproduct",
+            name="vk_zalando",
+            field=models.DecimalField(
+                blank=True, decimal_places=2, max_digits=6, null=True
+            ),
         ),
     ]

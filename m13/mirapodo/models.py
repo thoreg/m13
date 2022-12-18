@@ -7,6 +7,7 @@ class Address(TimeStampedModel):
 
     No customer id - no email
     """
+
     addition = models.CharField(max_length=128, null=True, blank=True)
     city = models.CharField(max_length=128)
     country_code = models.CharField(max_length=32)
@@ -23,15 +24,10 @@ class Order(TimeStampedModel):
     order_date = models.DateTimeField()
 
     invoice_address = models.ForeignKey(
-        Address,
-        related_name="invoice_address_set",
-        null=True,
-        on_delete=models.PROTECT
+        Address, related_name="invoice_address_set", null=True, on_delete=models.PROTECT
     )
     delivery_address = models.ForeignKey(
-        Address,
-        related_name="delivery_address_set",
-        on_delete=models.PROTECT
+        Address, related_name="delivery_address_set", on_delete=models.PROTECT
     )
 
     class Status(models.TextChoices):

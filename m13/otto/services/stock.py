@@ -12,9 +12,9 @@ from otto.common import get_auth_token
 
 LOG = logging.getLogger(__name__)
 
-M13_OTTO_FEED_URL = os.getenv('M13_OTTO_FEED_URL')
+M13_OTTO_FEED_URL = os.getenv("M13_OTTO_FEED_URL")
 
-OTTO_QUANTITIES_URL = 'https://api.otto.market/v2/quantities'
+OTTO_QUANTITIES_URL = "https://api.otto.market/v2/quantities"
 
 MAX_CHUNK_SIZE = 100
 
@@ -22,9 +22,9 @@ MAX_CHUNK_SIZE = 100
 def sync_stock():
     """Get the feed and upload stock information."""
     token = get_auth_token()
-    LOG.info(f'token: {token}')
+    LOG.info(f"token: {token}")
     headers = {
-        'Authorization': f'Bearer {token}',
+        "Authorization": f"Bearer {token}",
     }
 
     feed = requests.get(M13_OTTO_FEED_URL)
@@ -39,25 +39,25 @@ def sync_stock():
             time.sleep(1)
             # LOG.info(product)
             payload = []
-            sku = product['sku']
-            quantity = product['quantity']
-            if quantity == '' or quantity is None:
-                LOG.info(f'Skip {sku} because of no quantity')
+            sku = product["sku"]
+            quantity = product["quantity"]
+            if quantity == "" or quantity is None:
+                LOG.info(f"Skip {sku} because of no quantity")
                 continue
 
-            payload.append({
-                "lastModified": last_modified,
-                "quantity": quantity,
-                "sku": sku
-            })
+            payload.append(
+                {"lastModified": last_modified, "quantity": quantity, "sku": sku}
+            )
 
-            resp = requests.post(f'{OTTO_QUANTITIES_URL}', headers=headers, json=payload)
+            resp = requests.post(
+                f"{OTTO_QUANTITIES_URL}", headers=headers, json=payload
+            )
             if resp.status_code != requests.codes.ok:
                 try:
-                    LOG.error(resp.json()['errors'][0]['detail'])
+                    LOG.error(resp.json()["errors"][0]["detail"])
                 except KeyError:
                     LOG.error(resp.json())
 
                 continue
 
-            LOG.info(f'updated - sku: {sku} quantity : {quantity}')
+            LOG.info(f"updated - sku: {sku} quantity : {quantity}")

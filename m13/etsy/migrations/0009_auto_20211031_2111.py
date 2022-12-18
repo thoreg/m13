@@ -6,39 +6,48 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('etsy', '0008_auto_20211031_1314'),
+        ("etsy", "0008_auto_20211031_1314"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='AuthRequest',
+            name="AuthRequest",
         ),
         migrations.DeleteModel(
-            name='OAuth',
+            name="OAuth",
         ),
         migrations.RemoveField(
-            model_name='order',
-            name='internal_status',
+            model_name="order",
+            name="internal_status",
         ),
         migrations.RemoveField(
-            model_name='orderitem',
-            name='carrier_service_code',
+            model_name="orderitem",
+            name="carrier_service_code",
         ),
         migrations.RemoveField(
-            model_name='orderitem',
-            name='returned_date',
+            model_name="orderitem",
+            name="returned_date",
         ),
         migrations.RemoveField(
-            model_name='orderitem',
-            name='sent_date',
+            model_name="orderitem",
+            name="sent_date",
         ),
         migrations.RemoveField(
-            model_name='orderitem',
-            name='vat_rate',
+            model_name="orderitem",
+            name="vat_rate",
         ),
         migrations.AddField(
-            model_name='order',
-            name='status',
-            field=models.CharField(choices=[('COMPLETED', 'Completed'), ('OPEN', 'Open'), ('PAID', 'Paid'), ('PAYMENT_PROCESSING', 'Payment Processing')], default='OPEN', max_length=18),
+            model_name="order",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("COMPLETED", "Completed"),
+                    ("OPEN", "Open"),
+                    ("PAID", "Paid"),
+                    ("PAYMENT_PROCESSING", "Payment Processing"),
+                ],
+                default="OPEN",
+                max_length=18,
+            ),
         ),
     ]

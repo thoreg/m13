@@ -33,9 +33,9 @@ def import_sales_reports(month):
         print("\nERROR - env variables AUTH_TOKEN and REPORTS_PATH needed\n")
         return []
 
-    print('Starting to connect to Dropbox')
+    print("Starting to connect to Dropbox")
     dbx = dropbox.Dropbox(AUTH_TOKEN)
-    print(f'Start checking files for month {month}')
+    print(f"Start checking files for month {month}")
     for file_path in _get_files_from_dropbox(dbx, month):
         _download_and_extract_file(dbx, file_path)
 
@@ -60,11 +60,11 @@ def _get_files_from_dropbox(dbx, month):
 
 def _download_and_extract_file(dbx, path):
     """Return content of requested file."""
-    print(f'Download {path}')
+    print(f"Download {path}")
     metadata, f = dbx.files_download(path)
 
-    if metadata.name.endswith('PDF'):
-        print(f'Skipping PDF file {metadata.name}')
+    if metadata.name.endswith("PDF"):
+        print(f"Skipping PDF file {metadata.name}")
         return
 
     with tempfile.NamedTemporaryFile() as temp:
@@ -86,8 +86,8 @@ def __as_datetime_with_tz(datetime_string, dt_format="%d.%m.%Y"):
 
 def _import_sales_report(path, month):
     """..."""
-    if not path.endswith('.CSV'):
-        print(f'Path does not end with CSV - path: {path}')
+    if not path.endswith(".CSV"):
+        print(f"Path does not end with CSV - path: {path}")
         return
 
     month = int(month.replace("/", ""))

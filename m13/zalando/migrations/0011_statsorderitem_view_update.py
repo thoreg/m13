@@ -6,14 +6,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zalando', '0010_auto_20211202_2144'),
+        ("zalando", "0010_auto_20211202_2144"),
     ]
 
     operations = [
-        migrations.RunSQL("""
+        migrations.RunSQL(
+            """
             DROP MATERIALIZED VIEW zalando_orderitem_stats
-        """),
-        migrations.RunSQL("""
+        """
+        ),
+        migrations.RunSQL(
+            """
             CREATE MATERIALIZED VIEW zalando_orderitem_stats AS
             SELECT
                 row_number() OVER (PARTITION BY true) AS id,
@@ -28,5 +31,6 @@ class Migration(migrations.Migration):
                 fulfillment_status
             ORDER BY
                 month
-        """),
+        """
+        ),
     ]

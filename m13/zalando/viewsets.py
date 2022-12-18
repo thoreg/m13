@@ -9,7 +9,7 @@ from .serializers import RawDailyShipmentReportSerializer, ZProductSerializer
 
 
 class ZProductList(generics.ListCreateAPIView):
-    queryset = ZProduct.objects.all().order_by('-shipped')
+    queryset = ZProduct.objects.all().order_by("-shipped")
     serializer_class = ZProductSerializer
 
 
@@ -20,15 +20,15 @@ class ZProductDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class RawDailyShipmentReportList(drf_viewsets.ModelViewSet):
     filterset_fields = {
-        'order_event_time': ['gte', 'gt', 'lte', 'lt'],
+        "order_event_time": ["gte", "gt", "lte", "lt"],
     }
-    queryset = RawDailyShipmentReport.objects.all().order_by('-created')
+    queryset = RawDailyShipmentReport.objects.all().order_by("-created")
     serializer_class = RawDailyShipmentReportSerializer
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
     def get_queryset(self):
         """..."""
-        start_date = self.request.GET.get('order_event_time__gte')
+        start_date = self.request.GET.get("order_event_time__gte")
         today = date.today()
 
         if not start_date:

@@ -18,6 +18,7 @@ class Address(TimeStampedModel):
 
     No customer id - no email
     """
+
     buyer_email = models.EmailField()
     buyer_user_id = models.IntegerField()
     city = models.CharField(max_length=128)
@@ -32,16 +33,14 @@ class Order(TimeStampedModel):
     order_date = models.DateTimeField()
     last_modified_date = models.DateTimeField()
     delivery_address = models.ForeignKey(
-        Address,
-        related_name="delivery_address_set",
-        on_delete=models.PROTECT
+        Address, related_name="delivery_address_set", on_delete=models.PROTECT
     )
 
     class Status(models.TextChoices):
-        COMPLETED = 'COMPLETED', 'Completed'
-        OPEN = 'OPEN', 'Open'
-        PAID = 'PAID', 'Paid'
-        PAYMENT_PROCESSING = 'PAYMENT_PROCESSING', 'Payment Processing'
+        COMPLETED = "COMPLETED", "Completed"
+        OPEN = "OPEN", "Open"
+        PAID = "PAID", "Paid"
+        PAYMENT_PROCESSING = "PAYMENT_PROCESSING", "Payment Processing"
 
     status = models.CharField(
         max_length=18,
@@ -88,4 +87,4 @@ class StatsOrderItems(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'etsy_orderitem_stats'
+        db_table = "etsy_orderitem_stats"

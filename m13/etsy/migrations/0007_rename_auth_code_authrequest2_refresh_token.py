@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('etsy', '0006_authrequest2'),
+        ("etsy", "0006_authrequest2"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='authrequest2',
-            old_name='auth_code',
-            new_name='refresh_token',
+            model_name="authrequest2",
+            old_name="auth_code",
+            new_name="refresh_token",
         ),
     ]

@@ -7,14 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0006_category_product_category'),
-        ('zalando', '0019_alter_zproduct_article_and_more'),
+        ("core", "0006_category_product_category"),
+        ("zalando", "0019_alter_zproduct_article_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='zproduct',
-            name='category',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='core.category'),
+            model_name="zproduct",
+            name="category",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="core.category",
+            ),
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('etsy', '0003_alter_authrequest_code_challenge'),
+        ("etsy", "0003_alter_authrequest_code_challenge"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='authrequest',
-            name='verifier',
+            model_name="authrequest",
+            name="verifier",
             field=models.CharField(max_length=128),
         ),
     ]

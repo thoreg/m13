@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('etsy', '0011_auto_20211102_0741'),
+        ("etsy", "0011_auto_20211102_0741"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='authtoken',
-            old_name='auth_token',
-            new_name='token',
+            model_name="authtoken",
+            old_name="auth_token",
+            new_name="token",
         ),
     ]

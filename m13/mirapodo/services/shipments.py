@@ -38,9 +38,9 @@ from mirapodo.models import Order, Shipment
 
 LOG = logging.getLogger(__name__)
 
-USER_NAME = os.environ['M13_MIRAPODO_USER_NAME']
-HNR = os.environ['M13_MIRAPODO_HNR']
-PASSWD = os.environ['M13_MIRAPODO_PASSWORD']
+USER_NAME = os.environ["M13_MIRAPODO_USER_NAME"]
+HNR = os.environ["M13_MIRAPODO_HNR"]
+PASSWD = os.environ["M13_MIRAPODO_PASSWORD"]
 SHIPMENTS_URL = f"https://rest.trade-server.net/{HNR}/messages/?"
 CARRIER = "HERMES_STD_NATIONAL"
 
@@ -52,9 +52,9 @@ class ApiCallFailed(Exception):
 def _strip_payload(payload):
     """Remove newline and whitespace to get something mirapodo understands."""
     payload = payload.strip()
-    payload = payload.replace('\n', '')
-    payload = ' '.join(payload.split())
-    payload = payload.replace('> <', '><')
+    payload = payload.replace("\n", "")
+    payload = " ".join(payload.split())
+    payload = payload.replace("> <", "><")
     return payload
 
 
@@ -63,7 +63,7 @@ def _get_playload_start():
 
 
 def _get_playload_end():
-    return '</MESSAGES_LIST>'
+    return "</MESSAGES_LIST>"
 
 
 def get_payload(orderitem, tracking_info):
@@ -93,7 +93,7 @@ def upload_tracking_info(order, tracking_info):
 
     Submit xml data to the POST endpoint.
     """
-    headers = {'Content-Type': 'application/xml'}
+    headers = {"Content-Type": "application/xml"}
 
     payload = _get_playload_start()
 
@@ -107,23 +107,20 @@ def upload_tracking_info(order, tracking_info):
     print(f"PAYLOAD: {payload}")
 
     response = _post(
-        f'{SHIPMENTS_URL}',
-        auth=(USER_NAME, PASSWD),
-        data=payload,
-        headers=headers
+        f"{SHIPMENTS_URL}", auth=(USER_NAME, PASSWD), data=payload, headers=headers
     )
 
     msg = f"resp: {response.status_code} : {response.text}"
     if response.status_code == codes.ok:
         LOG.info(msg)
-        LOG.info('mark all orderitems as shipped')
+        LOG.info("mark all orderitems as shipped")
         for orderitem in order.orderitem_set.all():
             orderitem.mark_as_shipped()
     else:
         LOG.error(msg)
-        raise ApiCallFailed('API call to mirapodo failed')
+        raise ApiCallFailed("API call to mirapodo failed")
 
-    return 200, 'SUCCESS'
+    return 200, "SUCCESS"
 
 
 def handle_uploaded_file(csv_file):
@@ -135,42 +132,42 @@ def handle_uploaded_file(csv_file):
     request.FILES gives you binary files, but the csv module wants to have
     text-mode files instead.
     """
-    f = TextIOWrapper(csv_file.file, encoding='latin1')
-    reader = csv.reader(f, delimiter=';')
+    f = TextIOWrapper(csv_file.file, encoding="latin1")
+    reader = csv.reader(f, delimiter=";")
     for row in reader:
         # Check if row is considered to be an 'Mirapodo ROW'
         if not row[0].startswith("TB_"):
-            LOG.info('Not a mirapodo row')
+            LOG.info("Not a mirapodo row")
             continue
 
         tracking_info = row[3]
         if not tracking_info:
-            LOG.error(f'Tracking info not found - row: {row}')
+            LOG.error(f"Tracking info not found - row: {row}")
             continue
 
         marketplace_order_id = row[0]
         try:
-            order = (
-                Order.objects.select_related('delivery_address')
-                     .get(marketplace_order_id=marketplace_order_id))
+            order = Order.objects.select_related("delivery_address").get(
+                marketplace_order_id=marketplace_order_id
+            )
         except Order.DoesNotExist:
-            LOG.error(f'Order not found {marketplace_order_id} - row {row}')
+            LOG.error(f"Order not found {marketplace_order_id} - row {row}")
             continue
 
-        LOG.info(f'o: {marketplace_order_id} t: {tracking_info}')
+        LOG.info(f"o: {marketplace_order_id} t: {tracking_info}")
 
         try:
             status_code, response = upload_tracking_info(order, tracking_info)
         except ApiCallFailed:
             status_code = 409
-            response = 'API call failed - please check logs'
+            response = "API call failed - please check logs"
 
         Shipment.objects.create(
             order=order,
             carrier=CARRIER,
             tracking_info=tracking_info,
             response_status_code=status_code,
-            response=response
+            response=response,
         )
         order.internal_status = Order.Status.SHIPPED
         order.save()

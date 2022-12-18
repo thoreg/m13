@@ -21,54 +21,63 @@ LOG = logging.getLogger(__name__)
 @login_required
 def index(request):
     """..."""
-    if request.method == 'POST':
+    if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            file1 = deepcopy(request.FILES['file'])
-            file2 = deepcopy(request.FILES['file'])
-            file3 = deepcopy(request.FILES['file'])
+            file1 = deepcopy(request.FILES["file"])
+            file2 = deepcopy(request.FILES["file"])
+            file3 = deepcopy(request.FILES["file"])
             otto_handle_upload(file1)
             etsy_handle_upload(file2)
             mirapodo_handle_upload(file3)
-            return HttpResponseRedirect(reverse('upload_shipping_infos_success'))
+            return HttpResponseRedirect(reverse("upload_shipping_infos_success"))
     else:
         form = UploadFileForm()
-    return render(request, 'shipping/index.html', {'form': form})
+    return render(request, "shipping/index.html", {"form": form})
 
 
 @login_required
 def upload_shipping_infos_success(request):
     """..."""
     otto_shipments = (
-        OttoShipment.objects.all().order_by('-created').values_list(
-            'created',
-            'order__marketplace_order_number',
-            'carrier',
-            'tracking_info',
-            'response_status_code'
+        OttoShipment.objects.all()
+        .order_by("-created")
+        .values_list(
+            "created",
+            "order__marketplace_order_number",
+            "carrier",
+            "tracking_info",
+            "response_status_code",
         )[:100]
     )
     etsy_shipments = (
-        EtsyShipment.objects.all().order_by('-created').values_list(
-            'created',
-            'order__marketplace_order_id',
-            'carrier',
-            'tracking_info',
-            'response_status_code'
+        EtsyShipment.objects.all()
+        .order_by("-created")
+        .values_list(
+            "created",
+            "order__marketplace_order_id",
+            "carrier",
+            "tracking_info",
+            "response_status_code",
         )[:100]
     )
     mirapodo_shipments = (
-        MirapodoShipment.objects.all().order_by('-created').values_list(
-            'created',
-            'order__marketplace_order_id',
-            'carrier',
-            'tracking_info',
-            'response_status_code'
+        MirapodoShipment.objects.all()
+        .order_by("-created")
+        .values_list(
+            "created",
+            "order__marketplace_order_id",
+            "carrier",
+            "tracking_info",
+            "response_status_code",
         )[:100]
     )
     return render(
-        request, 'shipping/upload_success.html', {
-            'etsy_shipments': etsy_shipments,
-            'mirapodo_shipments': mirapodo_shipments,
-            'otto_shipments': otto_shipments,
-        })
+        request,
+        "shipping/upload_success.html",
+        {
+            "etsy_shipments": etsy_shipments,
+            "mirapodo_shipments": mirapodo_shipments,
+            "otto_shipments": otto_shipments,
+        },
+    )

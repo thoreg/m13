@@ -7,18 +7,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zalando', '0026_remove_salesreportimport_processed'),
+        ("zalando", "0026_remove_salesreportimport_processed"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='rawdailyshipmentreport',
-            name='article_number',
+            model_name="rawdailyshipmentreport",
+            name="article_number",
         ),
         migrations.AddField(
-            model_name='rawdailyshipmentreport',
-            name='zproduct',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='zalando.zproduct'),
+            model_name="rawdailyshipmentreport",
+            name="zproduct",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="zalando.zproduct",
+            ),
             preserve_default=False,
         ),
     ]

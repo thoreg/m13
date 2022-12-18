@@ -8,25 +8,52 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_alter_article_options'),
-        ('zalando', '0015_dailyshipmentreport_and_more'),
+        ("core", "0005_alter_article_options"),
+        ("zalando", "0015_dailyshipmentreport_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ZCalculator',
+            name="ZCalculator",
             fields=[
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('article', models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, primary_key=True, serialize=False, to='core.article')),
-                ('costs_production', models.DecimalField(decimal_places=2, max_digits=6)),
-                ('vk_zalando', models.DecimalField(decimal_places=2, max_digits=6)),
-                ('shipping_costs', models.DecimalField(decimal_places=2, default=3.55, max_digits=5)),
-                ('return_costs', models.DecimalField(decimal_places=2, default=3.55, max_digits=5)),
+                (
+                    "created",
+                    django_extensions.db.fields.CreationDateTimeField(
+                        auto_now_add=True, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    django_extensions.db.fields.ModificationDateTimeField(
+                        auto_now=True, verbose_name="modified"
+                    ),
+                ),
+                (
+                    "article",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        primary_key=True,
+                        serialize=False,
+                        to="core.article",
+                    ),
+                ),
+                (
+                    "costs_production",
+                    models.DecimalField(decimal_places=2, max_digits=6),
+                ),
+                ("vk_zalando", models.DecimalField(decimal_places=2, max_digits=6)),
+                (
+                    "shipping_costs",
+                    models.DecimalField(decimal_places=2, default=3.55, max_digits=5),
+                ),
+                (
+                    "return_costs",
+                    models.DecimalField(decimal_places=2, default=3.55, max_digits=5),
+                ),
             ],
             options={
-                'get_latest_by': 'modified',
-                'abstract': False,
+                "get_latest_by": "modified",
+                "abstract": False,
             },
         ),
     ]

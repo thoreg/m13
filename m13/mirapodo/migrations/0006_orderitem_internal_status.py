@@ -6,13 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mirapodo', '0005_shipment'),
+        ("mirapodo", "0005_shipment"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='orderitem',
-            name='internal_status',
-            field=models.CharField(choices=[('IMPORTED', 'Imported'), ('IN_PROGRESS', 'In Progress'), ('SHIPPED', 'Shipped'), ('FINISHED', 'Finished'), ('CANCELED', 'Canceled')], default='IMPORTED', max_length=11),
+            model_name="orderitem",
+            name="internal_status",
+            field=models.CharField(
+                choices=[
+                    ("IMPORTED", "Imported"),
+                    ("IN_PROGRESS", "In Progress"),
+                    ("SHIPPED", "Shipped"),
+                    ("FINISHED", "Finished"),
+                    ("CANCELED", "Canceled"),
+                ],
+                default="IMPORTED",
+                max_length=11,
+            ),
         ),
     ]

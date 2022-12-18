@@ -8,25 +8,48 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('etsy', '0012_rename_auth_token_authtoken_token'),
+        ("etsy", "0012_rename_auth_token_authtoken_token"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Shipment',
+            name="Shipment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('carrier', models.CharField(max_length=128)),
-                ('tracking_info', models.CharField(max_length=256)),
-                ('response_status_code', models.PositiveSmallIntegerField()),
-                ('response', models.JSONField()),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='etsy.order')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    django_extensions.db.fields.CreationDateTimeField(
+                        auto_now_add=True, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    django_extensions.db.fields.ModificationDateTimeField(
+                        auto_now=True, verbose_name="modified"
+                    ),
+                ),
+                ("carrier", models.CharField(max_length=128)),
+                ("tracking_info", models.CharField(max_length=256)),
+                ("response_status_code", models.PositiveSmallIntegerField()),
+                ("response", models.JSONField()),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="etsy.order"
+                    ),
+                ),
             ],
             options={
-                'get_latest_by': 'modified',
-                'abstract': False,
+                "get_latest_by": "modified",
+                "abstract": False,
             },
         ),
     ]

@@ -40,25 +40,20 @@ from etsy.models import Order, Shipment
 
 LOG = logging.getLogger(__name__)
 
-M13_ETSY_API_KEY = os.getenv('M13_ETSY_API_KEY')
-M13_ETSY_SHOP_ID = os.getenv('M13_ETSY_SHOP_ID')
+M13_ETSY_API_KEY = os.getenv("M13_ETSY_API_KEY")
+M13_ETSY_SHOP_ID = os.getenv("M13_ETSY_SHOP_ID")
 
 
 def do_post(token, order, tracking_code, carrier_name):
     """Do the actual post call to report shipping information."""
     LOG.info(
-        f'post shipping infos for o: {order.marketplace_order_id} t: {tracking_code} c: {carrier_name}')
+        f"post shipping infos for o: {order.marketplace_order_id} t: {tracking_code} c: {carrier_name}"
+    )
 
-    SHIPMENTS_URL = f'https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts/{order.marketplace_order_id}/tracking'
+    SHIPMENTS_URL = f"https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts/{order.marketplace_order_id}/tracking"
 
-    headers = {
-        'authorization': f'Bearer {token}',
-        'x-api-key': M13_ETSY_API_KEY
-    }
-    payload = {
-        'carrier_name': carrier_name,
-        'tracking_code': tracking_code
-    }
+    headers = {"authorization": f"Bearer {token}", "x-api-key": M13_ETSY_API_KEY}
+    payload = {"carrier_name": carrier_name, "tracking_code": tracking_code}
 
     r = requests.post(
         SHIPMENTS_URL,
@@ -66,7 +61,7 @@ def do_post(token, order, tracking_code, carrier_name):
         json=payload,
     )
 
-    LOG.info(f'upload shipping information() r.status_code: {r.status_code}')
+    LOG.info(f"upload shipping information() r.status_code: {r.status_code}")
     LOG.info(r.json())
 
     return r.status_code, r.json()
@@ -83,36 +78,36 @@ def handle_uploaded_file(csv_file):
     """
     token = get_auth_token()
     if not token:
-        LOG.error('No token found')
+        LOG.error("No token found")
         return
 
-    f = TextIOWrapper(csv_file.file, encoding='latin1')
-    reader = csv.reader(f, delimiter=';')
+    f = TextIOWrapper(csv_file.file, encoding="latin1")
+    reader = csv.reader(f, delimiter=";")
     for row in reader:
-        if not row[0].startswith('ETSY'):
+        if not row[0].startswith("ETSY"):
             continue
 
         LOG.info(row)
 
         tracking_info = row[3]
         if not tracking_info:
-            LOG.error(f'Tracking info not found - row: {row}')
+            LOG.error(f"Tracking info not found - row: {row}")
             continue
 
-        order_id = row[0].lstrip('ETSY')
+        order_id = row[0].lstrip("ETSY")
         try:
-            order = (
-                Order.objects.select_related('delivery_address')
-                     .get(marketplace_order_id=order_id))
+            order = Order.objects.select_related("delivery_address").get(
+                marketplace_order_id=order_id
+            )
         except Order.DoesNotExist:
-            LOG.error(f'Order not found {order_id} - row {row}')
+            LOG.error(f"Order not found {order_id} - row {row}")
             continue
 
         carrier = row[4]
-        if carrier.startswith('DHL'):
-            carrier = 'DHL'
+        if carrier.startswith("DHL"):
+            carrier = "DHL"
         else:
-            carrier = 'HERMES'
+            carrier = "HERMES"
 
         status_code, response = do_post(token, order, tracking_info, carrier)
 
@@ -121,5 +116,5 @@ def handle_uploaded_file(csv_file):
             carrier=carrier,
             tracking_info=tracking_info,
             response_status_code=status_code,
-            response=response
+            response=response,
         )

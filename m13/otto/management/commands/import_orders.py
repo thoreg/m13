@@ -26,7 +26,7 @@ if not all([USERNAME, PASSWORD]):
 def safenget(dct, key, default=None):
     """Get nested dict items safely."""
     try:
-        return reduce(dict.__getitem__, key.split('.'), dct)
+        return reduce(dict.__getitem__, key.split("."), dct)
     # KeyError is for key not available, TypeError is for nested item not
     # subscriptable, e.g. getting a.b.c, but a.b is None or an int.
     except (KeyError, TypeError):
@@ -35,9 +35,9 @@ def safenget(dct, key, default=None):
 
 def get_next_slice(token, orders):
     LOG.info(f"paginated response - href: {orders['links'][0]['href']}")
-    orders = fetch_next_slice(token, orders['links'][0]['href'])
+    orders = fetch_next_slice(token, orders["links"][0]["href"])
     save_orders(orders)
-    if 'links' in orders:
+    if "links" in orders:
         get_next_slice(token, orders)
 
 
@@ -46,18 +46,22 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--status', type=str, nargs='?',
-            help='Filter orders by status', default='PROCESSABLE')
-        parser.add_argument('--datum', type=str)
+            "--status",
+            type=str,
+            nargs="?",
+            help="Filter orders by status",
+            default="PROCESSABLE",
+        )
+        parser.add_argument("--datum", type=str)
 
     def handle(self, *args, **kwargs):
         """Pull (fetch+merge) orders from marketplace."""
-        status = kwargs.get('status')
-        datum = kwargs.get('datum')
+        status = kwargs.get("status")
+        datum = kwargs.get("datum")
 
         token = get_auth_token()
         orders = fetch_orders_by_status(token, status, datum)
         save_orders(orders)
 
-        if 'links' in orders:
+        if "links" in orders:
             get_next_slice(token, orders)

@@ -6,11 +6,12 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zalando', '0008_product'),
+        ("zalando", "0008_product"),
     ]
 
     operations = [
-        migrations.RunSQL("""
+        migrations.RunSQL(
+            """
             CREATE MATERIALIZED VIEW zalando_orderitem_stats AS
             SELECT
                 row_number() OVER (PARTITION BY true) AS id,
@@ -25,19 +26,28 @@ class Migration(migrations.Migration):
                 fulfillment_status
             ORDER BY
                 month
-        """),
+        """
+        ),
         migrations.CreateModel(
-            name='StatsOrderItems',
+            name="StatsOrderItems",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('month', models.DateTimeField()),
-                ('status', models.CharField(max_length=16)),
-                ('count', models.IntegerField()),
-                ('revenue', models.FloatField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("month", models.DateTimeField()),
+                ("status", models.CharField(max_length=16)),
+                ("count", models.IntegerField()),
+                ("revenue", models.FloatField()),
             ],
             options={
-                'db_table': 'zalando_orderitem_stats',
-                'managed': False,
+                "db_table": "zalando_orderitem_stats",
+                "managed": False,
             },
         ),
     ]

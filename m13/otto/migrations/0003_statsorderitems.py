@@ -6,11 +6,12 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('otto', '0002_shipment'),
+        ("otto", "0002_shipment"),
     ]
 
     operations = [
-        migrations.RunSQL("""
+        migrations.RunSQL(
+            """
             CREATE MATERIALIZED VIEW otto_orderitem_stats AS
             SELECT
                 row_number() OVER (PARTITION BY true) AS id,
@@ -25,5 +26,6 @@ class Migration(migrations.Migration):
                 fulfillment_status
             ORDER BY
                 month
-        """)
+        """
+        )
     ]

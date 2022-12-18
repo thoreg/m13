@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 
 def send_traceback_as_email(subject, message=None):
     """Send out traceback of given exception as email."""
-    msg = ''
+    msg = ""
     if message:
         msg += f"\n\n{message}\n\n"
 
@@ -27,4 +27,5 @@ def send_traceback_as_email(subject, message=None):
         msg,
         settings.FROM_EMAIL_ADDRESS,
         settings.ADMINS[0][1],
-        fail_silently=False)
+        fail_silently=False,
+    )

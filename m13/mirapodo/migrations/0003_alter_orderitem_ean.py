@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mirapodo', '0002_rename_tb_id_orderitem_position_item_id'),
+        ("mirapodo", "0002_rename_tb_id_orderitem_position_item_id"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='orderitem',
-            name='ean',
+            model_name="orderitem",
+            name="ean",
             field=models.CharField(blank=True, max_length=13, null=True),
         ),
     ]
