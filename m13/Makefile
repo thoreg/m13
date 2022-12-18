@@ -9,8 +9,9 @@ test_over:
 	py.test --overwrite
 
 style:
-	isort .
-	flake8 .
+	# black .
+	flake8 --config ./tox.ini
+
 
 check: clean style test
 
