@@ -11,6 +11,7 @@ test_over:
 style:
 	# black .
 	flake8 --config ./tox.ini
+	pylint .
 
 
 check: clean style test
