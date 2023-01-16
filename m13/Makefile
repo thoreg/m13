@@ -3,7 +3,7 @@ clean:
 	rm -rf htmlcov
 
 test:
-	py.test --cov=. --cov-report html
+	pytest --import-mode=importlib --ds=m13.config.develop .
 
 test_over:
 	py.test --overwrite
