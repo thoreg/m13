@@ -88,6 +88,7 @@ def orderitems_csv(request):
             "Positionstyp",
             "Anmerkung",
             "EMAIL",
+            "Auftragsdatum",
         ]
     )
 
@@ -135,6 +136,7 @@ def orderitems_csv(request):
                     "Versandposition",
                     f"ETSY{current_order.marketplace_order_id}",
                     current_order.delivery_address.buyer_email,
+                    current_order.created,
                 ]
             )
 
@@ -167,6 +169,7 @@ def orderitems_csv(request):
                 "Artikel",
                 f"ETSY{oi.order.marketplace_order_id}",
                 oi.order.delivery_address.buyer_email,
+                oi.order.created,
             ]
         )
 

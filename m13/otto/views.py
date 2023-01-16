@@ -88,6 +88,7 @@ def orderitems_csv(request):
             "Positionstyp",
             "Anmerkung",
             "EMAIL",
+            "Auftragsdatum",
         ]
     )
 
@@ -126,6 +127,7 @@ def orderitems_csv(request):
                     "Versandposition",
                     f"OTTO {current_order.marketplace_order_id}",
                     "otto@manufaktur13.de",
+                    current_order.created,
                 ]
             )
 
@@ -148,6 +150,7 @@ def orderitems_csv(request):
                 "Artikel",
                 f"OTTO {oi.order.marketplace_order_id}",
                 "otto@manufaktur13.de",
+                oi.order.created,
             ]
         )
 
@@ -174,6 +177,7 @@ def orderitems_csv(request):
                 "Versandposition",
                 f"OTTO {current_order.marketplace_order_id}",
                 "otto@manufaktur13.de",
+                current_order.created,
             ]
         )
 

@@ -70,6 +70,7 @@ def orderitems_csv(request):
             "Positionstyp",
             "Anmerkung",
             "EMAIL",
+            "Auftragsdatum",
         ]
     )
 
@@ -104,6 +105,7 @@ def orderitems_csv(request):
                     "Versandposition",
                     f"MIRAPODO {current_order.marketplace_order_id}",
                     current_order.mail,
+                    current_order.created,
                 ]
             )
 
@@ -123,6 +125,7 @@ def orderitems_csv(request):
                 "Artikel",
                 f"MIRAPODO {oi.order.marketplace_order_id}",
                 oi.order.mail,
+                oi.order.created,
             ]
         )
 
@@ -147,6 +150,7 @@ def orderitems_csv(request):
                 "Versandposition",
                 f"MIRAPODO {current_order.marketplace_order_id}",
                 current_order.mail,
+                current_order.created,
             ]
         )
 
