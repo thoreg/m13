@@ -115,7 +115,7 @@ def orderitems_csv(request):
 
             first_name = parsed_address[0]
             last_name = parsed_address[1]
-            street = " ".join(parsed_address[2 : __get_street_offset(city)])
+            street = " ".join(parsed_address[2 : __get_street_offset(city)])  # noqa
             zip_code = current_order.delivery_address.zip_code
             city = city
             country = current_order.delivery_address.country_code
@@ -148,7 +148,7 @@ def orderitems_csv(request):
 
         first_name = parsed_address[0]
         last_name = parsed_address[1]
-        street = " ".join(parsed_address[2 : __get_street_offset(city)])
+        street = " ".join(parsed_address[2 : __get_street_offset(city)])  # noqa
         zip_code = oi.order.delivery_address.zip_code
         city = city
         country = oi.order.delivery_address.country_code
@@ -188,7 +188,7 @@ def orderitems_csv(request):
 
         first_name = parsed_address[0]
         last_name = parsed_address[1]
-        street = " ".join(parsed_address[2 : __get_street_offset(city)])
+        street = " ".join(parsed_address[2 : __get_street_offset(city)])  # noqa
         zip_code = current_order.delivery_address.zip_code
         city = current_order.delivery_address.city
         country = current_order.delivery_address.country_code
