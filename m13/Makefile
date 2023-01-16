@@ -6,13 +6,15 @@ test:
 	pytest --import-mode=importlib --ds=m13.config.develop .
 
 test_over:
-	py.test --overwrite
+	pytest --overwrite --import-mode=importlib --ds=m13.config.develop .
 
 style:
-	# black .
 	flake8 --config ./tox.ini
 	pylint .
 
+format:
+	isort .
+	black .
 
 check: clean style test
 

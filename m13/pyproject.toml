@@ -6,3 +6,6 @@ pythonpath = [
 [pytest]
 # DJANGO_SETTINGS_MODULE = m13.config.develop
 python_files = ["test_*.py"]
+
+[tool.isort]
+profile = "black"

@@ -39,6 +39,7 @@ colorama = "*"
 pytest-httpbin = "*"
 jinja2 = "*"
 flask = "*"
+isort = "*"
 
 [requires]
 python_version = "3.11.1"
