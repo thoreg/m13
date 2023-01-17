@@ -3,10 +3,8 @@ import logging
 from copy import deepcopy
 from datetime import datetime
 
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core import management
-from django.core.mail import EmailMessage
 from django.db import connection
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -127,7 +125,7 @@ def orderitems_csv(request):
                     "Versandposition",
                     f"OTTO {current_order.marketplace_order_id}",
                     "otto@manufaktur13.de",
-                    current_order.created,
+                    current_order.created.strftime("%d.%m.%y"),
                 ]
             )
 
@@ -150,7 +148,7 @@ def orderitems_csv(request):
                 "Artikel",
                 f"OTTO {oi.order.marketplace_order_id}",
                 "otto@manufaktur13.de",
-                oi.order.created,
+                oi.order.created.strftime("%d.%m.%y"),
             ]
         )
 
@@ -177,39 +175,9 @@ def orderitems_csv(request):
                 "Versandposition",
                 f"OTTO {current_order.marketplace_order_id}",
                 "otto@manufaktur13.de",
-                current_order.created,
+                current_order.created.strftime("%d.%m.%y"),
             ]
         )
-
-    email = request.GET.get("email")
-    if email:
-        LOG.info("Houston we got to send an email")
-        if not settings.FROM_EMAIL_ADDRESS:
-            LOG.error("settings.FROM_EMAIL_ADDRESS needs to be defined")
-            return response
-
-        if not settings.OTTO_ORDER_CSV_RECEIVER_LIST:
-            LOG.error("settings.OTTO_ORDER_CSV_RECEIVER_LIST needs to be defined")
-            return response
-
-        LOG.info(f"settings.FROM_EMAIL_ADDRESS: {settings.FROM_EMAIL_ADDRESS}")
-        LOG.info(
-            f"settings.OTTO_ORDER_CSV_RECEIVER_LIST: {settings.OTTO_ORDER_CSV_RECEIVER_LIST}"
-        )
-
-        message = EmailMessage(
-            f'OTTO Bestellungen - {now.strftime("%Y/%m/%d")}',
-            "OTTO Bestellungen als csv - Frohes Schaffen!!",
-            settings.FROM_EMAIL_ADDRESS,
-            settings.OTTO_ORDER_CSV_RECEIVER_LIST,
-        )
-        message.attach(
-            f'{now.strftime("%Y/%m/%d")}_otto_bestellungen.csv',
-            response.getvalue(),
-            "text/csv",
-        )
-        number_of_messages = message.send()
-        LOG.info(f"{number_of_messages} send")
 
     return response
 

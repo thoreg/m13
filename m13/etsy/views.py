@@ -136,7 +136,7 @@ def orderitems_csv(request):
                     "Versandposition",
                     f"ETSY{current_order.marketplace_order_id}",
                     current_order.delivery_address.buyer_email,
-                    current_order.created,
+                    current_order.created.strftime("%d.%m.%y"),
                 ]
             )
 
@@ -209,6 +209,7 @@ def orderitems_csv(request):
                 "Versandposition",
                 f"ETSY{current_order.marketplace_order_id}",
                 current_order.delivery_address.buyer_email,
+                current_order.created.strftime("%d.%m.%y"),
             ]
         )
 
@@ -240,12 +241,12 @@ def oauth(request):
             "grant_type": "authorization_code",
             "redirect_uri": M13_ETSY_OAUTH_REDIRECT,
         }
-        LOG.info(f"POST: req_body {req_body}")
+        LOG.debug(f"POST: req_body {req_body}")
         resp = requests.post(M13_ETSY_GET_AUTH_TOKEN_URL, data=req_body)
         resp_json = resp.json()
-        LOG.info("- POST RESPONSE ---------------------------------------")
-        LOG.info(resp_json)
-        LOG.info("- POST RESPONSE ----------------------------------- END")
+        LOG.debug("- POST RESPONSE ---------------------------------------")
+        LOG.debug(resp_json)
+        LOG.debug("- POST RESPONSE ----------------------------------- END")
 
         AuthToken.objects.create(
             token=resp_json.get("access_token"),
