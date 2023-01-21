@@ -14,6 +14,7 @@ requests = "*"
 dropbox = "*"
 pyyaml = "*"
 werkzeug = "==2.0.3"
+gunicorn = "*"
 
 [dev-packages]
 black = "*"
