@@ -4,6 +4,8 @@ from django.urls import reverse
 
 from zalando.models import DailyShipmentReport, TransactionFileUpload
 
+NUMBER_OF_FIXTURE_FILES = 4
+
 
 def test_multi_file_upload(client, django_user_model, django_db_setup):
     """Multi File Upload is present and works properly."""
@@ -19,7 +21,7 @@ def test_multi_file_upload(client, django_user_model, django_db_setup):
 
     original_files = []
     original_files_md5sums = []
-    for idx in range(3):
+    for idx in range(NUMBER_OF_FIXTURE_FILES):
         fp = open(f"zalando/tests/fixtures/daily_sales_report_{idx}.csv", "rb")
         content = fp.read()
         md5_hash = hashlib.md5()
@@ -32,9 +34,9 @@ def test_multi_file_upload(client, django_user_model, django_db_setup):
     response = client.post(upload_url, {"original_csv": original_files})
 
     entries = TransactionFileUpload.objects.all()
-    assert len(entries) == 3
+    assert len(entries) == NUMBER_OF_FIXTURE_FILES
 
-    for idx in range(3):
+    for idx in range(NUMBER_OF_FIXTURE_FILES):
         entry = entries[idx]
         assert entry.original_csv.name.endswith(f"daily_sales_report_{idx}.csv")
         assert entry.processed is True
@@ -51,5 +53,5 @@ def test_multi_file_upload(client, django_user_model, django_db_setup):
     response = client.post(upload_url, {"original_csv": original_files})
     response = client.post(upload_url, {"original_csv": original_files})
 
-    assert TransactionFileUpload.objects.count() == 3
-    assert DailyShipmentReport.objects.count() == 12
+    assert TransactionFileUpload.objects.count() == NUMBER_OF_FIXTURE_FILES
+    assert DailyShipmentReport.objects.count() == 16
