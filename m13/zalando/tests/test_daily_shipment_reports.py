@@ -39,6 +39,11 @@ class TestWhateverFunctions(APITestCase):
             original_csv="zalando/tests/fixtures/daily_sales_report_2.csv",
             processed=False,
         )
+        self.file3 = TransactionFileUpload.objects.create(
+            file_name="daily_sales_report_3.csv",
+            original_csv="zalando/tests/fixtures/daily_sales_report_3.csv",
+            processed=False,
+        )
 
     def test_import_daily_shipment_report(self):
         """Daily Shipment Report items are created properly - no duplicates on multiple runs."""
@@ -73,11 +78,12 @@ class TestWhateverFunctions(APITestCase):
         import_daily_shipment_report(self.file0)
         import_daily_shipment_report(self.file1)
         import_daily_shipment_report(self.file2)
+        import_daily_shipment_report(self.file3)
 
         daily_shipment_reports = DailyShipmentReport.objects.values()
-        assert len(daily_shipment_reports) == 12
+        assert len(daily_shipment_reports) == 16
         raw_daily_shipment_reports = RawDailyShipmentReport.objects.values()
-        assert len(raw_daily_shipment_reports) == 12
+        assert len(raw_daily_shipment_reports) == 16
 
         article_stats = get_product_stats()
 
@@ -87,6 +93,19 @@ class TestWhateverFunctions(APITestCase):
                 "canceled": 0,
                 "returned": 1,
                 "shipped": 2,
+            },
+            {
+                "article_number": "duffel-sand",
+                "canceled": 0,
+                "returned": 0,
+                "shipped": 1,
+            },
+            {"article_number": "KLOOP-NA", "canceled": 0, "returned": 0, "shipped": 1},
+            {
+                "article_number": "Knit-Set-BL",
+                "canceled": 0,
+                "returned": 0,
+                "shipped": 1,
             },
             {
                 "article_number": "women-bom-da-l",
@@ -100,6 +119,7 @@ class TestWhateverFunctions(APITestCase):
                 "returned": 0,
                 "shipped": 3,
             },
+            {"article_number": "BM013-FBM", "canceled": 0, "returned": 0, "shipped": 1},
             {
                 "article_number": "stra_wings_w-l",
                 "canceled": 1,
@@ -108,7 +128,7 @@ class TestWhateverFunctions(APITestCase):
             },
         ]
 
-        assert ZProduct.objects.count() == 4
+        assert ZProduct.objects.count() == 8
 
     @freeze_time("2022-04-01")
     def test_get_product_stats_v2(self):
