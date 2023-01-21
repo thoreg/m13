@@ -15,6 +15,7 @@ dropbox = "*"
 pyyaml = "*"
 werkzeug = "==2.0.3"
 gunicorn = "*"
+django-countries = "*"
 
 [dev-packages]
 black = "*"
