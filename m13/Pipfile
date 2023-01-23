@@ -25,6 +25,7 @@ django-utils-six = "*"
 django-json-field = "*"
 django-filter = "*"
 colorama = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 black = "*"
