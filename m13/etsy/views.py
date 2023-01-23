@@ -169,7 +169,7 @@ def orderitems_csv(request):
                 "Artikel",
                 f"ETSY{oi.order.marketplace_order_id}",
                 oi.order.delivery_address.buyer_email,
-                oi.order.created,
+                oi.order.created.strftime("%d.%m.%y"),
             ]
         )
 
