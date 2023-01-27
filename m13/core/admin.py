@@ -33,7 +33,16 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class PriceAdmin(admin.ModelAdmin):
-    list_display = ("article", "category", "vk_zalando", "vk_otto")
+    list_display = (
+        "article",
+        "category",
+        "vk_zalando",
+        "vk_otto",
+        "z_shipping_costs",
+        "z_return_costs",
+        "o_shipping_costs",
+        "o_return_costs",
+    )
 
     @admin.display()
     def category(self, obj):
