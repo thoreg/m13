@@ -26,3 +26,32 @@ class Article(TimeStampedModel):
     def __str__(self):
         # return self.product.name
         return self.sku
+
+
+class Price(TimeStampedModel):
+    """Central point of price control."""
+
+    article = models.CharField(max_length=32, primary_key=True)
+    category = models.ForeignKey(Category, null=True, on_delete=models.PROTECT)
+    costs_production = models.DecimalField(
+        max_digits=6, decimal_places=2, null=True, blank=True
+    )
+    vk_zalando = models.DecimalField(
+        max_digits=6, decimal_places=2, null=True, blank=True
+    )
+    vk_otto = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    z_shipping_costs = models.DecimalField(
+        default=3.55, max_digits=5, decimal_places=2, null=True, blank=True
+    )
+    z_return_costs = models.DecimalField(
+        default=3.55, max_digits=5, decimal_places=2, null=True, blank=True
+    )
+    o_shipping_costs = models.DecimalField(
+        default=3.55, max_digits=5, decimal_places=2, null=True, blank=True
+    )
+    o_return_costs = models.DecimalField(
+        default=3.55, max_digits=5, decimal_places=2, null=True, blank=True
+    )
+
+    def __str__(self):
+        return f"{self.category} : {self.article}"

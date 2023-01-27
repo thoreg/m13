@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Article, Category, Product
+from .models import Article, Category, Price, Product
 
 
 class ArticleAdmin(admin.ModelAdmin):
@@ -32,6 +32,15 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
 
 
+class PriceAdmin(admin.ModelAdmin):
+    list_display = ("article", "category", "vk_zalando", "vk_otto")
+
+    @admin.display()
+    def category(self, obj):
+        return obj.category.name
+
+
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Price, PriceAdmin)
