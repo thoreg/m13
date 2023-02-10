@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import AppV1 from './AppV1.vue'
+import ReturnShipmentsStatsApp from './ReturnShipmentsStatsApp.vue'
 import './assets/tailwind.css'
 
-createApp(AppV1).mount('#appv1');
+createApp(ReturnShipmentsStatsApp).mount('#return-shipments-stats');

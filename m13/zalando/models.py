@@ -342,7 +342,7 @@ class ZCost(TimeStampedModel):
 class RawDailyShipmentReport(TimeStampedModel):
     """Relevant data from daily shipment reports from Zalando."""
 
-    zproduct = models.ForeignKey("ZProduct", on_delete=models.PROTECT)
+    price = models.ForeignKey("core.Price", on_delete=models.PROTECT)
     article_number = models.CharField(max_length=32)
     cancel = models.BooleanField(default=False)
     channel_order_number = models.CharField(max_length=16)
@@ -352,6 +352,9 @@ class RawDailyShipmentReport(TimeStampedModel):
     return_reason = models.CharField(max_length=256)
     returned = models.BooleanField(default=False)
     shipment = models.BooleanField(default=False)
+    marketplace_config = models.ForeignKey(
+        "core.MarketplaceConfig", on_delete=models.PROTECT, blank=True, null=True
+    )
 
     class Meta:
         db_table = "zalando_dailyshipmentreport_raw"

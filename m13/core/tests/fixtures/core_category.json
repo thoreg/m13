@@ -1,0 +1,268 @@
+[
+    {
+        "id": 1,
+        "created": "2022-06-15T08:15:16.15+00:00",
+        "modified": "2022-06-15T08:15:16.15+00:00",
+        "name": "Woman Bomber Jacken",
+        "description": null
+    },
+    {
+        "id": 2,
+        "created": "2022-06-15T08:15:24.09+00:00",
+        "modified": "2022-06-15T08:15:24.09+00:00",
+        "name": "Knit Loops",
+        "description": null
+    },
+    {
+        "id": 3,
+        "created": "2022-06-15T08:15:32.503+00:00",
+        "modified": "2022-06-15T08:15:32.503+00:00",
+        "name": "Heavy Knit Beanies (HKB)",
+        "description": null
+    },
+    {
+        "id": 4,
+        "created": "2022-06-15T08:15:40.943+00:00",
+        "modified": "2022-06-15T08:15:40.943+00:00",
+        "name": "Knit Sets",
+        "description": null
+    },
+    {
+        "id": 5,
+        "created": "2022-06-15T08:15:48.923+00:00",
+        "modified": "2022-06-15T08:15:48.923+00:00",
+        "name": "Cord Jacken",
+        "description": null
+    },
+    {
+        "id": 6,
+        "created": "2022-06-15T08:15:55.853+00:00",
+        "modified": "2022-06-15T08:15:55.853+00:00",
+        "name": "Cord Hemden",
+        "description": null
+    },
+    {
+        "id": 7,
+        "created": "2022-06-16T10:14:14.448+00:00",
+        "modified": "2022-06-16T10:14:14.448+00:00",
+        "name": "Windbreaker",
+        "description": "Windbreaker"
+    },
+    {
+        "id": 8,
+        "created": "2022-06-16T10:17:36.542+00:00",
+        "modified": "2022-06-16T10:17:36.542+00:00",
+        "name": "Swim Shorts",
+        "description": "Swim Shorts"
+    },
+    {
+        "id": 9,
+        "created": "2022-06-16T10:30:02.756+00:00",
+        "modified": "2022-06-16T10:30:02.756+00:00",
+        "name": "Rough Beanies",
+        "description": "Rough Beanies"
+    },
+    {
+        "id": 10,
+        "created": "2022-06-16T10:48:31.039+00:00",
+        "modified": "2022-06-16T10:48:31.039+00:00",
+        "name": "Duffel Bags",
+        "description": "Duffel Bags 24/45 L Volumen"
+    },
+    {
+        "id": 11,
+        "created": "2022-06-16T10:56:26.975+00:00",
+        "modified": "2022-06-16T10:56:26.975+00:00",
+        "name": "Cropped Hoodies",
+        "description": "Cropped Hoodies"
+    },
+    {
+        "id": 12,
+        "created": "2022-06-16T11:03:37.019+00:00",
+        "modified": "2022-06-16T11:03:37.019+00:00",
+        "name": "Boyfriend Shirts",
+        "description": "Boyfriend Shirts"
+    },
+    {
+        "id": 13,
+        "created": "2022-06-16T11:08:44.388+00:00",
+        "modified": "2022-06-16T11:08:44.388+00:00",
+        "name": "Daypacks",
+        "description": "Daypacks"
+    },
+    {
+        "id": 14,
+        "created": "2022-06-16T11:10:54.617+00:00",
+        "modified": "2022-06-16T11:10:54.617+00:00",
+        "name": "Double Sided Beanies",
+        "description": "Double Sided Beanies"
+    },
+    {
+        "id": 15,
+        "created": "2022-06-16T14:52:38.476+00:00",
+        "modified": "2022-06-16T14:52:38.476+00:00",
+        "name": "Slouch Beanies",
+        "description": "Slouch Beanies"
+    },
+    {
+        "id": 16,
+        "created": "2022-06-16T14:54:13.401+00:00",
+        "modified": "2022-06-16T14:54:13.401+00:00",
+        "name": "Langschals",
+        "description": "Langschals"
+    },
+    {
+        "id": 17,
+        "created": "2022-06-16T14:55:49.958+00:00",
+        "modified": "2022-06-16T14:55:49.958+00:00",
+        "name": "Sports Bags",
+        "description": "Turnbeutel / Sportbeutel"
+    },
+    {
+        "id": 18,
+        "created": "2022-06-16T14:57:25.147+00:00",
+        "modified": "2022-06-16T14:57:25.147+00:00",
+        "name": "Handschuhe",
+        "description": "Handschuhe"
+    },
+    {
+        "id": 19,
+        "created": "2022-06-16T14:59:33.684+00:00",
+        "modified": "2022-06-16T14:59:33.684+00:00",
+        "name": "Roll-Top Daypacks",
+        "description": "Roll-Top Daypacks"
+    },
+    {
+        "id": 20,
+        "created": "2022-07-19T08:52:50.323+00:00",
+        "modified": "2022-07-19T08:52:50.323+00:00",
+        "name": "Acid Washed Hoodies",
+        "description": "Acid Washed Hoodies"
+    },
+    {
+        "id": 21,
+        "created": "2022-07-19T09:04:03.45+00:00",
+        "modified": "2022-07-19T09:04:03.45+00:00",
+        "name": "Acid Washed T-Shirts",
+        "description": "Acid Washed T-Shirts"
+    },
+    {
+        "id": 22,
+        "created": "2022-07-19T09:20:48.454+00:00",
+        "modified": "2022-07-19T09:20:48.454+00:00",
+        "name": "Bucket Hats",
+        "description": "Bucket Hats"
+    },
+    {
+        "id": 23,
+        "created": "2022-07-19T09:47:10.102+00:00",
+        "modified": "2022-07-19T09:48:46.054+00:00",
+        "name": "Other",
+        "description": "Other"
+    },
+    {
+        "id": 24,
+        "created": "2022-07-19T09:59:33.372+00:00",
+        "modified": "2022-07-19T09:59:33.373+00:00",
+        "name": "Fishermans Beanie",
+        "description": "Fishermans Beanie"
+    },
+    {
+        "id": 25,
+        "created": "2022-07-19T10:05:26.361+00:00",
+        "modified": "2022-07-19T10:05:26.361+00:00",
+        "name": "Heritage Docker Beanie",
+        "description": "Heritage Docker Beanie"
+    },
+    {
+        "id": 26,
+        "created": "2022-07-19T10:14:19.746+00:00",
+        "modified": "2022-07-19T10:14:19.746+00:00",
+        "name": "Hooded Loops (Standard)",
+        "description": "Hooded Loops (Standard)"
+    },
+    {
+        "id": 27,
+        "created": "2022-07-19T10:19:25.074+00:00",
+        "modified": "2022-07-19T10:19:25.074+00:00",
+        "name": "Hooded Loop (Knit)",
+        "description": "Hooded Loop (Knit)"
+    },
+    {
+        "id": 28,
+        "created": "2022-07-19T10:27:53.622+00:00",
+        "modified": "2022-07-19T10:27:53.622+00:00",
+        "name": "Knit Beanies",
+        "description": "Knit Beanies"
+    },
+    {
+        "id": 29,
+        "created": "2022-07-19T11:18:11.991+00:00",
+        "modified": "2022-07-19T11:18:11.991+00:00",
+        "name": "Windbreaker (Knit)",
+        "description": "Windbreaker (Knit)"
+    },
+    {
+        "id": 30,
+        "created": "2022-07-19T11:33:34.306+00:00",
+        "modified": "2022-07-19T11:33:34.306+00:00",
+        "name": "Mini RDP",
+        "description": "Mini Roll-Top DayPacks"
+    },
+    {
+        "id": 31,
+        "created": "2022-07-19T11:42:50.614+00:00",
+        "modified": "2022-07-19T11:42:50.614+00:00",
+        "name": "RDP G2",
+        "description": "RDP G2"
+    },
+    {
+        "id": 32,
+        "created": "2022-07-19T11:50:43.791+00:00",
+        "modified": "2022-07-19T11:50:43.791+00:00",
+        "name": "Loop Schals",
+        "description": "Loop Schals"
+    },
+    {
+        "id": 33,
+        "created": "2022-07-19T11:53:47.255+00:00",
+        "modified": "2022-07-19T11:53:47.255+00:00",
+        "name": "Boyfriend Hoodies",
+        "description": "Boyfriend Hoodies"
+    },
+    {
+        "id": 34,
+        "created": "2022-07-19T12:34:50.645+00:00",
+        "modified": "2022-07-19T12:34:50.645+00:00",
+        "name": "Acid Washed Jacke",
+        "description": "Acid Washed Jacke"
+    },
+    {
+        "id": 35,
+        "created": "2022-07-19T13:31:33.248+00:00",
+        "modified": "2022-07-19T13:31:33.248+00:00",
+        "name": "Summer T Dresses",
+        "description": "Summer T Dresses"
+    },
+    {
+        "id": 36,
+        "created": "2022-10-12T09:02:50.279+00:00",
+        "modified": "2022-10-12T09:02:50.279+00:00",
+        "name": "Halfzip Troyer",
+        "description": "Halfzip Troyer"
+    },
+    {
+        "id": 37,
+        "created": "2022-10-12T10:02:35.036+00:00",
+        "modified": "2022-10-12T10:02:35.036+00:00",
+        "name": "Roll-Tops",
+        "description": "Alle Roll-Tops außer die RDPs"
+    },
+    {
+        "id": 38,
+        "created": "2023-01-13T15:37:37.654+00:00",
+        "modified": "2023-01-13T15:37:37.654+00:00",
+        "name": "Socken",
+        "description": "Socken"
+    }
+]

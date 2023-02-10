@@ -5,8 +5,8 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 
+from core import views as core_views
 from otto.viewsets import OrderItemViewSet as OttoOrderItemsViewSet
-from zalando import views as zalando_views
 from zalando import viewsets as zalando_viewsets
 
 from .views import index
@@ -24,8 +24,7 @@ urlpatterns = [
         zalando_viewsets.ZProductDetail.as_view(),
     ),
     path("api/zalando/finance/products/", zalando_viewsets.ZProductList.as_view()),
-    path("api/v1/zalando/finance/products/", zalando_views.product_stats_v1),
-    path("api/zalando/finance/article-stats/", zalando_views.article_stats),
+    path("api/v2/core/return-shipments-stats/", core_views.api_return_shipments_stats),
     path("api/", include(router.urls)),
     path("addi/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
@@ -34,6 +33,7 @@ urlpatterns = [
     path("z/", include("zalando.urls")),
     path("etsy/", include("etsy.urls")),
     path("shipping/", include("shipping.urls")),
+    path("core/return-shipments-stats", core_views.return_shipments_stats),
     path("", index),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

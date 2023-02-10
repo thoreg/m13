@@ -9,3 +9,10 @@ python_files = ["test_*.py"]
 
 [tool.isort]
 profile = "black"
+
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = '''logging-fstring-interpolation,
+  not-an-iterable,
+  missing-module-docstring,
+'''

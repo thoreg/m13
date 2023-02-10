@@ -20,4 +20,4 @@ check: clean style test
 
 py-cov:
 	rm -rf htmlcov
-	pytest --cov-report=html --cov=.
+	pytest --import-mode=importlib --ds=m13.config.develop --cov-report=html --cov=.
