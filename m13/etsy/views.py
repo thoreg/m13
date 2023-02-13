@@ -29,7 +29,7 @@ M13_ETSY_GET_AUTH_TOKEN_URL = "https://api.etsy.com/v3/public/oauth/token"
 M13_ETSY_OAUTH_REDIRECT = os.getenv("M13_ETSY_OAUTH_REDIRECT")
 M13_ETSY_SHOP_ID = os.getenv("M13_ETSY_SHOP_ID")
 
-DELIVERY_FEE_STANDARD = "Hermes HSI"
+DELIVERY_FEE_STANDARD = "DHL Germany"
 
 
 def _render_auth_request_not_found(request):
