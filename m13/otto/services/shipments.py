@@ -148,11 +148,7 @@ def handle_uploaded_file(csv_file):
             LOG.error(f"Order not found {order_number} - row {row}")
             continue
 
-        carrier = row[4]
-        if carrier.startswith("DHL"):
-            carrier = "DHL"
-        else:
-            carrier = "HERMES"
+        carrier = "DHL"
 
         LOG.info(f"o: {order_number} t: {tracking_info} c: {carrier}")
 
