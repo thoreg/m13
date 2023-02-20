@@ -66,6 +66,8 @@ def import_order(order_dict):
         LOG.error(order_dict["ITEMS"])
 
     def _get_or_create_orderitem(oi):
+        LOG.info(f"[ mirapodo ] orderitem: {oi}")
+
         order_item, created = OrderItem.objects.get_or_create(
             order=order,
             position_item_id=oi.get("TB_ID"),
