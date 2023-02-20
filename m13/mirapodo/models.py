@@ -57,7 +57,7 @@ class OrderItem(TimeStampedModel):
     ean = models.CharField(max_length=13, blank=True, null=True)
     item_price = models.DecimalField(max_digits=5, decimal_places=2)
     quantity = models.PositiveIntegerField()
-    sku = models.CharField(max_length=16)
+    sku = models.CharField(max_length=32)
     position_item_id = models.CharField(max_length=16)
     transfer_price = models.DecimalField(max_digits=5, decimal_places=2)
 
