@@ -52,7 +52,7 @@ ALPHA = string.ascii_letters
 SHIPMENTS_URL = "https://api.otto.market/v1/shipments"
 
 
-def get_payload(order, tracking_info, carrier):
+def get_payload(order, tracking_info, carrier, return_shipment_code):
     """Return the payload for all orderitems of the given order."""
     LOG.info(order.__dict__)
     LOG.info(order.delivery_address.__dict__)
@@ -76,7 +76,7 @@ def get_payload(order, tracking_info, carrier):
                 "salesOrderId": order.marketplace_order_id,
                 "returnTrackingKey": {
                     "carrier": carrier,
-                    "trackingNumber": tracking_info,
+                    "trackingNumber": return_shipment_code,
                 },
             }
         )
@@ -86,8 +86,8 @@ def get_payload(order, tracking_info, carrier):
     return data
 
 
-def do_post(token, order, tracking_info, carrier):
-    payload = get_payload(order, tracking_info, carrier)
+def do_post(token, order, tracking_info, carrier, return_shipment_code):
+    payload = get_payload(order, tracking_info, carrier, return_shipment_code)
 
     LOG.info(
         f"upload for o: {order.marketplace_order_number} t: {tracking_info} c: {carrier}"
@@ -150,9 +150,15 @@ def handle_uploaded_file(csv_file):
 
         carrier = "DHL"
 
-        LOG.info(f"o: {order_number} t: {tracking_info} c: {carrier}")
+        return_shipment_code = row[5]
 
-        status_code, response = do_post(token, order, tracking_info, carrier)
+        LOG.info(
+            f"o: {order_number} t: {tracking_info} c: {carrier} rsc: {return_shipment_code}"
+        )
+
+        status_code, response = do_post(
+            token, order, tracking_info, carrier, return_shipment_code
+        )
 
         Shipment.objects.create(
             order=order,
