@@ -42,7 +42,8 @@ def _get_delivery_info(name):
     MAP = {
         # "DELIVERY_FEE_STANDARD": "Hermes HSI",
         # 'DELIVERY_FEE_STANDARD': 'Hermes S',
-        "DELIVERY_FEE_STANDARD": "DHL Paket",
+        # "DELIVERY_FEE_STANDARD": "DHL Paket",
+        "DELIVERY_FEE_STANDARD": "DHL Paket (R)",
     }
     return MAP.get(name, name)
 
