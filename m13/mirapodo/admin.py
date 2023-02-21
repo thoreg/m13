@@ -24,9 +24,6 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     list_display = ("marketplace_order_id", "internal_status", "created")
 
-    def has_change_permission(self, request, obj=None):
-        return False
-
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem, OrderItemAdmin)
