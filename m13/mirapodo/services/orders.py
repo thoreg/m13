@@ -15,7 +15,7 @@ USER_NAME = os.environ["M13_MIRAPODO_USER_NAME"]
 HNR = os.environ["M13_MIRAPODO_HNR"]
 PASSWD = os.environ["M13_MIRAPODO_PASSWORD"]
 
-DELIVERY_FEE_STANDARD = "Hermes HSI"
+DELIVERY_FEE_STANDARD = "DHL Paket (R)"
 
 LOG = logging.getLogger(__name__)
 

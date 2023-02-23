@@ -144,8 +144,8 @@ def orderitems_csv(request):
                 current_order.delivery_address.city,
                 _get_country_information(current_order.delivery_address.country_code),
                 " ",
-                oi.order.delivery_fee,  # Always HERMES HSI
-                0,  # Price HERMES HSI
+                oi.order.delivery_fee,
+                0,
                 1,
                 "Versandposition",
                 f"MIRAPODO {current_order.marketplace_order_id}",

@@ -76,7 +76,7 @@ def verify_orders(orders):
                 2022, 9, 7, 0, 0, tzinfo=datetime.timezone.utc
             ),
             "delivery_address_id": 1,
-            "delivery_fee": "Hermes HSI",
+            "delivery_fee": "DHL Paket (R)",
             "id": 1,
             "internal_status": "IMPORTED",
             "invoice_address_id": 1,
@@ -94,7 +94,7 @@ def verify_orders(orders):
                 2022, 9, 7, 0, 0, tzinfo=datetime.timezone.utc
             ),
             "delivery_address_id": 2,
-            "delivery_fee": "Hermes HSI",
+            "delivery_fee": "DHL Paket (R)",
             "id": 2,
             "internal_status": "IMPORTED",
             "invoice_address_id": 2,
@@ -274,7 +274,7 @@ def test_import_single_order():
                 2022, 9, 7, 0, 0, tzinfo=datetime.timezone.utc
             ),
             "delivery_address_id": 1,
-            "delivery_fee": "Hermes HSI",
+            "delivery_fee": "DHL Paket (R)",
             "id": 1,
             "internal_status": "IMPORTED",
             "invoice_address_id": 1,
