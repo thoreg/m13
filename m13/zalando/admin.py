@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (
-    DailyShipmentReport,
+    RawDailyShipmentReport,
     PriceTool,
     TransactionFileUpload,
     ZCost,
@@ -18,10 +18,11 @@ class TransactionFileUploadAdmin(admin.ModelAdmin):
     readonly_fields = ("file_name", "original_csv", "processed")
 
 
-class DailyShipmentReportAdmin(admin.ModelAdmin):
+class RawDailyShipmentReportAdmin(admin.ModelAdmin):
     list_display = (
         "article_number",
         "order_created",
+        "order_event_time",
         "cancel",
         "returned",
         "shipment",
@@ -31,38 +32,16 @@ class DailyShipmentReportAdmin(admin.ModelAdmin):
         "cancel",
         "channel_order_number",
         "order_created",
+        "order_event_time",
         "price_in_cent",
         "return_reason",
         "returned",
         "shipment",
     )
+    search_fields = [
+        "article_number",
+    ]
 
 
-class ZProductAdmin(admin.ModelAdmin):
-    list_display = (
-        "article",
-        "category",
-        "costs_production",
-        "vk_zalando",
-        "pimped",
-        "shipped",
-        "returned",
-        "shipping_costs",
-        "return_costs",
-        # 'eight_percent_provision',
-        # 'nineteen_percent_vat',
-        # 'generic_costs',
-        "profit_after_taxes",
-    )
-    search_fields = ["article", "category__name"]
-
-
-class ZCostAdmin(admin.ModelAdmin):
-    list_display = ("shipping", "returnc")
-
-
-admin.site.register(DailyShipmentReport, DailyShipmentReportAdmin)
-# admin.site.register(PriceTool, PriceToolAdmin)
+admin.site.register(RawDailyShipmentReport, RawDailyShipmentReportAdmin)
 admin.site.register(TransactionFileUpload, TransactionFileUploadAdmin)
-# admin.site.register(ZProduct, ZProductAdmin)
-# admin.site.register(ZCost, ZCostAdmin)

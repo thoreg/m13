@@ -71,10 +71,11 @@ class ArticleStats:
                 - self.vat_amount
                 - self.generic_costs_amount
             )
-        except:
+        except TypeError:
             LOG.error(f"Missing information for {self.sku}")
             LOG.error(self)
             # import ipdb; ipdb.set_trace()
+            return 0
 
     @property
     def total_revenue(self):
