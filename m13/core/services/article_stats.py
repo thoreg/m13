@@ -62,14 +62,19 @@ class ArticleStats:
     @property
     def profit_after_taxes(self):
         """Return the actual profit after substracting all costs and taxes."""
-        return _r(
-            self.price
-            - self.production_costs
-            - self.shipping_costs
-            - self.provision_amount
-            - self.vat_amount
-            - self.generic_costs_amount
-        )
+        try:
+            return _r(
+                self.price
+                - self.production_costs
+                - self.shipping_costs
+                - self.provision_amount
+                - self.vat_amount
+                - self.generic_costs_amount
+            )
+        except:
+            LOG.error(f"Missing information for {self.sku}")
+            LOG.error(self)
+            # import ipdb; ipdb.set_trace()
 
     @property
     def total_revenue(self):
