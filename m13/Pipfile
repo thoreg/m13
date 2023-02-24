@@ -26,6 +26,7 @@ django-json-field = "*"
 django-filter = "*"
 colorama = "*"
 beautifulsoup4 = "*"
+ipdb = "*"
 
 [dev-packages]
 black = "*"
