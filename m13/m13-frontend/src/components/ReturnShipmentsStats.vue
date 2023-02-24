@@ -179,7 +179,6 @@ export default {
             let absoluteSales = 0;
             for (const product in this.products) {
                 absoluteSales += parseFloat(this.products[product].stats.sales);
-                console.log(product, this.products[product].stats.sales);
             }
             absoluteSales = Math.round((absoluteSales + Number.EPSILON) * 1000) / 1000;
             return absoluteSales;
