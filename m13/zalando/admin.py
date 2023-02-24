@@ -62,7 +62,7 @@ class ZCostAdmin(admin.ModelAdmin):
 
 
 admin.site.register(DailyShipmentReport, DailyShipmentReportAdmin)
-admin.site.register(PriceTool, PriceToolAdmin)
+# admin.site.register(PriceTool, PriceToolAdmin)
 admin.site.register(TransactionFileUpload, TransactionFileUploadAdmin)
-admin.site.register(ZProduct, ZProductAdmin)
-admin.site.register(ZCost, ZCostAdmin)
+# admin.site.register(ZProduct, ZProductAdmin)
+# admin.site.register(ZCost, ZCostAdmin)
