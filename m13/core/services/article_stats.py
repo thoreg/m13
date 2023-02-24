@@ -6,7 +6,6 @@ from enum import StrEnum
 
 from django.db import connection
 
-from core.models import MarketplaceConfig
 from m13.lib.psql import dictfetchall
 
 LOG = logging.getLogger(__name__)
@@ -128,12 +127,6 @@ def get_article_stats_zalando(start_date: date) -> dict:
     """Return dictionary with aggregated values for number of shipped, returned and canceled."""
     LOG.info(f"get_article_stats_zalando - start_date: {start_date}")
 
-    try:
-        config = MarketplaceConfig.objects.get(name=Marketplace.ZALANDO, active=True)
-    except MarketplaceConfig.DoesNotExist:
-        LOG.exception("No marketplace config found for zalando")
-        return {}
-
     result = {}
     params = {"start_date": start_date}
     with connection.cursor() as cursor:
@@ -148,20 +141,34 @@ def get_article_stats_zalando(start_date: date) -> dict:
                 COALESCE(SUM(zdr.price_in_cent) FILTER (WHERE zdr.cancel), 0) AS sum_canceled,
                 COUNT(zdr.shipment) FILTER (WHERE zdr.shipment) AS shipped,
                 COUNT(zdr.returned) FILTER (WHERE zdr.returned) AS returned,
-                COUNT(zdr.cancel) FILTER (WHERE zdr.cancel) AS canceled
+                COUNT(zdr.cancel) FILTER (WHERE zdr.cancel) AS canceled,
+                config.shipping_costs as shipping_costs,
+                config.return_costs as return_costs,
+                config.vat_in_percent as vat_in_percent,
+                config.generic_costs_in_percent as generic_costs_in_percent
+
             FROM
                 zalando_dailyshipmentreport_raw AS zdr
             JOIN core_price AS cp
                 ON cp.sku = zdr.article_number
             JOIN core_category AS cc
                 on cc.id = cp.category_id
+            JOIN core_marketplaceconfig AS config
+                on config.id = zdr.marketplace_config_id
             WHERE
                 order_event_time >= %(start_date)s
                 AND article_number <> ''
             GROUP BY
-                category_name, sku, reported_price
+                category_name,
+                sku,
+                reported_price,
+                shipping_costs,
+                return_costs,
+                vat_in_percent,
+                generic_costs_in_percent,
+                config.id
             ORDER BY
-                sku, reported_price DESC
+                config.id, sku, reported_price DESC
         """
         cursor.execute(query, params)
         for entry in dictfetchall(cursor):
@@ -176,11 +183,11 @@ def get_article_stats_zalando(start_date: date) -> dict:
                 marketplace=Marketplace.ZALANDO,
                 price=price,
                 provision_in_percent=provision_in_percent,
-                vat_in_percent=config.vat_in_percent,
-                generic_costs_in_percent=config.generic_costs_in_percent,
+                vat_in_percent=entry["vat_in_percent"],
+                generic_costs_in_percent=entry["generic_costs_in_percent"],
                 production_costs=entry["costs_production"],
-                shipping_costs=config.shipping_costs,
-                return_costs=config.return_costs,
+                shipping_costs=entry["shipping_costs"],
+                return_costs=entry["return_costs"],
                 shipped=entry["shipped"],
                 returned=entry["returned"],
                 canceled=entry["canceled"],

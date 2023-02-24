@@ -1,12 +1,6 @@
 from django.contrib import admin
 
-from .models import (
-    RawDailyShipmentReport,
-    PriceTool,
-    TransactionFileUpload,
-    ZCost,
-    ZProduct,
-)
+from .models import RawDailyShipmentReport, TransactionFileUpload
 
 
 class PriceToolAdmin(admin.ModelAdmin):
