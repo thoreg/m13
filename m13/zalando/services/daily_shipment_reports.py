@@ -1,15 +1,13 @@
 import logging
 from enum import StrEnum
 
-from django.db import connection
-
+from core.models import MarketplaceConfig, Price
+from core.services.article_stats import Marketplace
 from m13.lib.csv_reader import read_csv
-from m13.lib.psql import dictfetchall
 from zalando.models import (
     DailyShipmentReport,
     RawDailyShipmentReport,
     TransactionFileUpload,
-    ZProduct,
 )
 
 LOG = logging.getLogger(__name__)
@@ -104,12 +102,16 @@ def import_daily_shipment_report(file: TransactionFileUpload) -> None:
             shipment=shipped,
         )
 
-        product, _created = ZProduct.objects.get_or_create(
-            article=line[keys.ARTICLE_NUMBER],
+        price, _created = Price.objects.get_or_create(
+            sku=line[keys.ARTICLE_NUMBER],
+        )
+
+        marketplace_config = MarketplaceConfig.objects.get(
+            name=Marketplace.ZALANDO, active=True
         )
 
         RawDailyShipmentReport.objects.get_or_create(
-            zproduct=product,
+            price=price,
             article_number=line[keys.ARTICLE_NUMBER],
             cancel=canceled,
             channel_order_number=line[keys.CHANNEL_ORDER_NUMBER],
@@ -119,77 +121,8 @@ def import_daily_shipment_report(file: TransactionFileUpload) -> None:
             return_reason=line[keys.RETURN_REASON],
             returned=returned,
             shipment=shipped,
+            marketplace_config=marketplace_config,
         )
 
     file.processed = True
     file.save()
-
-    # Update the product stats after each import
-    get_product_stats()
-
-
-def get_product_stats():
-    """Return dictionary with aggregated values for number of shipped, returned and canceled."""
-    article_stats = {}
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT
-                article_number,
-                COUNT(shipment) FILTER (WHERE shipment) AS shipped,
-                COUNT(returned) FILTER (WHERE returned) AS returned,
-                COUNT(cancel) FILTER (WHERE cancel) AS canceled
-            FROM
-                zalando_dailyshipmentreport
-            GROUP BY
-                article_number
-            ORDER BY
-                returned DESC
-        """
-        )
-        article_stats = dictfetchall(cursor)
-
-    for stats in article_stats:
-        zp, created = ZProduct.objects.get_or_create(
-            article=stats["article_number"],
-            defaults=dict(
-                shipped=stats["shipped"],
-                returned=stats["returned"],
-                canceled=stats["canceled"],
-            ),
-        )
-        if created:
-            LOG.info(f"ZProduct created : {stats}")
-        else:
-            zp.shipped = stats["shipped"]
-            zp.returned = stats["returned"]
-            zp.canceled = stats["canceled"]
-            zp.save()
-
-    return article_stats
-
-
-def get_product_stats_v1(start_date):
-    """Return dictionary with aggregated values for number of shipped, returned and canceled."""
-    params = {"start_date": start_date}
-    with connection.cursor() as cursor:
-        query = """
-            SELECT
-                article_number,
-                COUNT(shipment) FILTER (WHERE shipment) AS shipped,
-                COUNT(returned) FILTER (WHERE returned) AS returned,
-                COUNT(cancel) FILTER (WHERE cancel) AS canceled
-            FROM
-                zalando_dailyshipmentreport_raw
-            WHERE
-                order_event_time > %(start_date)s
-            GROUP BY
-                article_number
-            ORDER BY
-                returned DESC
-        """
-        # pprint(cursor.mogrify(query, params).decode('utf8'))
-        cursor.execute(query, params)
-        result = dictfetchall(cursor)
-
-    return result

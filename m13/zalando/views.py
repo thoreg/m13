@@ -33,9 +33,7 @@ from .models import (
     Product,
     StatsOrderItems,
     TransactionFileUpload,
-    ZProduct,
 )
-from .services import daily_shipment_reports
 
 LOG = logging.getLogger(__name__)
 
@@ -209,134 +207,7 @@ def upload_files(request):
     )
 
 
-@login_required()
-def article_stats(request):
-    """Return the article stats as JSON."""
-    return JsonResponse(daily_shipment_reports.get_product_stats(), safe=False)
-
-
 @login_required
 def calculator_v1(request):
     """Overview of all zalando calculator values."""
     return render(request, "zalando/finance/z_calculator_v1.html", {})
-
-
-@login_required()
-def product_stats_v1(request):
-    """Return the article stats as JSON."""
-    start_date = request.GET.get("start")
-    if not start_date:
-        start_date = date.today() - timedelta(weeks=4)
-
-    zproducts = ZProduct.objects.select_related("category").all()
-    LOG.info(f"Found {len(zproducts)} zproducts")
-
-    zproduct_by_sku = {}
-    for zp in zproducts:
-        zproduct_by_sku[zp.article] = {
-            "category": zp.category.name if zp.category else "N/A",
-            "costs_production": zp.costs_production,
-            "eight_percent_provision": zp.eight_percent_provision,
-            "generic_costs": zp.generic_costs,
-            "nineteen_percent_vat": zp.nineteen_percent_vat,
-            "profit_after_taxes": zp.profit_after_taxes,
-            "return_costs": zp.return_costs,
-            "shipping_costs": zp.shipping_costs,
-            "vk_zalando": zp.vk_zalando,
-        }
-
-    product_shipping_stats = daily_shipment_reports.get_product_stats_v1(start_date)
-    LOG.info(f"Got {len(product_shipping_stats)} product shipping stats entries")
-
-    for pss in product_shipping_stats:
-        sku = pss["article_number"]
-        try:
-            pss.update(
-                {
-                    "category": zproduct_by_sku[sku]["category"],
-                    "costs_production": zproduct_by_sku[sku]["costs_production"],
-                    "eight_percent_provision": zproduct_by_sku[sku][
-                        "eight_percent_provision"
-                    ],
-                    "generic_costs": zproduct_by_sku[sku]["generic_costs"],
-                    "nineteen_percent_vat": zproduct_by_sku[sku][
-                        "nineteen_percent_vat"
-                    ],
-                    "profit_after_taxes": zproduct_by_sku[sku]["profit_after_taxes"],
-                    "return_costs": zproduct_by_sku[sku]["return_costs"],
-                    "shipping_costs": zproduct_by_sku[sku]["shipping_costs"],
-                    "vk_zalando": zproduct_by_sku[sku]["vk_zalando"],
-                }
-            )
-        except KeyError:
-            LOG.exception(f"sku: {sku} not in zproduct?")
-
-    pss_by_category = {}
-    for pss in product_shipping_stats:
-        try:
-            category = pss["category"]
-        except KeyError:
-            LOG.exception("no category in pss")
-            LOG.error(pss)
-            continue
-
-        category = pss["category"][:MAX_LENGTH_CATEGORY]
-        if category not in pss_by_category:
-            pss_by_category[category] = {
-                "name": category,
-                "stats": {
-                    "shipped": pss["shipped"],
-                    "returned": pss["returned"],
-                    "canceled": pss["canceled"],
-                    "total_revenue": 0,
-                    "total_return_costs": 0,
-                    "total_diff": 0,
-                    "sales": 0,
-                },
-                "content": [pss],
-            }
-        else:
-            pss_by_category[category]["stats"]["shipped"] += pss["shipped"]
-            pss_by_category[category]["stats"]["returned"] += pss["returned"]
-            pss_by_category[category]["stats"]["canceled"] += pss["canceled"]
-            pss_by_category[category]["content"].append(pss)
-
-        pss["sales"] = 0
-        if pss["vk_zalando"]:
-            # Update product (specific) shipping stats and category (specific) shipping stats
-            # Calculation of revenue only makes sense when there were sales in the selected time range
-            pss["total_revenue"] = 0
-            if pss["shipped"]:
-                pss["total_revenue"] = pss["profit_after_taxes"] * (
-                    pss["shipped"] - pss["returned"]
-                )
-                pss["sales"] = pss["vk_zalando"] * pss["shipped"]
-
-            pss["total_return_costs"] = pss["returned"] * (
-                pss["shipping_costs"] + pss["return_costs"] + pss["generic_costs"]
-            )
-            pss["total_diff"] = pss["total_revenue"] - pss["total_return_costs"]
-
-            if pss["shipped"]:
-                pss_by_category[category]["stats"]["total_revenue"] = pss[
-                    "profit_after_taxes"
-                ] * (
-                    pss_by_category[category]["stats"]["shipped"]
-                    - pss_by_category[category]["stats"]["returned"]
-                )
-                pss_by_category[category]["stats"]["sales"] = (
-                    pss["vk_zalando"] * pss_by_category[category]["stats"]["shipped"]
-                )
-
-            pss_by_category[category]["stats"]["total_return_costs"] = pss_by_category[
-                category
-            ]["stats"]["returned"] * (
-                pss["shipping_costs"] + pss["return_costs"] + pss["generic_costs"]
-            )
-            pss_by_category[category]["stats"]["total_diff"] = (
-                pss_by_category[category]["stats"]["total_revenue"]
-                - pss_by_category[category]["stats"]["total_return_costs"]
-            )
-
-    LOG.info(f"Got {len(pss_by_category)} pss_by_category entries")
-    return JsonResponse(pss_by_category, safe=False)

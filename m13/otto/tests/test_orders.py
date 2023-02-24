@@ -5,7 +5,6 @@ import pytest
 from django.urls import reverse
 from freezegun import freeze_time
 
-from core.models import Article, Product
 from otto.models import Address, Order, OrderItem
 from otto.services.orders import get_url, save_orders
 
@@ -32,9 +31,6 @@ def test_save_orders(mocked_fetch_orders):
 
     assert OrderItem.objects.filter(fulfillment_status="RETURNED").count() == 2
     assert OrderItem.objects.filter(fulfillment_status="SENT").count() == 1
-
-    assert Product.objects.count() == 3
-    assert Article.objects.count() == 3
 
 
 test_data = [

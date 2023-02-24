@@ -28,7 +28,6 @@ from functools import reduce
 import requests
 from colorama import Fore
 
-from core.models import Article, Product
 from otto.models import Address, Order, OrderItem
 
 LOG = logging.getLogger(__name__)
@@ -188,14 +187,6 @@ def save_orders(orders_as_json):
             if not created:
                 order_item.fulfillment_status = oi.get("fulfillmentStatus")
                 order_item.save()
-
-            product, _created = Product.objects.get_or_create(
-                ean=oi.get("product").get("ean"),
-                defaults={"name": oi.get("product").get("productTitle")},
-            )
-            Article.objects.get_or_create(
-                sku=oi.get("product").get("sku"), product=product
-            )
 
 
 def get_url(status, datum=None):

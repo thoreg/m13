@@ -1,23 +1,37 @@
 from django.contrib import admin
 
-from .models import Article, Category, Price, Product
+from .models import Category, MarketplaceConfig, Price, Product
 
 
-class ArticleAdmin(admin.ModelAdmin):
-    list_display = ("product_name", "category", "sku", "product_ean")
+class MarketplaceConfigAdmin(admin.ModelAdmin):
+    """Admin interface for configuration of a marketplace and its costs."""
 
-    @admin.display()
-    def product_name(self, obj):
-        return obj.product.name
+    list_display = (
+        "name",
+        "shipping_costs",
+        "return_costs",
+        "active",
+        "created",
+        "modified",
+    )
 
-    @admin.display()
-    def product_ean(self, obj):
-        return obj.product.ean
+    def get_readonly_fields(self, _request, obj=None):
+        """Make entry read only once it has been created."""
+        if obj:
+            return [
+                "name",
+                "shipping_costs",
+                "return_costs",
+                "active",
+                "created",
+                "modified",
+            ]
+        else:
+            return []
 
-    @admin.display()
-    def category(self, obj):
-        if obj.product.category:
-            return obj.product.category.name
+    def has_delete_permission(self, _request, _obj=None):
+        """Deletion of a marketplace is not allowed - there might be related values."""
+        return False
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -34,14 +48,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class PriceAdmin(admin.ModelAdmin):
     list_display = (
-        "article",
+        "sku",
         "category",
         "vk_zalando",
         "vk_otto",
-        "z_shipping_costs",
-        "z_return_costs",
-        "o_shipping_costs",
-        "o_return_costs",
     )
 
     @admin.display()
@@ -49,7 +59,7 @@ class PriceAdmin(admin.ModelAdmin):
         return obj.category.name
 
 
-admin.site.register(Article, ArticleAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Price, PriceAdmin)
+admin.site.register(MarketplaceConfig, MarketplaceConfigAdmin)
