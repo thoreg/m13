@@ -213,7 +213,7 @@ export default {
 }
 .category-body {
     padding: 0;
-    max-height: 100em;
+    max-height: 1000em;
     overflow: hidden;
     transition: 0.3s ease all;
 }
