@@ -240,4 +240,27 @@ export default {
     padding: 2em;
     font-weight: bold;
 }
+
+.column-l, .column-xl {
+    min-width: 0 !important;
+    text-align: left;
+    width: 5%;
+}
+
+.category-header {
+    font-size: 1.1em !important;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+.category-body > table > tr > td:hover {
+    background-color: #f3f3f3;
+}
+
+.category-overview tr td:first-child, .category-overview tr td:nth-child(2), .category-overview tr td:nth-child(3) {
+    width: 10em !important;
+}
+
 </style>
