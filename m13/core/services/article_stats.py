@@ -105,7 +105,112 @@ class ArticleStats:
 def get_article_stats_otto(start_date: date) -> dict:
     """Return orderitem statistics for marketplace otto."""
     LOG.info(f"get_article_stats_otto called with start_date: {start_date}")
-    return {}
+
+    result = {}
+    params = {"start_date": start_date}
+    with connection.cursor() as cursor:
+        query = """
+            SELECT
+                cc.name as category_name,
+                cp.sku as article_sku,
+                cp.costs_production as costs_production,
+                oi.price_in_cent as reported_price,
+                SUM(case when oi.fulfillment_status = 'SENT' then oi.price_in_cent else 0 end) AS sum_shipped,
+                SUM(case when oi.fulfillment_status = 'RETURNED' then oi.price_in_cent else 0 end) AS sum_returned,
+                SUM(case when oi.fulfillment_status = 'SENT' then 1 else 0 end) AS shipped,
+                SUM(case when oi.fulfillment_status = 'RETURNED' then 1 else 0 end) AS returned,
+                config.shipping_costs as shipping_costs,
+                config.return_costs as return_costs,
+                config.vat_in_percent as vat_in_percent,
+                config.generic_costs_in_percent as generic_costs_in_percent
+            FROM
+                otto_orderitem AS oi
+            JOIN otto_order as oo
+                ON oo.id = oi.order_id
+            JOIN core_price AS cp
+                ON cp.sku = oi.sku
+            JOIN core_category AS cc
+                on cc.id = cp.category_id
+            JOIN core_marketplaceconfig AS config
+                on config.id = 3
+            WHERE
+                oo.order_date >= %(start_date)s
+            GROUP BY
+                category_name,
+                article_sku,
+                reported_price,
+                shipping_costs,
+                return_costs,
+                vat_in_percent,
+                generic_costs_in_percent,
+                config.id
+            ORDER BY
+                config.id, article_sku, reported_price DESC;
+        """
+        cursor.execute(query, params)
+        for entry in dictfetchall(cursor):
+
+            category = entry["category_name"]
+            price = _r(Decimal(entry["reported_price"] / 100))
+            provision_in_percent = get_z_provision_in_percent(price)
+
+            astats = ArticleStats(
+                sku=entry["article_sku"],
+                category=category,
+                marketplace=Marketplace.OTTO,
+                price=price,
+                provision_in_percent=provision_in_percent,
+                vat_in_percent=entry["vat_in_percent"],
+                generic_costs_in_percent=entry["generic_costs_in_percent"],
+                production_costs=entry["costs_production"],
+                shipping_costs=entry["shipping_costs"],
+                return_costs=entry["return_costs"],
+                shipped=entry["shipped"],
+                returned=entry["returned"],
+            )
+            if category not in result:
+                result[category] = {
+                    "content": [],
+                    "name": category,
+                    "stats": {
+                        "canceled": 0,
+                        "returned": 0,
+                        "sales": 0,
+                        "shipped": 0,
+                        "total_diff": 0,
+                        "total_return_costs": 0,
+                        "total_revenue": 0,
+                    },
+                }
+
+            result[category]["content"].append(
+                {
+                    "article_number": astats.sku,
+                    "category": astats.category,
+                    "costs_production": astats.production_costs,
+                    "eight_percent_provision": astats.provision_amount,
+                    "generic_costs": astats.generic_costs_amount,
+                    "nineteen_percent_vat": astats.vat_amount,
+                    "profit_after_taxes": astats.profit_after_taxes,
+                    "return_costs": astats.return_costs,
+                    "returned": astats.returned,
+                    "sales": astats.sales,
+                    "shipped": astats.shipped,
+                    "shipping_costs": astats.shipping_costs,
+                    "total_diff": astats.total_diff,
+                    "total_return_costs": astats.total_return_costs,
+                    "total_revenue": astats.total_revenue,
+                    "vk_zalando": astats.price,
+                }
+            )
+            result[category]["stats"]["sales"] += astats.sales
+            result[category]["stats"]["shipped"] += astats.shipped
+            result[category]["stats"]["returned"] += astats.returned
+            result[category]["stats"]["total_revenue"] += astats.total_revenue
+            result[category]["stats"]["total_return_costs"] += astats.total_return_costs
+            result[category]["stats"]["total_diff"] += astats.total_diff
+
+    return result
 
 
 def get_z_provision_in_percent(price: Decimal) -> Decimal:
