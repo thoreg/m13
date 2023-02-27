@@ -51,7 +51,7 @@ class ArticleStats:
     @property
     def vat_amount(self):
         """Return the amount of the vat (aka 'Märchensteuer')."""
-        return _r(self.price * self.vat_in_percent / 100)
+        return _r(self.price - self.price / Decimal(f"1.{self.vat_in_percent}"))
 
     @property
     def generic_costs_amount(self):
