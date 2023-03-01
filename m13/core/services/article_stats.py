@@ -79,7 +79,10 @@ class ArticleStats:
     @property
     def total_revenue(self):
         """Revenue from all sold items."""
-        return self.profit_after_taxes * (self.shipped - self.returned)
+        result = self.profit_after_taxes * (self.shipped - self.returned)
+        if result < 0:
+            return Decimal("0.00")
+        return result
 
     @property
     def total_return_costs(self):
