@@ -54,6 +54,10 @@ class PriceAdmin(admin.ModelAdmin):
         "vk_otto",
     )
 
+    search_fields = [
+        "sku",
+    ]
+
     @admin.display()
     def category(self, obj):
         return obj.category.name
