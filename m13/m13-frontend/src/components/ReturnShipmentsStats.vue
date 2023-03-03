@@ -74,6 +74,7 @@ export default {
     props: {
         msg: String,
         fromDate: String,
+        marketplace: String
     },
     watch: {
         fromDate: {
@@ -84,6 +85,14 @@ export default {
                 this.fetchAllProducts();
             },
         },
+        marketplace: {
+            immediate: true,
+            handler(val, oldVal) {
+                console.log(`marketplace changed: ${oldVal} -> ${val}`);
+                console.log(`MARKETPLACE: ${this.marketplace}`);
+                this.fetchAllProducts();
+            },
+        }
     },
     data() {
         return {
@@ -100,7 +109,7 @@ export default {
             }
         },
         fetchAllProducts() {
-            const baseUrl = '/api/v2/core/return-shipments-stats/?marketplace=zalando';
+            const baseUrl = `/api/v2/core/return-shipments-stats/?marketplace=${this.marketplace}`;
             let url = '';
             if (this.fromDate) {
                 url = `${baseUrl}&start=${this.fromDate}`;
