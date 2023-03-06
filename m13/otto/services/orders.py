@@ -93,6 +93,7 @@ def fetch_next_slice(token, href):
 def save_orders(orders_as_json):
     """Fetch all orders with given status newer than the specified date."""
     for entry in orders_as_json.get("resources", []):
+        LOG.info(f"otto_oi_entry: {entry}")
         marketplace_order_id = entry.get("salesOrderId")
         delivery_address = entry.get("deliveryAddress")
 

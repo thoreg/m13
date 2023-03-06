@@ -32,9 +32,8 @@ class Command(BaseCommand):
         }
 
         for price in Price.objects.all():
-            print(f"Fetching price for {price.article} ...")
-
-            url = f"{PRODUCTS_URL}/{price.article}/prices"
+            print(f"Fetching price for {price.sku} ...")
+            url = f"{PRODUCTS_URL}/{price.sku}/prices"
             response = requests.get(url, headers=headers, timeout=60)
 
             response_json = response.json()
@@ -43,6 +42,6 @@ class Command(BaseCommand):
                 price.vk_otto = response_json["standardPrice"]["amount"]
                 price.save()
             except KeyError:
-                print(f"\n>>> No price found for: {price.article}\n")
+                print(f"\n>>> No price found for: {price.sku}\n")
 
             time.sleep(2)
