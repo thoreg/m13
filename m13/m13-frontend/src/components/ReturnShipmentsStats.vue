@@ -128,12 +128,12 @@ export default {
                     for(const idx in this.products) {
                         const product = this.products[idx];
                         product.content.sort((a, b) => {
-                            var keyA = a.article_number, keyB = b.article_number;
+                            var keyA = a.shipped, keyB = b.shipped;
                             if (keyA < keyB) {
-                                return -1;
+                                return 1;
                             }
                             if (keyA > keyB) {
-                                return 1;
+                                return -1;
                             }
                             return 0;
                         });
