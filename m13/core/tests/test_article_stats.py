@@ -49,9 +49,10 @@ def test_article_stats_zalando_basic():
 
     RawDailyShipmentReport.objects.all().update(marketplace_config=config)
 
-    test_date = datetime.date(2023, 2, 14)
+    start_date = datetime.date(2023, 2, 14)
+    end_date = datetime.date(2023, 3, 13)
     stats = article_stats.get_article_stats(
-        test_date, article_stats.Marketplace.ZALANDO
+        article_stats.Marketplace.ZALANDO, start_date, end_date
     )
     assert stats == {
         "Woman Bomber Jacken": {
@@ -89,9 +90,10 @@ def test_article_stats_zalando_basic():
         }
     }
 
-    test_date = datetime.date(2023, 2, 12)
+    start_date = datetime.date(2023, 2, 12)
+    end_date = datetime.date(2023, 3, 13)
     stats = article_stats.get_article_stats(
-        test_date, article_stats.Marketplace.ZALANDO
+        article_stats.Marketplace.ZALANDO, start_date, end_date
     )
     assert stats == {
         "Woman Bomber Jacken": {
@@ -129,9 +131,10 @@ def test_article_stats_zalando_basic():
         }
     }
 
-    test_date = datetime.date(2023, 1, 1)
+    start_date = datetime.date(2023, 1, 1)
+    end_date = datetime.date(2023, 3, 13)
     stats = article_stats.get_article_stats(
-        test_date, article_stats.Marketplace.ZALANDO
+        article_stats.Marketplace.ZALANDO, start_date, end_date
     )
     assert stats == {
         "Woman Bomber Jacken": {
@@ -276,7 +279,7 @@ def test_different_configs_reflected_in_stats(
 
     response = client.post(upload_url, {"original_csv": original_files})
 
-    stats = article_stats.get_article_stats_zalando("2020-01-01")
+    stats = article_stats.get_article_stats_zalando("2020-01-01", "2023-03-13")
 
     assert (
         stats["example_category"]["content"][0]["shipping_costs"]

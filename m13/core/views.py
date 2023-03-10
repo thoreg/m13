@@ -23,6 +23,10 @@ def api_return_shipments_stats(request) -> JsonResponse:
     if not start_date:
         start_date = date.today() - timedelta(weeks=4)
 
+    end_date = request.GET.get("end")
+    if not end_date:
+        end_date = date.today()
+
     marketplace = request.GET.get("marketplace")
     if not marketplace:
         return JsonResponse(
@@ -33,6 +37,6 @@ def api_return_shipments_stats(request) -> JsonResponse:
             status=500,
         )
 
-    article_stats = get_article_stats(start_date, marketplace)
+    article_stats = get_article_stats(marketplace, start_date, end_date)
 
     return JsonResponse(article_stats, safe=False)

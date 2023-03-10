@@ -102,12 +102,12 @@ class ArticleStats:
         return self.price * self.shipped
 
 
-def get_article_stats_otto(start_date: date) -> dict:
+def get_article_stats_otto(start_date: date, end_date: date) -> dict:
     """Return orderitem statistics for marketplace otto."""
     LOG.info(f"get_article_stats_otto called with start_date: {start_date}")
 
     result = {}
-    params = {"start_date": start_date}
+    params = {"start_date": start_date, "end_date": end_date}
     with connection.cursor() as cursor:
         query = """
             SELECT
@@ -135,6 +135,7 @@ def get_article_stats_otto(start_date: date) -> dict:
                 on config.id = 3
             WHERE
                 oo.order_date >= %(start_date)s
+                AND oo.order_date <= %(end_date)s
             GROUP BY
                 category_name,
                 article_sku,
@@ -231,12 +232,12 @@ def get_z_provision_in_percent(price: Decimal) -> Decimal:
     return payment_service_fee + pi_fee
 
 
-def get_article_stats_zalando(start_date: date) -> dict:
+def get_article_stats_zalando(start_date: date, end_date: date) -> dict:
     """Return dictionary with aggregated values for number of shipped, returned and canceled."""
     LOG.info(f"get_article_stats_zalando - start_date: {start_date}")
 
     result = {}
-    params = {"start_date": start_date}
+    params = {"start_date": start_date, "end_date": end_date}
     with connection.cursor() as cursor:
         query = """
             SELECT
@@ -265,6 +266,7 @@ def get_article_stats_zalando(start_date: date) -> dict:
                 on config.id = zdr.marketplace_config_id
             WHERE
                 order_event_time >= %(start_date)s
+                AND order_event_time <= %(end_date)s
                 AND article_number <> ''
             GROUP BY
                 category_name,
@@ -347,15 +349,17 @@ def get_article_stats_zalando(start_date: date) -> dict:
     return result
 
 
-def get_article_stats(start_date: date, marketplace: Marketplace) -> dict:
+def get_article_stats(
+    marketplace: Marketplace, start_date: date, end_date: date
+) -> dict:
     """Return list of marketplace dependent statistics about shipments/returns."""
     LOG.info(f"marketplace: {marketplace} start_date: {start_date}")
 
     match (marketplace.upper()):
         case Marketplace.OTTO:
-            return get_article_stats_otto(start_date)
+            return get_article_stats_otto(start_date, end_date)
         case Marketplace.ZALANDO:
-            return get_article_stats_zalando(start_date)
+            return get_article_stats_zalando(start_date, end_date)
         case _:
             LOG.error(f"get_article_stats with unknown marketplace: {marketplace}")
             return {}
