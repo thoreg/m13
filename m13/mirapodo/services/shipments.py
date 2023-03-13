@@ -42,7 +42,7 @@ USER_NAME = os.environ["M13_MIRAPODO_USER_NAME"]
 HNR = os.environ["M13_MIRAPODO_HNR"]
 PASSWD = os.environ["M13_MIRAPODO_PASSWORD"]
 SHIPMENTS_URL = f"https://rest.trade-server.net/{HNR}/messages/?"
-CARRIER = "HERMES_STD_NATIONAL"
+CARRIER = "DHL_STD_NATIONAL"
 
 
 class ApiCallFailed(Exception):
