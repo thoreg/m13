@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Address, AuthGrant, AuthToken
+from .models import Address, AuthGrant, AuthToken, Order
 
 
 class AddressAdmin(admin.ModelAdmin):
@@ -18,6 +18,12 @@ class AuthGrantAdmin(admin.ModelAdmin):
     ordering = ("-created",)
 
 
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("created", "status")
+    ordering = ("-created",)
+
+
 admin.site.register(Address, AddressAdmin)
 admin.site.register(AuthToken, AuthTokenAdmin)
 admin.site.register(AuthGrant, AuthGrantAdmin)
+admin.site.register(Order, OrderAdmin)

@@ -41,6 +41,7 @@ class Order(TimeStampedModel):
         OPEN = "OPEN", "Open"
         PAID = "PAID", "Paid"
         PAYMENT_PROCESSING = "PAYMENT_PROCESSING", "Payment Processing"
+        CANCELED = "CANCELED"
 
     status = models.CharField(
         max_length=18,
