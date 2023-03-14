@@ -29,7 +29,6 @@ class Address(TimeStampedModel):
 
 class Order(TimeStampedModel):
     marketplace_order_id = models.CharField(max_length=64)
-    marketplace_order_number = models.CharField(max_length=32)
     order_date = models.DateTimeField()
     last_modified_date = models.DateTimeField()
     delivery_address = models.ForeignKey(
