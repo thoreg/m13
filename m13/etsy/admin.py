@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Address, AuthGrant, AuthToken, Order
+from .models import Address, AuthGrant, AuthToken, Order, OrderItem
 
 
 class AddressAdmin(admin.ModelAdmin):
@@ -18,8 +18,13 @@ class AuthGrantAdmin(admin.ModelAdmin):
     ordering = ("-created",)
 
 
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+
+
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ("created", "status")
+    inlines = [OrderItemInline]
+    list_display = ("created", "status", "marketplace_order_id")
     ordering = ("-created",)
 
 
