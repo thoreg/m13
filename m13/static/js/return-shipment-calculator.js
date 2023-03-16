@@ -59,6 +59,49 @@ $(function() {
     update();
   });
 
+  // Pre-selectors for date range
+  $('#bigBangButton').on('click', function () {
+    $( "#from" ).val('2021-08-01');
+    $( "#to" ).val(new Date().toISOString().slice(0, 10));
+    update();
+  });
+  $('#twelveMonthsButton').on('click', function () {
+    var startDate = new Date();
+    startDate.setFullYear(startDate.getFullYear() - 1);
+    $( "#from" ).val(startDate.toISOString().slice(0, 10));
+    $( "#to" ).val(new Date().toISOString().slice(0, 10));
+    update();
+  });
+  $('#sixMonthsButton').on('click', function () {
+    var startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 6);
+    $( "#from" ).val(startDate.toISOString().slice(0, 10));
+    $( "#to" ).val(new Date().toISOString().slice(0, 10));
+    update();
+  });
+  $('#threeMonthsButton').on('click', function () {
+    var startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 3);
+    $( "#from" ).val(startDate.toISOString().slice(0, 10));
+    $( "#to" ).val(new Date().toISOString().slice(0, 10));
+    update();
+  });
+  $('#oneMonthButton').on('click', function () {
+    var startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 1);
+    $( "#from" ).val(startDate.toISOString().slice(0, 10));
+    $( "#to" ).val(new Date().toISOString().slice(0, 10));
+    update();
+  });
+  $('#thisMonthButton').on('click', function () {
+    var today = new Date();
+    // Add one hour extra here to overcome stupid local timezone issue
+    var startDate = new Date(today.getFullYear(), today.getMonth(), 1, 1);
+    $( "#from" ).val(startDate.toISOString().slice(0, 10));
+    $( "#to" ).val(new Date().toISOString().slice(0, 10));
+    update();
+  });
+
   function update() {
     // reset the result table
     $("#returnShipmentCalculatorOranUtanClaus").html('');
@@ -67,7 +110,6 @@ $(function() {
 
     let fromDate = $( "#from" ).val();
     let toDate = $( "#to" ).val();
-
 
     if (!fromDate) {
       fromDate = '2023-01-01';
@@ -166,14 +208,19 @@ $(function() {
         total_diff += parseFloat(value.stats.total_diff);
       });
 
+      // Click on category header toggles articles table
       $('.category-header').on('click', function () {
         $( this ).next('.category-body').toggleClass('closed');
       });
 
+      // Highlight all negative values as BIG FAT RED
       $(".diff").colorize();
       $(".diffHeader").colorizeHeader()
+
+      // Make article tables sortable (every column)
       $(".tablesorter").tablesorter();
 
+      // Round total sums (listed on top of the page)
       $("#absolute_sales").text(total_sales.toFixed(2));
       $("#absolute_diff").text(total_diff.toFixed(2));
     });

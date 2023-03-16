@@ -76,12 +76,30 @@ tr:hover {
   padding: 2em;
   margin-left: 5em;
 }
+
+.ui-button {
+  padding: .3em;
+
+}
+
+.ui-widget {
+  font-family: monospace;
+  font-size: 1em;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div id="main">
   <div>
+    <p>
+      <button id="bigBangButton" class="ui-button ui-widget ui-corner-all">BigBang</button>
+      <button id="twelveMonthsButton" class="ui-button ui-widget ui-corner-all">Last 12 months</button>
+      <button id="sixMonthsButton" class="ui-button ui-widget ui-corner-all">Last 6 months</button>
+      <button id="threeMonthsButton" class="ui-button ui-widget ui-corner-all">Last 3 months</button>
+      <button id="oneMonthButton" class="ui-button ui-widget ui-corner-all">Last 1 month</button>
+      <button id="thisMonthButton" class="ui-button ui-widget ui-corner-all">This month</button>
+    </p>
     <label for="from">From</label>
     <input type="text" id="from" name="from" autocomplete="off">
     <label for="to">to</label>
