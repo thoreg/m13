@@ -1,15 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
-    font-family: monospace;
-    background-color: #fff;
+    font-family:  Roboto;
+    font-size: 12px;
+    color: #2c2c2c;
+    background-color: #f6f6f6;
     min-height: 75rem;
 }
+
+.category-header {
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.3em;
+  cursor: pointer;
+}
+
+.category-body {
+  padding: 0;
+  max-height: 1000em;
+  overflow: hidden;
+  transition: 0.3s ease all;
+}
+
+.closed {
+  max-height: 0;
+}
+
+.column-s {
+  min-width: 12em;
+}
+
+.column-m {
+  min-width: 10em;
+}
+
+.column-l {
+  min-width: 12em;
+}
+
+.column-xl {
+  min-width: 14em;
+}
+
+.column-xxl {
+  min-width: 18em;
+}
+
+.overview .header {
+  text-align: right;
+  padding: 2em;
+  font-weight: bold;
+}
+
+.column-l, .column-xl {
+  min-width: 0 !important;
+  text-align: left;
+  width: 5%;
+}
+
+.category-header {
+  font-size: 1.1em !important;
+}
+
+.category:nth-child(2n) {
+    background: #ededed;
+}
+
+tr:hover{
+  background: none !important; /* resettededet... */
+}
+
+.category-body > table > tbody > tr:hover {
+    background-color: #e1e1e1 !important;
+}
+
+.category-body > table > tbody > tr > td:hover {
+    background-color: #d5d5d5;
+}
+
 footer {
   margin-left: 250px;
 }
 
 table {
-    background-color: #fff;
+    background-color: none;
+    margin: 0 10px
 }
 
 th.date {
@@ -17,10 +92,90 @@ th.date {
 }
 
 td {
-    padding: 10px;
-    border-width: 1px;
-    border-style: dotted;
+    padding: 15px;
 }
+
+#sums {
+    padding: 2em !important;
+    margin-left: 5em !important;
+    font-weight: 800 !important;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+input {
+    background: #f3f3f3;
+    border: none;
+    padding: 10px;
+    color: #f00;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-family: Courier;
+}
+
+input:hover {
+    background: #f1f1f1;
+}
+
+label {
+    padding: 10px;
+    color: #f00;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: Courier;
+}
+
+#main > div:first-of-type {
+    margin: 0 auto;
+    width: 50%;
+}
+
+button.ui-button {
+    padding: 10px !important;
+    border: 3px solid #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-family: 'Roboto' !important;
+}
+
+button.ui-button:hover {
+    border: 3px solid #f6f6f6;
+    background: #f00;
+    color: #f6f6f6 !important;
+      font-weight: 800;
+    text-transform: uppercase;
+    font-family: 'Roboto';
+}
+
+input[type="text"] {
+    width: 25%;
+}
+
+.category-overview tr td:first-child, .category-overview tr td:nth-child(2), .category-overview tr td:nth-child(3) {
+  width: 10em !important;
+}
+
+.minus {
+  background-color: red;
+  font-weight: bold;
+  color: black;
+}
+
+.category-body > table > thead > tr > th:hover {
+  cursor: crosshair;
+}
+
+.ui-widget {
+  font-family: monospace;
+  font-size: 1em;
+}
+
+/* ##### */
 
 img.center {
     display: block;
