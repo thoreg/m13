@@ -38,5 +38,8 @@ def api_return_shipments_stats(request) -> JsonResponse:
         )
 
     article_stats = get_article_stats(marketplace, start_date, end_date)
+    article_keys = list(article_stats.keys())
+    article_keys.sort()
+    sorted_article_stats = {i: article_stats[i] for i in article_keys}
 
-    return JsonResponse(article_stats, safe=False)
+    return JsonResponse(sorted_article_stats, safe=False)
