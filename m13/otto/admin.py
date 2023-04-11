@@ -13,11 +13,20 @@ class OrderAdmin(admin.ModelAdmin):
 
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = (
+        "sku",
+        "order_id",
         "order_date",
         "order_number",
         "fulfillment_status",
         "expected_delivery_date",
     )
+    search_fields = [
+        "sku",
+    ]
+
+    @admin.display()
+    def order_id(self, obj):
+        return obj.order.id
 
     @admin.display()
     def order_number(self, obj):

@@ -145,12 +145,14 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
                 vat_in_percent,
                 generic_costs_in_percent,
                 config.id
+            HAVING
+                shipped > 0
+                OR returned > 0
             ORDER BY
                 config.id, article_sku, reported_price DESC;
         """
         cursor.execute(query, params)
         for entry in dictfetchall(cursor):
-
             category = entry["category_name"]
             price = _r(Decimal(entry["reported_price"] / 100))
             provision_in_percent = get_z_provision_in_percent(price)
@@ -277,12 +279,14 @@ def get_article_stats_zalando(start_date: date, end_date: date) -> dict:
                 vat_in_percent,
                 generic_costs_in_percent,
                 config.id
+            HAVING
+                shipped > 0
+                OR returned > 0
             ORDER BY
                 config.id, sku, reported_price DESC
         """
         cursor.execute(query, params)
         for entry in dictfetchall(cursor):
-
             category = entry["category_name"]
             price = _r(Decimal(entry["reported_price"] / 100))
             provision_in_percent = get_z_provision_in_percent(price)
