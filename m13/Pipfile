@@ -51,6 +51,7 @@ pytest-httpbin = "*"
 jinja2 = "*"
 flask = "*"
 isort = "*"
+ruff = "*"
 
 [requires]
 python_version = "3.11.1"
