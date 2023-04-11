@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("etsy", "0007_rename_auth_code_authrequest2_refresh_token"),
     ]

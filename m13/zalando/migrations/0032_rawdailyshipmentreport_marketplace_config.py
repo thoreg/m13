@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0008_marketplaceconfig_alter_article_options_and_more"),
         ("zalando", "0031_remove_rawdailyshipmentreport_zproduct_and_more"),

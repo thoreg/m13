@@ -101,7 +101,6 @@ def orderitems_csv(request):
     current_order = None
     current_order_id = None
     for oi in orderitems:
-
         # Append shipping information at the end of an order (after all orderitems)
         if current_order_id and current_order_id != oi.order.marketplace_order_number:
             price = (

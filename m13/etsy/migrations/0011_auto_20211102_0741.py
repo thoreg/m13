@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("etsy", "0010_remove_orderitem_article_number"),
     ]

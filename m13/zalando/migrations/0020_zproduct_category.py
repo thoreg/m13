@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0006_category_product_category"),
         ("zalando", "0019_alter_zproduct_article_and_more"),

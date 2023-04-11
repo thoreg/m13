@@ -148,7 +148,6 @@ def save_orders(orders_as_json):
             print(Fore.YELLOW + f"Order {marketplace_order_id} already known")
 
         for oi in entry.get("positionItems"):
-
             fulfillment_status = oi.get("fulfillmentStatus")
             expected_delivery_date = oi.get("expectedDeliveryDate")
 

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("zalando", "0014_alter_transactionfileupload_file_name"),
     ]

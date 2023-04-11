@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("zalando", "0013_remove_transactionfileupload_month_and_more"),
     ]

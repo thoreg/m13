@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("zalando", "0028_alter_rawdailyshipmentreport_options_and_more"),
     ]

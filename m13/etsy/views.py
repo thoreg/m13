@@ -104,7 +104,6 @@ def orderitems_csv(request):
     for oi in orderitems:
         # Append shipping information at the end of an order (after all orderitems)
         if current_order_id and current_order_id != oi.order.marketplace_order_id:
-
             amount = current_order.delivery_fee["amount"]
             divisor = current_order.delivery_fee["divisor"]
             price = "%0.2f" % (int(amount) / int(divisor))
@@ -177,7 +176,6 @@ def orderitems_csv(request):
         current_order = deepcopy(oi.order)
 
     if current_order:
-
         amount = current_order.delivery_fee["amount"]
         divisor = current_order.delivery_fee["divisor"]
         price = "%0.2f" % (int(amount) / int(divisor))

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("zalando", "0024_rawdailyshipmentreport_delete_zcalculator"),
     ]

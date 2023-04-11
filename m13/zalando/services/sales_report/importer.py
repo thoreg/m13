@@ -99,7 +99,6 @@ def _import_sales_report(path, month):
     bulk_mgr = BulkCreateManager(chunk_size=20)
 
     for row in read_csv(path):
-
         try:
             # This field seems not to be fixed
             partner_provision = row["PROVISION_PARTNER"]

@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0005_alter_article_options"),
         ("zalando", "0015_dailyshipmentreport_and_more"),
