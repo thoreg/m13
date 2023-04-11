@@ -146,8 +146,8 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
                 generic_costs_in_percent,
                 config.id
             HAVING
-                shipped > 0
-                OR returned > 0
+                (case when oi.fulfillment_status = 'SENT' then 1 else 0 end) > 0
+                OR (case when oi.fulfillment_status = 'RETURNED' then 1 else 0 end) > 0
             ORDER BY
                 config.id, article_sku, reported_price DESC;
         """
@@ -280,8 +280,8 @@ def get_article_stats_zalando(start_date: date, end_date: date) -> dict:
                 generic_costs_in_percent,
                 config.id
             HAVING
-                shipped > 0
-                OR returned > 0
+                COUNT(zdr.shipment) FILTER (WHERE zdr.shipment) > 0
+                OR COUNT(zdr.returned) FILTER (WHERE zdr.returned) > 0
             ORDER BY
                 config.id, sku, reported_price DESC
         """
