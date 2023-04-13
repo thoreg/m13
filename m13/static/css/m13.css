@@ -267,3 +267,16 @@ img.center {
   font-weight: bold;
   color: darkred;
 }
+
+.alert {
+  padding: 1em;
+  font-size: 2em;
+}
+
+.alert-error {
+  background-color: red;
+}
+
+.alert-success {
+  background-color: green;
+}
