@@ -269,8 +269,7 @@ img.center {
 }
 
 .alert {
-  padding: 1em;
-  font-size: 2em;
+  padding: 10px;
 }
 
 .alert-error {
