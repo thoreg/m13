@@ -29,16 +29,16 @@
   {% for message in messages %}
     {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
     <div class="alert alert-success text-center">
-      <h5>
+      <h3>
         SUCCESS: {{ message }}
-      </h5>
+      </h3>
     </div>
     {% endif %}
     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
     <div class="alert alert-error text-center">
-      <h5>
+      <h3>
         ERROR: {{ message }}
-      </h5>
+      </h3>
     </div>
     {% endif %}
   {% endfor %}
