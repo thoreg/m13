@@ -28,17 +28,17 @@
   <button class="openbtn" onclick="openNav()">☰</button>
   {% for message in messages %}
     {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-    <div class="alert alert-success text-center">
-      <h6>
+    <div class="alert alert-success text-center" style="background-color: green; padding: .5em;">
+      <h5>
         SUCCESS: {{ message }}
-      </h6>
+      </h5>
     </div>
     {% endif %}
     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-    <div class="alert alert-error text-center">
-      <h6>
+    <div class="alert alert-error text-center" style="background-color: red; padding: .5em;">
+      <h5>
         ERROR: {{ message }}
-      </h6>
+      </h5>
     </div>
     {% endif %}
   {% endfor %}

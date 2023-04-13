@@ -19,8 +19,8 @@ def index(request):
     delta = now - feed_upload.created
 
     if delta > timedelta(hours=1):
-        messages.error(request, f"Last feed upload to Z {delta}")
+        messages.error(request, f"Last feed upload to Z {delta} ago")
     else:
-        messages.success(request, f"Last feed upload to Z {delta}")
+        messages.success(request, f"Last feed upload to Z {delta} ago")
 
     return render(request, "m13/index.html", {})
