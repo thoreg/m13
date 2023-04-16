@@ -67,3 +67,5 @@ class Command(BaseCommand):
 
         if "links" in orders:
             get_next_slice(token, orders)
+
+        return 0

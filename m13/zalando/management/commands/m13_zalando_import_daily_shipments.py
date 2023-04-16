@@ -13,3 +13,4 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         """..."""
         import_all_unprocessed_daily_shipment_reports()
+        return 0

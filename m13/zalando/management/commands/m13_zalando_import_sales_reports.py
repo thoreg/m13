@@ -19,3 +19,4 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         """..."""
         sales_report.importer.import_sales_reports(kwargs["month"])
+        return 0

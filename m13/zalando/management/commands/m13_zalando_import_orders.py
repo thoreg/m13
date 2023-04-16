@@ -20,3 +20,6 @@ class Command(BaseCommand):
         except Exception as exc:
             LOG.exception(exc)
             send_traceback_as_email("M13BM - Import of Zalando Orders failed")
+            raise exc
+
+        return 0

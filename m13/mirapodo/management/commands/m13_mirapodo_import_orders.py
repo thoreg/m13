@@ -12,3 +12,4 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         """..."""
         orders.fetch_orders()
+        return 0

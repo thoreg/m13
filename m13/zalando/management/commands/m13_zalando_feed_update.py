@@ -87,3 +87,6 @@ class Command(BaseCommand):
             )
             number_of_messages = mail.send()
             LOG.info(f"Error EMail: {number_of_messages} send")
+            raise exc
+
+        return 0

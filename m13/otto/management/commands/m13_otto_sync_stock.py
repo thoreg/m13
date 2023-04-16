@@ -13,3 +13,4 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         """..."""
         sync_stock()
+        return 0

@@ -23,3 +23,5 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 self.stdout.write(self.style.SUCCESS(f"Update {view}"))
                 cursor.execute(f"REFRESH MATERIALIZED VIEW {view}")
+
+        return 0

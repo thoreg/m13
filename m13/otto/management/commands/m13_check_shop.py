@@ -112,3 +112,4 @@ class Command(BaseCommand):
                     return self.suspicious(msg)
 
         LOG.info("All fine")
+        return 0

@@ -47,3 +47,5 @@ class Command(BaseCommand):
                 print(f"\n>>> No price found for: {price.sku}\n")
 
             time.sleep(2)
+
+        return 0
