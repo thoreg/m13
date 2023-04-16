@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, MarketplaceConfig, Price, Product
+from .models import Category, Job, MarketplaceConfig, Price, Product
 
 
 class MarketplaceConfigAdmin(admin.ModelAdmin):
@@ -46,6 +46,20 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
 
 
+class JobAdmin(admin.ModelAdmin):
+    list_display = (
+        "cmd",
+        "successful",
+        "runtime",
+        "start",
+        "end",
+    )
+
+    @admin.display()
+    def runtime(self, obj):
+        return obj.end - obj.start
+
+
 class PriceAdmin(admin.ModelAdmin):
     list_display = (
         "sku",
@@ -67,3 +81,4 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Price, PriceAdmin)
 admin.site.register(MarketplaceConfig, MarketplaceConfigAdmin)
+admin.site.register(Job, JobAdmin)
