@@ -1,12 +1,13 @@
 """Management command to verify the shop is running and it looks like expected."""
 import logging
-import sys
 
 import requests
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
+
+from m13.lib.common import monitor
 
 LOG = logging.getLogger(__name__)
 
@@ -63,8 +64,9 @@ class Command(BaseCommand):
             number_of_messages = mail.send()
             LOG.info(f"{number_of_messages} send")
 
-        sys.exit(-1)
+        raise Exception(msg)
 
+    @monitor
     def handle(self, *args, **kwargs):
         """..."""
         resp = requests.get(M13_URL)
@@ -110,4 +112,3 @@ class Command(BaseCommand):
                     return self.suspicious(msg)
 
         LOG.info("All fine")
-        sys.exit(0)
