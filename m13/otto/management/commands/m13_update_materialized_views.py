@@ -3,8 +3,6 @@ import logging
 from django.core.management.base import BaseCommand
 from django.db import connection
 
-from m13.lib.common import monitor
-
 LOG = logging.getLogger(__name__)
 
 MATERIALIZED_VIEWS = [
@@ -17,7 +15,6 @@ MATERIALIZED_VIEWS = [
 class Command(BaseCommand):
     help = "Simple management command to update existing materialized views."
 
-    @monitor
     def handle(self, *args, **kwargs):
         for view in MATERIALIZED_VIEWS:
             with connection.cursor() as cursor:

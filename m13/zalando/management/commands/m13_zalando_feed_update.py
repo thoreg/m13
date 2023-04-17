@@ -14,7 +14,6 @@ from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from m13.lib.common import monitor
 from zalando.services.feed import (
     download_feed,
     pimp_prices,
@@ -55,7 +54,6 @@ class Command(BaseCommand):
             default=0,
         )
 
-    @monitor
     def handle(self, *args, **kwargs):
         """Download product feed from shop and transmit it to Z for validation"""
         dry_run = kwargs.get("dry")

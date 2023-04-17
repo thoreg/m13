@@ -2,7 +2,6 @@ import logging
 
 from django.core.management.base import BaseCommand
 
-from m13.lib.common import monitor
 from m13.lib.email import send_traceback_as_email
 from zalando.services.orders import process_new_oea_records
 
@@ -12,7 +11,6 @@ LOG = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = "Import orders out from stored order event api msgs."
 
-    @monitor
     def handle(self, *args, **kwargs):
         """..."""
         try:

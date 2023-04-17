@@ -1,7 +1,6 @@
 """Download report files from Dropbox and import the data."""
 from django.core.management.base import BaseCommand
 
-from m13.lib.common import monitor
 from zalando.services import sales_report
 
 
@@ -15,7 +14,6 @@ class Command(BaseCommand):
             help="Month of interest, e.g. 2022/01",
         )
 
-    @monitor
     def handle(self, *args, **kwargs):
         """..."""
         sales_report.importer.import_sales_reports(kwargs["month"])
