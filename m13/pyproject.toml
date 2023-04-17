@@ -16,3 +16,6 @@ disable = '''logging-fstring-interpolation,
   not-an-iterable,
   missing-module-docstring,
 '''
+
+[tool.ruff]
+line-length = 120

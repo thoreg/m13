@@ -1,11 +1,11 @@
 import csv
 import logging
 from copy import deepcopy
-from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.utils import timezone
 
 from .models import OrderItem
 from .services.orders import fetch_orders
@@ -44,7 +44,7 @@ def _get_country_information(country_code):
 @login_required
 def orderitems_csv(request):
     """Return all processible orderitems as csv."""
-    now = datetime.now()
+    now = timezone.now()
     now_as_str = now.strftime("%Y-%m-%dT%H_%M_%S")
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(

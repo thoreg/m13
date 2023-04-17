@@ -27,6 +27,7 @@ from functools import reduce
 
 import requests
 from colorama import Fore
+from django.utils import timezone
 
 from otto.models import Address, Order, OrderItem
 
@@ -203,7 +204,7 @@ def get_url(status, datum=None):
     if datum:
         datum = datetime.strptime(datum, "%Y-%m-%d")
     else:
-        now = datetime.now()
+        now = timezone.now()
         datum = now - timedelta(days=14)
 
     fod = datum.astimezone().replace(microsecond=0).isoformat()

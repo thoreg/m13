@@ -2,10 +2,12 @@ import base64
 import time
 from datetime import datetime, timezone
 
+from django.utils import timezone as django_timezone
+
 
 def now_as_str():
     """Return now() as human readable string."""
-    now = datetime.now()
+    now = django_timezone.now()
     return now.strftime("%Y-%m-%dT%H_%M_%S")
 
 

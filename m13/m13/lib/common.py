@@ -1,5 +1,5 @@
 """Library for common tasks."""
-from datetime import datetime
+from django.utils import timezone
 
 from core.models import Job
 
@@ -14,7 +14,7 @@ def monitor(func):
     def wrapper(*args, **kwargs):
         job = Job.objects.create(
             cmd=func.__module__,
-            start=datetime.now(),
+            start=timezone.now(),
         )
 
         try:
@@ -28,7 +28,7 @@ def monitor(func):
             job.error_msg = repr(exc)
             job.successful = False
 
-        job.end = datetime.now()
+        job.end = timezone.now()
         job.save()
 
     return wrapper

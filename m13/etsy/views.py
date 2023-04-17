@@ -8,13 +8,13 @@ import csv
 import logging
 import os
 from copy import deepcopy
-from datetime import datetime
 
 import requests
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils import timezone
 
 from .common import get_auth_token
 from .forms import UploadFileForm
@@ -61,7 +61,7 @@ def orderitems_csv(request):
         """Return end index of the street depending on how many words of the city."""
         return -2 - len(city.split())
 
-    now = datetime.now()
+    now = timezone.now()
     now_as_str = now.strftime("%Y-%m-%dT%H_%M_%S")
     file_name = f"{now_as_str}_etsy.csv"
     # Create the HttpResponse object with the appropriate CSV header.

@@ -8,11 +8,11 @@ Run for dry mode:
 
 """
 import logging
-from datetime import datetime
 
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from m13.lib.common import monitor
 from zalando.services.feed import (
@@ -78,7 +78,7 @@ class Command(BaseCommand):
 
         except Exception as exc:
             LOG.exception(exc)
-            now = datetime.now().strftime("%Y-%m-%d (%H:%M:%S)")
+            now = timezone.now().strftime("%Y-%m-%d (%H:%M:%S)")
             mail = EmailMessage(
                 f"{now} Zalando Feed Upload FAILED",
                 repr(exc),

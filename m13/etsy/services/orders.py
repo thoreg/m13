@@ -4,6 +4,7 @@ import os
 
 import requests
 from colorama import Fore
+from django.utils import timezone
 from requests.models import codes
 
 from etsy.models import Address, Order, OrderItem
@@ -27,7 +28,7 @@ def get_receipts(token):
     """Return receipts as json."""
     headers = {"x-api-key": M13_ETSY_API_KEY, "authorization": f"Bearer {token}"}
     # Take in maximum 100 items from the timerange of the last week
-    today_one_week_ago = datetime.datetime.now() - datetime.timedelta(days=7)
+    today_one_week_ago = timezone.now() - datetime.timedelta(days=7)
     min_created = today_one_week_ago.strftime("%s")
 
     url = f"https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts?limit=100&min_created={min_created}"

@@ -77,9 +77,9 @@ def index(request):
     )
     products = {p["ean"]: p["title"] for p in Product.objects.all().values()}
     ctx = {
-        "dbyesterday": (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d"),
-        "yesterday": (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d"),
-        "today": datetime.now().strftime("%Y-%m-%d"),
+        "dbyesterday": (timezone.now() - timedelta(days=2)).strftime("%Y-%m-%d"),
+        "yesterday": (timezone.now() - timedelta(days=1)).strftime("%Y-%m-%d"),
+        "today": timezone.now().strftime("%Y-%m-%d"),
         "order_items": order_items,
         "products": products,
     }
