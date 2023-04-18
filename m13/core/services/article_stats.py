@@ -139,6 +139,7 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
             GROUP BY
                 category_name,
                 article_sku,
+                oi.fulfillment_status,
                 reported_price,
                 shipping_costs,
                 return_costs,
