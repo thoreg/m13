@@ -66,6 +66,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         """..."""
+        verbosity = kwargs.get("verbosity")
+        if verbosity:
+            verbosity = int(verbosity)
+            root_logger = logging.getLogger("")
+            if verbosity > 1:
+                root_logger.setLevel(logging.DEBUG)
+
         resp = requests.get(M13_URL)
         if resp.status_code != requests.codes.ok:
             msg = "Request status code of the $hop is not 200"
