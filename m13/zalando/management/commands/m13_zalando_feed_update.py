@@ -57,10 +57,16 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         """Download product feed from shop and transmit it to Z for validation"""
         dry_run = kwargs.get("dry")
+        verbosity = kwargs.get("verbosity")
+        if verbosity:
+            verbosity = int(verbosity)
+            root_logger = logging.getLogger("")
+            if verbosity > 1:
+                root_logger.setLevel(logging.DEBUG)
 
         try:
             csv_content_as_list = download_feed()
-            print(f"Houston we have a csv with {len(csv_content_as_list)} lines")
+            LOG.info(f"Houston we have a csv with {len(csv_content_as_list)} lines")
 
             dto = save_original_feed(csv_content_as_list)
             pimped_file_name = pimp_prices(dto.lines)
