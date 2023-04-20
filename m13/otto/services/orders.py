@@ -26,7 +26,6 @@ from datetime import datetime, timedelta
 from functools import reduce
 
 import requests
-from colorama import Fore
 from django.utils import timezone
 
 from otto.models import Address, Order, OrderItem
@@ -49,7 +48,7 @@ ORDER_STATUS_LIST = [
 
 
 if not all([USERNAME, PASSWORD]):
-    print("\nyou need to define username and password\n")
+    LOG.error("\nyou need to define username and password\n")
     sys.exit(1)
 
 
@@ -101,11 +100,11 @@ def save_orders(orders_as_json):
         # Orders with internal order status ANNOUNCED do not have a delivery
         # address set yet - just track these in a dict
         if not delivery_address:
-            print(Fore.YELLOW + f"Order {marketplace_order_id} has no delivery address")
+            LOG.info(f"Order {marketplace_order_id} has no delivery address")
             for item in entry.get("positionItems"):
                 sku = item["product"].get("sku")
                 fulfillment_status = item.get("fulfillmentStatus")
-                print(Fore.YELLOW + f"   {sku} fulfillmentStatus {fulfillment_status}")
+                LOG.info(f"   {sku} fulfillmentStatus {fulfillment_status}")
 
             continue
 
@@ -144,9 +143,9 @@ def save_orders(orders_as_json):
             },
         )
         if created:
-            print(Fore.GREEN + f"Order {marketplace_order_id} imported")
+            LOG.info(f"Order {marketplace_order_id} imported")
         else:
-            print(Fore.YELLOW + f"Order {marketplace_order_id} already known")
+            LOG.info(f"Order {marketplace_order_id} already known")
 
         for oi in entry.get("positionItems"):
             fulfillment_status = oi.get("fulfillmentStatus")
