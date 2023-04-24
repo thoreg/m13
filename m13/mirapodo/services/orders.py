@@ -5,7 +5,6 @@ from pprint import pprint
 
 import requests
 import xmltodict
-from colorama import Fore, Style
 from requests.exceptions import HTTPError
 
 from mirapodo.models import Address, Order, OrderItem
@@ -55,11 +54,10 @@ def import_order(order_dict):
         },
     )
     if created:
-        print(Fore.GREEN + f"Order {marketplace_order_id} imported")
-        print(Style.RESET_ALL)
+        LOG.info(f"Order {marketplace_order_id} imported")
+
     else:
-        print(Fore.YELLOW + f"Order {marketplace_order_id} already known")
-        print(Style.RESET_ALL)
+        LOG.info(f"Order {marketplace_order_id} already known")
 
     if len(order_dict["ITEMS"].keys()) != 1:
         LOG.error("[ mirapodo ] - other keys then items found - check this")
