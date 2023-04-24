@@ -21,8 +21,6 @@ LOG = logging.getLogger(__name__)
 
 def import_order(order_dict):
     """Create or update a single order."""
-    pprint(order_dict)
-
     address_data = order_dict.get("SHIP_TO")
     order_data = order_dict["ORDER_DATA"]
     order_items = order_dict["ITEMS"]["ITEM"]
