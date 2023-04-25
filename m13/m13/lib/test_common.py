@@ -29,20 +29,26 @@ def test_monitor():
 
     Job.objects.all().delete()
 
-    failed_function()
+    with pytest.raises(Exception) as exc_info:
+        failed_function()
+    # these asserts are identical; you can use either one
+    assert exc_info.value.args[0] == "Unexpected return code -1"
+    assert str(exc_info.value) == "Unexpected return code -1"
 
     job = Job.objects.get()
     assert job.start is not None
-    assert job.end is not None
+    assert job.end is None
     assert job.successful is False
-    assert job.error_msg == "Exception('Unexpected return code -1')"
 
     Job.objects.all().delete()
 
-    failed_function_with_exception()
+    with pytest.raises(Exception) as exc_info:
+        failed_function_with_exception()
+    # these asserts are identical; you can use either one
+    assert exc_info.value.args[0] == "something went wrong here"
+    assert str(exc_info.value) == "something went wrong here"
 
     job = Job.objects.get()
     assert job.start is not None
-    assert job.end is not None
+    assert job.end is None
     assert job.successful is False
-    assert job.error_msg == "Exception('something went wrong here')"

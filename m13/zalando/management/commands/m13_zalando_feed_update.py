@@ -76,7 +76,7 @@ class Command(BaseCommand):
 
             if dry_run:
                 LOG.info("Return early because of --dry-run")
-                return
+                return 0
             else:
                 LOG.info("Uploading transformed feed now")
 

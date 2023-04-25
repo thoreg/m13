@@ -101,5 +101,4 @@ class Job(TimeStampedModel):
     description = models.CharField(max_length=256, blank=True, null=True)
     start = models.DateTimeField()
     end = models.DateTimeField(blank=True, null=True)
-    error_msg = models.TextField(blank=True, null=True)
     successful = models.BooleanField(default=False)

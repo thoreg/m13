@@ -16,18 +16,11 @@ def monitor(func):
             cmd=func.__module__,
             start=timezone.now(),
         )
+        return_code = func(*args, **kwargs)
+        if return_code != 0:
+            raise Exception(f"Unexpected return code {return_code}")
 
-        try:
-            return_code = func(*args, **kwargs)
-            if return_code != 0:
-                raise Exception(f"Unexpected return code {return_code}")
-
-            job.successful = True
-
-        except Exception as exc:
-            job.error_msg = repr(exc)
-            job.successful = False
-
+        job.successful = True
         job.end = timezone.now()
         job.save()
 

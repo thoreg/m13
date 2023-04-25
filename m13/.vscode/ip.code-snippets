@@ -1,0 +1,10 @@
+{
+	"ipdb": {
+		"scope": "python",
+		"prefix": "ip",
+		"body": [
+			"import ipdb; ipdb.set_trace()",
+		],
+		"description": "Interactive Python Debugger"
+	}
+}
