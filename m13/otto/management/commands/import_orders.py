@@ -5,6 +5,7 @@ from functools import reduce
 
 from django.core.management.base import BaseCommand
 
+from m13.lib.common import monitor
 from otto.common import get_auth_token
 from otto.services.orders import fetch_next_slice, fetch_orders_by_status, save_orders
 
@@ -54,6 +55,7 @@ class Command(BaseCommand):
         )
         parser.add_argument("--datum", type=str)
 
+    @monitor
     def handle(self, *args, **kwargs):
         """Pull (fetch+merge) orders from marketplace."""
         status = kwargs.get("status")

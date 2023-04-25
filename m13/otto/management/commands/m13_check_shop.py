@@ -7,6 +7,8 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 
+from m13.lib.common import monitor
+
 LOG = logging.getLogger(__name__)
 
 M13_URL = "https://www.manufaktur13.de/shop/"
@@ -64,6 +66,7 @@ class Command(BaseCommand):
 
         raise Exception(msg)
 
+    @monitor
     def handle(self, *args, **kwargs):
         """..."""
         verbosity = kwargs.get("verbosity")

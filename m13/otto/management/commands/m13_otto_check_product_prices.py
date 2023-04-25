@@ -7,6 +7,7 @@ import requests
 from django.core.management.base import BaseCommand
 
 from core.models import Price
+from m13.lib.common import monitor
 from otto.common import get_auth_token
 
 PRODUCTS_URL = "https://api.otto.market/v2/products/"
@@ -24,6 +25,7 @@ if not all([USERNAME, PASSWORD]):
 class Command(BaseCommand):
     help = "Get price information about product."
 
+    @monitor
     def handle(self, *args, **kwargs):
         """Read the price data of a single product variation."""
         token = get_auth_token()
