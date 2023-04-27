@@ -57,7 +57,10 @@ class JobAdmin(admin.ModelAdmin):
 
     @admin.display()
     def runtime(self, obj):
-        return obj.end - obj.start
+        runtime = 0
+        if obj.end:
+            runtime = obj.end - obj.start
+        return runtime
 
 
 class PriceAdmin(admin.ModelAdmin):
