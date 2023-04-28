@@ -70,6 +70,9 @@ def status(request):
                 }
             )
 
+        for job, result_list in grouped_jobs.items():
+            grouped_jobs[job] = result_list[:5]
+
         return grouped_jobs
 
     green_jobs = Job.objects.filter(successful=True).order_by("-start")
