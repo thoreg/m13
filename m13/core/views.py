@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 
+from .models import Job
 from .services.article_stats import get_article_stats
 
 LOG = logging.getLogger(__name__)
@@ -43,3 +44,42 @@ def api_return_shipments_stats(request) -> JsonResponse:
     sorted_article_stats = {i: article_stats[i] for i in article_keys}
 
     return JsonResponse(sorted_article_stats, safe=False)
+
+
+@login_required
+def status(request):
+    """Overview of the system status."""
+
+    def _group_jobs(jobs):
+        grouped_jobs = {}
+
+        for job in jobs:
+            if job.cmd not in grouped_jobs:
+                grouped_jobs[job.cmd] = []
+
+            duration = 0
+            if job.end:
+                duration = job.end - job.start
+
+            grouped_jobs[job.cmd].append(
+                {
+                    "start": job.start,
+                    "duration": duration,
+                    "success": job.successful,
+                    "end": job.end,
+                }
+            )
+
+        return grouped_jobs
+
+    green_jobs = Job.objects.filter(successful=True).order_by("-start")[:30]
+    red_jobs = Job.objects.filter(successful=False).order_by("-start")[:30]
+
+    grouped_green_jobs = _group_jobs(green_jobs)
+    grouped_red_jobs = _group_jobs(red_jobs)
+
+    return render(
+        request,
+        "core/status.html",
+        {"green_jobs": grouped_green_jobs, "red_jobs": grouped_red_jobs},
+    )
