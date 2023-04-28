@@ -72,8 +72,8 @@ def status(request):
 
         return grouped_jobs
 
-    green_jobs = Job.objects.filter(successful=True).order_by("-start")[:30]
-    red_jobs = Job.objects.filter(successful=False).order_by("-start")[:30]
+    green_jobs = Job.objects.filter(successful=True).order_by("-start")
+    red_jobs = Job.objects.filter(successful=False).order_by("-start")
 
     grouped_green_jobs = _group_jobs(green_jobs)
     grouped_red_jobs = _group_jobs(red_jobs)
