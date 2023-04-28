@@ -67,6 +67,7 @@ def status(request):
                     "duration": duration,
                     "success": job.successful,
                     "end": job.end,
+                    "description": job.description,
                 }
             )
 
