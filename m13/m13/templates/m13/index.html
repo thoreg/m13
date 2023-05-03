@@ -3,69 +3,68 @@
 {% load static %}
 
 {% block content %}
-<div id="main">
-  <table width="100%">
-    <tr>
-      <td width="49%;">
-        <h2><span style='font-size:33px;'>&#127950;</span> otto</h2>
-        <table>
-          <tr>
-            <td>
-              <canvas id="ottoNumberOfOrderItemsChart" width="400" height="400"></canvas>
-            </td>
-            <td>
-              <canvas id="ottoRevenueChart" width="400" height="400"></canvas>
-            </td>
-          </tr>
-        </table>
-      </td>
-      <td>
-        <h2><span style='font-size:33px;'>&#128163;</span> _zalando</h2>
-        <table>
-          <tr>
-            <td>
-              <canvas id="zNumberOfOrderItemsChart" width="400" height="400"></canvas>
-            </td>
-            <td>
-              <canvas id="zRevenueChart" width="400" height="400"></canvas>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <h2><span style='font-size:33px;'>&#128680;</span> _etsy</h2>
-        <table>
-          <tr>
-            <td>
-              <canvas id="etsyNumberOfOrderItemsChart" width="400" height="400"></canvas>
-            </td>
-            <td>
-              <canvas id="etsyRevenueChart" width="400" height="400"></canvas>
-            </td>
-          </tr>
-        </table>
-      </td>
-      <td>
-        <h2><span style='font-size:33px;'>&#128640;</span> _total</h2>
-        <table>
-          <tr>
-            <td>
-              <canvas id="totalNumberOfOrderItemsChart" width="400" height="400"></canvas>
-            </td>
-            <td>
-              <canvas id="totalRevenueChart" width="400" height="400"></canvas>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</div>
 
+<h3>FAILED - This is bad :(</h3>
+<hr>
+{% for job, values in red_jobs.items %}
+  <h4>{{ job }}</h4>
+  <table>
+  {% for value in values %}
+    <thead>
+      <th>start</th>
+      <th>duration</th>
+      <th>success</th>
+      <th>note</th>
+    </thead>
+    <tr>
+        <td>{{ value.start|date:"Y-m-d:H:i:s" }}</td>
+        <td>{{ value.duration }}</td>
+        <td>
+          {% if value.success %}
+            <div style="width: 1rem; height: 1rem; background: green; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
+          {% else %}
+            <div style="width: 1rem; height: 1rem; background: red; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
+          {% endif %}
+        </td>
+        <td>{{ value.description }}</td>
+    </tr>
+  {% endfor %}
+  </table>
+{% endfor %}
+
+<h3>PASSED - This is good :)</h3>
+<hr>
+{% for job, values in green_jobs.items %}
+  <div style="float: left; min-height: 350px;">
+    <h4>{{ job }}</h4>
+    <table>
+      <thead>
+        <th>start</th>
+        <th>duration</th>
+        <th>success</th>
+        <th>end</th>
+      </thead>
+      {% for value in values %}
+      <tr>
+          <td>{{ value.start|date:"Y-m-d:H:i:s" }}</td>
+          <td>
+            {% if value.success %}
+              <div style="width: 1rem; height: 1rem; background: green; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
+            {% else %}
+              <div style="width: 1rem; height: 1rem; background: red; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
+            {% endif %}
+          </td>
+          <td>{{ value.success }}</td>
+          <td>{{ value.end|date:"Y-m-d:H:i:s" }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+{% endfor %}
+
+{% comment %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.1/dist/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="{% static '/js/m13.index.js' %}"></script>
-
+{% endcomment %}
 {% endblock %}

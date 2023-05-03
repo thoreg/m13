@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils import timezone
 
+from core.models import Job
 from zalando.models import FeedUpload
 
 
@@ -24,4 +25,40 @@ def index(request):
     else:
         messages.success(request, f"Last feed upload to Z {delta} ago")
 
-    return render(request, "m13/index.html", {})
+    def _group_jobs(jobs):
+        grouped_jobs = {}
+
+        for job in jobs:
+            if job.cmd not in grouped_jobs:
+                grouped_jobs[job.cmd] = []
+
+            duration = 0
+            if job.end:
+                duration = job.end - job.start
+
+            grouped_jobs[job.cmd].append(
+                {
+                    "start": job.start,
+                    "duration": duration,
+                    "success": job.successful,
+                    "end": job.end,
+                    "description": job.description,
+                }
+            )
+
+        for job, result_list in grouped_jobs.items():
+            grouped_jobs[job] = result_list[:5]
+
+        return grouped_jobs
+
+    green_jobs = Job.objects.filter(successful=True).order_by("-start")
+    red_jobs = Job.objects.filter(successful=False).order_by("-start")
+
+    grouped_green_jobs = _group_jobs(green_jobs)
+    grouped_red_jobs = _group_jobs(red_jobs)
+
+    return render(
+        request,
+        "m13/index.html",
+        {"green_jobs": grouped_green_jobs, "red_jobs": grouped_red_jobs},
+    )
