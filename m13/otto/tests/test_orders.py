@@ -2,9 +2,11 @@ import json
 from unittest.mock import patch
 
 import pytest
+from django.core import mail
 from django.urls import reverse
 from freezegun import freeze_time
 
+from core.models import Price
 from otto.models import Address, Order, OrderItem
 from otto.services.orders import get_url, save_orders
 
@@ -31,6 +33,14 @@ def test_save_orders(mocked_fetch_orders):
 
     assert OrderItem.objects.filter(fulfillment_status="RETURNED").count() == 2
     assert OrderItem.objects.filter(fulfillment_status="SENT").count() == 1
+
+    # Three emails for three new products
+    assert len(mail.outbox) == 3
+    assert mail.outbox[0].subject == "New Product in BM - sku: women-bom-da-xs"
+    assert mail.outbox[1].subject == "New Product in BM - sku: women-bom-vi-m"
+    assert mail.outbox[2].subject == "New Product in BM - sku: women-bom-da-l"
+
+    assert Price.objects.all().count() == 3
 
 
 test_data = [

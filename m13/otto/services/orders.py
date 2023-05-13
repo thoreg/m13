@@ -26,8 +26,12 @@ from datetime import datetime, timedelta
 from functools import reduce
 
 import requests
+from django.conf import settings
+from django.core.mail import EmailMessage
+from django.urls import reverse
 from django.utils import timezone
 
+from core.models import Price
 from otto.models import Address, Order, OrderItem
 
 LOG = logging.getLogger(__name__)
@@ -73,6 +77,7 @@ def fetch_orders_by_status(token, status, from_order_date=None):
     r = requests.get(
         get_url(status, from_order_date),
         headers=headers,
+        timeout=60,
     )
     LOG.info(f"fetch_orders_by_status() response_status_code: {r.status_code}")
     return r.json()
@@ -85,6 +90,7 @@ def fetch_next_slice(token, href):
     r = requests.get(
         ORDERS_URL.replace("/v4/orders", href),
         headers=headers,
+        timeout=60,
     )
     LOG.info(f"fetch_next_slice() response_status_code: {r.status_code}")
     return r.json()
@@ -187,6 +193,48 @@ def save_orders(orders_as_json):
             if not created:
                 order_item.fulfillment_status = oi.get("fulfillmentStatus")
                 order_item.save()
+
+            # DEPRECATED
+            # product, _created = Product.objects.get_or_create(
+            #     ean=oi.get("product").get("ean"),
+            #     defaults={"name": oi.get("product").get("productTitle")},
+            # )
+            # Article.objects.get_or_create(
+            #     sku=oi.get("product").get("sku"), product=product
+            # )
+
+            sku = oi.get("product").get("sku")
+            vk_otto = oi.get("itemValueGrossPrice").get("amount")
+            price_obj, created = Price.objects.get_or_create(
+                sku=sku,
+                defaults={"vk_otto": vk_otto},
+            )
+            if created:
+                url = reverse(
+                    "admin:%s_%s_change"
+                    % (price_obj._meta.app_label, price_obj._meta.model_name),
+                    args=[price_obj.sku],
+                )
+                url = f"https://m13.thoreg.com{url}"
+                msg = f"""
+    Please 'check in' : {url}
+
+    We need a category, costs_production and vk_zalando
+
+    vk_otto is: {vk_otto}
+
+    Many thanks - Keep it straight
+                """
+
+                subject = f"New Product in BM - sku: {sku}"
+                mail = EmailMessage(
+                    subject,
+                    msg,
+                    settings.FROM_EMAIL_ADDRESS,
+                    settings.OTTO_ORDER_CSV_RECEIVER_LIST,
+                )
+                number_of_messages = mail.send()
+                assert number_of_messages == 1
 
 
 def get_url(status, datum=None):
