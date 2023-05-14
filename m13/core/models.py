@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
 
@@ -74,6 +75,14 @@ class Price(TimeStampedModel):
 
     def __str__(self):
         return f"{self.category} : {self.sku}"
+
+    def admin_url(self):
+        """Return link to the admin interface of the object."""
+        url = reverse(
+            "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
+            args=[self.sku],
+        )
+        return f"https://m13.thoreg.com{url}"
 
 
 class Product(TimeStampedModel):

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils import timezone
 
-from core.models import Job
+from core.models import Job, Price
 from zalando.models import FeedUpload
 
 
@@ -57,8 +57,14 @@ def index(request):
     grouped_green_jobs = _group_jobs(green_jobs)
     grouped_red_jobs = _group_jobs(red_jobs)
 
+    prices_without_category = Price.objects.filter(category__isnull=True)
+
     return render(
         request,
         "m13/index.html",
-        {"green_jobs": grouped_green_jobs, "red_jobs": grouped_red_jobs},
+        {
+            "green_jobs": grouped_green_jobs,
+            "red_jobs": grouped_red_jobs,
+            "prices_without_category": prices_without_category,
+        },
     )

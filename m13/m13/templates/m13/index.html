@@ -20,17 +20,31 @@
         <td>{{ value.start|date:"Y-m-d:H:i:s" }}</td>
         <td>{{ value.duration }}</td>
         <td>
-          {% if value.success %}
-            <div style="width: 1rem; height: 1rem; background: green; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
-          {% else %}
-            <div style="width: 1rem; height: 1rem; background: red; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
-          {% endif %}
+          <div style="width: 1rem; height: 1rem; background: red; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
         </td>
         <td>{{ value.description }}</td>
     </tr>
   {% endfor %}
   </table>
 {% endfor %}
+
+<h3>WARN - Action needed :|</h3>
+<hr>
+{% if prices_without_category %}
+<table>
+  <thead>
+    <th>sku</th>
+    <th>admin</th>
+  </thead>
+  {% for price in prices_without_category %}
+    <tr>
+        <td>{{ price.sku }}</td>
+        <td><a href="{{ price.admin_url }}">Fixit</a></td>
+    </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
 
 <h3>PASSED - This is good :)</h3>
 <hr>
