@@ -57,7 +57,9 @@ def index(request):
     grouped_green_jobs = _group_jobs(green_jobs)
     grouped_red_jobs = _group_jobs(red_jobs)
 
-    prices_without_category = Price.objects.filter(category__isnull=True)
+    prices_without_category = Price.objects.filter(category__isnull=True).order_by(
+        "sku"
+    )
 
     return render(
         request,
