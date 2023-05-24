@@ -39,7 +39,7 @@ LOGGING = {
             "class": "logging.handlers.RotatingFileHandler",
             "filename": f"{LOG_DIR}/django/m13/default.log",
             "maxBytes": 1024 * 1024 * 5,  # 5 MB
-            "backupCount": 10,
+            "backupCount": 20,
             "formatter": "standard",
         },
         "request_handler": {
@@ -47,7 +47,7 @@ LOGGING = {
             "class": "logging.handlers.RotatingFileHandler",
             "filename": f"{LOG_DIR}/django/m13/requests.log",
             "maxBytes": 1024 * 1024 * 5,  # 5 MB
-            "backupCount": 10,
+            "backupCount": 20,
             "formatter": "standard",
         },
         "mail_admins": {
