@@ -197,23 +197,33 @@ def pimp_prices(lines):
         # print(row)
         # 2 price
         # 3 retail_price
+        # 5 sku
         # 7 name
+        sku = row[5]
 
         try:
             # Special overwrite on certain products - just take hard the vk_zalando
             # without further any further modification
+
+            # !!! DEPRECATED !!!
+            # TODO: use Price here
             zproduct = ZProduct.objects.get(article=row[5], pimped=True)
             price = zproduct.vk_zalando
+            LOG.debug(f"{sku} - price via pimped=True : {price}")
 
         except ZProduct.DoesNotExist:
             _price = float(row[2].replace(",", "."))
             price = _get_price(_price, FACTOR)
+            LOG.debug(f"{sku} - price via _get_price() : {price}")
 
         ean = row[1]
         retail_price = price
         product_name = row[7]
-        LOG.debug(f"{product_name}: {row[2]} -> {price}")
+        LOG.debug(f"{sku} - {product_name}: {row[2]} -> {price}")
+
+        # TODO: use Price here
         Product.objects.get_or_create(ean=ean, defaults={"title": product_name})
+
         row[2] = str(price)
         row[3] = str(retail_price)
 
