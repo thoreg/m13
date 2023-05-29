@@ -6,6 +6,7 @@ from enum import StrEnum
 
 from django.db import connection
 
+from m13.lib import log as mlog
 from m13.lib.psql import dictfetchall
 
 LOG = logging.getLogger(__name__)
@@ -71,9 +72,7 @@ class ArticleStats:
                 - self.generic_costs_amount
             )
         except TypeError:
-            LOG.error(f"Missing information for {self.sku}")
-            LOG.error(self)
-            # import ipdb; ipdb.set_trace()
+            mlog.error(LOG, f"Missing information for {self.sku} - {self}")
             return 0
 
     @property
@@ -366,5 +365,7 @@ def get_article_stats(
         case Marketplace.ZALANDO:
             return get_article_stats_zalando(start_date, end_date)
         case _:
-            LOG.error(f"get_article_stats with unknown marketplace: {marketplace}")
+            mlog.error(
+                LOG, f"get_article_stats with unknown marketplace: {marketplace}"
+            )
             return {}

@@ -9,6 +9,7 @@ from requests.models import codes
 
 from etsy.models import Address, Order, OrderItem
 from m13.common import timestamp_from_epoch
+from m13.lib import log as mlog
 
 LOG = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ def get_receipts(token):
     if r.status_code == codes.ok:
         return r.json()
 
-    LOG.error(r.json())
+    mlog.error(LOG, r.json())
     return []
 
 
@@ -48,7 +49,8 @@ def process_receipts(data):
     """
     for k in ["count", "results"]:
         if k not in data:
-            LOG.error(f"No {k} in data")
+            msg = f"No {k} in data"
+            mlog.error(LOG, msg)
             return
 
     LOG.info(f'count: {data["count"]} number_of_results: {len(data["results"])}')

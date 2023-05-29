@@ -8,6 +8,7 @@ import requests
 from django.conf import settings
 
 from m13.common import now_as_str
+from m13.lib import log as mlog
 from zalando.constants import SKU_BLACKLIST
 from zalando.models import FeedUpload, PriceTool, Product, ZProduct
 
@@ -187,7 +188,7 @@ def pimp_prices(lines):
     try:
         FACTOR = get_z_factor()
     except PriceTool.DoesNotExist:
-        LOG.error("No price factor found")
+        mlog.error(LOG, "No price factor found")
         raise ZalandoException("No price factor found")
 
     if not lines:
@@ -247,8 +248,8 @@ def validate_feed(file_name):
     LOG.info(f"Response code (validation): {resp.status_code}")
     # LOG.info(resp.json())
     if resp.status_code != requests.codes.ok:
-        LOG.error("Got other than 200")
-        LOG.error(resp.json())
+        mlog.error(LOG, "Got other than 200")
+        mlog.error(LOG, resp.json())
         raise ZalandoException("Feed is not valid")
 
     return resp.status_code
@@ -267,8 +268,8 @@ def upload_pimped_feed(pimped_file_name, status_code_validation, dto):
     LOG.info(f"Response code (feed): {resp.status_code}")
     status_code_feed_upload = resp.status_code
     if resp.status_code != requests.codes.ok:
-        LOG.error("Got other than 200")
-        LOG.error(resp.json())
+        mlog.error(LOG, "Got other than 200")
+        mlog.error(LOG, resp.json())
         raise ZalandoException("Upload Failed")
 
     fupload = FeedUpload(

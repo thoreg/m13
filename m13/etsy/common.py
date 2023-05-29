@@ -4,6 +4,7 @@ import os
 import requests
 
 from etsy.models import AuthToken
+from m13.lib import log as mlog
 
 LOG = logging.getLogger(__name__)
 
@@ -21,7 +22,7 @@ def get_auth_token():
             raise AuthToken.DoesNotExist()
         refresh_token = auth_token[0].refresh_token
     except AuthToken.DoesNotExist:
-        LOG.error("No auth token found")
+        mlog.error(LOG, "No auth token found")
         return None
 
     req_body = {

@@ -3,6 +3,7 @@ from decimal import Decimal
 import pytest
 from django.urls import reverse
 
+from core.models import Error
 from zalando.forms import PriceToolForm
 from zalando.models import PriceTool
 
@@ -43,6 +44,8 @@ def test_zalando_views(client, django_user_model, z_url):
 
 @pytest.mark.django_db
 def test_zalando_oem_endpoint(client, django_user_model, settings):
+    Error.objects.all().delete()
+
     username = "user1"
     password = "bar"
     user = django_user_model.objects.create_user(username=username, password=password)
@@ -81,3 +84,5 @@ def test_zalando_oem_endpoint(client, django_user_model, settings):
     )
     assert response.status_code == 200
     assert response.content == b"Message received okay."
+
+    assert Error.objects.all().count() == 1

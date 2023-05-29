@@ -106,8 +106,18 @@ class Article(TimeStampedModel):
 
 
 class Job(TimeStampedModel):
+    """Model to keep track of the execution of management commands."""
+
     cmd = models.CharField(max_length=256)
     description = models.CharField(max_length=256, blank=True, null=True)
     start = models.DateTimeField()
     end = models.DateTimeField(blank=True, null=True)
     successful = models.BooleanField(default=False)
+
+
+class Error(TimeStampedModel):
+    """Model to display errors on status page."""
+
+    msg = models.TextField()
+    comment = models.CharField(max_length=128)
+    cleared = models.BooleanField(default=False)

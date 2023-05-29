@@ -20,6 +20,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from m13.lib import log as mlog
 from m13.lib.file_upload import handle_uploaded_file
 from zalando.services.daily_shipment_reports import import_daily_shipment_report
 from zalando.services.prices import update_z_factor
@@ -109,7 +110,7 @@ def oea_webhook(request):
         payload = json.loads(request.body)
     except json.decoder.JSONDecodeError:
         LOG.exception("JSON decode failed")
-        LOG.error(request.body)
+        mlog.error(LOG, request.body)
         return HttpResponse("Request body is not JSON", content_type="text/plain")
 
     OEAWebhookMessage.objects.create(payload=payload)

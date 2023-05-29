@@ -37,6 +37,7 @@ import requests
 
 from etsy.common import get_auth_token
 from etsy.models import Order, Shipment
+from m13.lib import log as mlog
 
 LOG = logging.getLogger(__name__)
 
@@ -78,7 +79,8 @@ def handle_uploaded_file(csv_file):
     """
     token = get_auth_token()
     if not token:
-        LOG.error("No token found")
+        msg = "No token found"
+        mlog.error(LOG, msg)
         return
 
     f = TextIOWrapper(csv_file.file, encoding="latin1")
@@ -91,7 +93,7 @@ def handle_uploaded_file(csv_file):
 
         tracking_info = row[3]
         if not tracking_info:
-            LOG.error(f"Tracking info not found - row: {row}")
+            mlog.error(LOG, f"Tracking info not found - row: {row}")
             continue
 
         order_id = row[0].lstrip("ETSY")
@@ -100,7 +102,7 @@ def handle_uploaded_file(csv_file):
                 marketplace_order_id=order_id
             )
         except Order.DoesNotExist:
-            LOG.error(f"Order not found {order_id} - row {row}")
+            mlog.error(LOG, f"Order not found {order_id} - row {row}")
             continue
 
         carrier = "DHL Germany"

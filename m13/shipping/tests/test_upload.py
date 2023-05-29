@@ -4,6 +4,7 @@ import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
+from core.models import Error
 from mirapodo.models import Order as MirapodoOrder
 from mirapodo.models import OrderItem as MirapodoOrderItem
 from mirapodo.models import Shipment as MirapodoShipment
@@ -115,3 +116,8 @@ def test_handle_uploaded_file(client, django_user_model):
             "SHIPPED",
         ]
     )
+
+    errors = Error.objects.all().values()
+    assert len(errors) == 2
+    assert errors[0]["msg"].startswith("No auth token found: get_auth_token")
+    assert errors[1]["msg"].startswith("No token found: handle_uploaded_file")

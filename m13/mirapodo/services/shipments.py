@@ -34,6 +34,7 @@ from io import TextIOWrapper
 import requests
 from requests.models import codes
 
+from m13.lib import log as mlog
 from mirapodo.models import Order, Shipment
 
 LOG = logging.getLogger(__name__)
@@ -117,7 +118,7 @@ def upload_tracking_info(order, tracking_info):
         for orderitem in order.orderitem_set.all():
             orderitem.mark_as_shipped()
     else:
-        LOG.error(msg)
+        mlog.error(LOG, msg)
         raise ApiCallFailed("API call to mirapodo failed")
 
     return 200, "SUCCESS"
@@ -142,7 +143,7 @@ def handle_uploaded_file(csv_file):
 
         tracking_info = row[3]
         if not tracking_info:
-            LOG.error(f"Tracking info not found - row: {row}")
+            mlog.error(LOG, f"Tracking info not found - row: {row}")
             continue
 
         marketplace_order_id = row[0]
@@ -151,7 +152,7 @@ def handle_uploaded_file(csv_file):
                 marketplace_order_id=marketplace_order_id
             )
         except Order.DoesNotExist:
-            LOG.error(f"Order not found {marketplace_order_id} - row {row}")
+            mlog.error(LOG, f"Order not found {marketplace_order_id} - row {row}")
             continue
 
         LOG.info(f"o: {marketplace_order_id} t: {tracking_info}")

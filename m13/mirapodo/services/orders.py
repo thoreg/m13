@@ -7,6 +7,7 @@ import requests
 import xmltodict
 from requests.exceptions import HTTPError
 
+from m13.lib import log as mlog
 from mirapodo.models import Address, Order, OrderItem
 
 ORDER_IMPORT_URL = os.environ["M13_MIRAPODO_ORDER_IMPORT_URL"]
@@ -58,8 +59,8 @@ def import_order(order_dict):
         LOG.info(f"Order {marketplace_order_id} already known")
 
     if len(order_dict["ITEMS"].keys()) != 1:
-        LOG.error("[ mirapodo ] - other keys then items found - check this")
-        LOG.error(order_dict["ITEMS"])
+        mlog.error(LOG, "[ mirapodo ] - other keys then items found - check this")
+        mlog.error(LOG, order_dict["ITEMS"])
 
     def _get_or_create_orderitem(oi):
         LOG.info(f"[ mirapodo ] orderitem: {oi}")

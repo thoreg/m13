@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 from django.core.management import call_command
 
-from core.models import Category
+from core.models import Category, Error
 from m13.lib.csv_reader import read_csv
 from zalando.models import PriceTool, ZProduct
 from zalando.services.feed import ZalandoException, pimp_prices
@@ -36,9 +36,20 @@ def test_pimp_prices():
         cr = csv.reader(f.read().splitlines(), delimiter=";")
         lines = list(cr)
 
+    #
+    # No Price Factor defined
+    #
     with pytest.raises(ZalandoException) as exc_info:
         pimp_prices(lines)
     assert "No price factor found" in str(exc_info.value)
+
+    error = Error.objects.get()
+    assert error.cleared is False
+    assert error.comment == ""
+    assert error.msg == (
+        "No price factor found: pimp_prices in "
+        "/Users/thoreg/src/m13/m13/zalando/services/feed.py:177"
+    )
 
     pt = PriceTool.objects.create(z_factor=1.3, active=True)
     pt.save()

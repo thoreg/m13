@@ -43,6 +43,7 @@ from pprint import pprint
 
 import requests
 
+from m13.lib import log as mlog
 from otto.common import get_auth_token
 from otto.models import Order, Shipment
 
@@ -136,7 +137,7 @@ def handle_uploaded_file(csv_file):
 
         tracking_info = row[3]
         if not tracking_info:
-            LOG.error(f"Tracking info not found - row: {row}")
+            mlog.error(LOG, f"Tracking info not found - row: {row}")
             continue
 
         order_number = row[0]
@@ -145,7 +146,7 @@ def handle_uploaded_file(csv_file):
                 marketplace_order_number=order_number
             )
         except Order.DoesNotExist:
-            LOG.error(f"Order not found {order_number} - row {row}")
+            mlog.error(LOG, f"Order not found {order_number} - row {row}")
             continue
 
         carrier = "DHL"

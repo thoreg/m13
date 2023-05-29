@@ -61,6 +61,7 @@ import logging
 
 from django.utils import timezone
 
+from m13.lib import log as mlog
 from zalando.models import Address, OEAWebhookMessage, Order, OrderItem
 
 LOG = logging.getLogger(__name__)
@@ -87,7 +88,7 @@ def get_address(address_data):
             zip_code=address_data["zip_code"],
         )
     except KeyError:
-        LOG.error(f"Something unforseen - address_data: {address_data}")
+        mlog.error(LOG, f"Something unforseen - address_data: {address_data}")
         return None
 
     return address
@@ -174,7 +175,7 @@ def process_new_oea_records():
 
         dd = entry.get("delivery_details")
         if not dd:
-            LOG.error('status is != "assigned" but no delivery infos')
+            mlog.error(LOG, 'status is != "assigned" but no delivery infos')
             continue
 
         for oi in entry["items"]:
@@ -189,14 +190,14 @@ def process_new_oea_records():
                     },
                 )
             except KeyError:
-                LOG.error("KeyError in zalando orderitem processing")
-                LOG.error(entry)
+                mlog.error(LOG, "KeyError in zalando orderitem processing")
+                mlog.error(LOG, entry)
 
         address_data = entry.get("customer_billing_address")
         if address_data:
             order.delivery_address = get_address(address_data)
         else:
-            LOG.error(f"No address data found but expected entry: {entry}")
+            mlog.error(LOG, f"No address data found but expected entry: {entry}")
 
         order.save()
 

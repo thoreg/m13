@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Job, MarketplaceConfig, Price, Product
+from .models import Category, Error, Job, MarketplaceConfig, Price, Product
 
 
 class MarketplaceConfigAdmin(admin.ModelAdmin):
@@ -80,8 +80,14 @@ class PriceAdmin(admin.ModelAdmin):
         return obj.category.name
 
 
+class ErrorAdmin(admin.ModelAdmin):
+    list_display = ("created", "msg", "comment", "cleared")
+    ordering = ("-created",)
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Price, PriceAdmin)
 admin.site.register(MarketplaceConfig, MarketplaceConfigAdmin)
 admin.site.register(Job, JobAdmin)
+admin.site.register(Error, ErrorAdmin)

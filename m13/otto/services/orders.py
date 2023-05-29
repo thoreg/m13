@@ -32,6 +32,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from core.models import Price
+from m13.lib import log as mlog
 from otto.models import Address, Order, OrderItem
 
 LOG = logging.getLogger(__name__)
@@ -52,7 +53,7 @@ ORDER_STATUS_LIST = [
 
 
 if not all([USERNAME, PASSWORD]):
-    LOG.error("\nyou need to define username and password\n")
+    mlog.error(LOG, "\nyou need to define username and password\n")
     sys.exit(1)
 
 
@@ -164,8 +165,8 @@ def save_orders(orders_as_json):
                     expected_delivery_date = oi.get("cancellationDate")
 
                 if not expected_delivery_date:
-                    LOG.error("otto - STILL empty expected_delivery_date")
-                    LOG.error(oi)
+                    mlog.error(LOG, "otto - STILL empty expected_delivery_date")
+                    mlog.error(LOG, oi)
 
             order_item, created = OrderItem.objects.get_or_create(
                 order=order,

@@ -3,6 +3,7 @@ from enum import StrEnum
 
 from core.models import MarketplaceConfig, Price
 from core.services.article_stats import Marketplace
+from m13.lib import log as mlog
 from m13.lib.csv_reader import read_csv
 from zalando.models import (
     DailyShipmentReport,
@@ -81,7 +82,7 @@ def import_daily_shipment_report(file: TransactionFileUpload) -> None:
         elif sorted([k for k in line])[0] == "article_name":
             keys = FieldsV1
         else:
-            LOG.error(line)
+            mlog.error(LOG, line)
             LOG.exception("unknown line format in daily shipment report")
             return
 
