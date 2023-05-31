@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils import timezone
 
-from core.models import Job, Price
+from core.models import Error, Job, Price
 from zalando.models import FeedUpload
 
 
@@ -61,12 +61,15 @@ def index(request):
         "sku"
     )
 
+    errors = Error.objects.filter(cleared=False)
+
     return render(
         request,
         "m13/index.html",
         {
+            "errors": errors,
             "green_jobs": grouped_green_jobs,
-            "red_jobs": grouped_red_jobs,
             "prices_without_category": prices_without_category,
+            "red_jobs": grouped_red_jobs,
         },
     )

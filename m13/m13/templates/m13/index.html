@@ -26,6 +26,14 @@
     </tr>
   {% endfor %}
   </table>
+  {% empty %}
+    <p>Hooray - no failed jobs</p>
+{% endfor %}
+
+{% for error in errors %}
+  <h2>{{ error.msg }}</h2>
+{% empty %}
+  <p>Hooray - no errors</p>
 {% endfor %}
 
 <h3>WARN - Action needed :|</h3>

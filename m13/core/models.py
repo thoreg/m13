@@ -119,5 +119,5 @@ class Error(TimeStampedModel):
     """Model to display errors on status page."""
 
     msg = models.TextField()
-    comment = models.CharField(max_length=128)
+    comment = models.CharField(max_length=128, blank=True, null=True)
     cleared = models.BooleanField(default=False)
