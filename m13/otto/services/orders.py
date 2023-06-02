@@ -138,6 +138,7 @@ def save_orders(orders_as_json):
             street=entry.get("deliveryAddress").get("street"),
             title=entry.get("deliveryAddress").get("title"),
             zip_code=entry.get("deliveryAddress").get("zipCode"),
+            email=entry.get("invoiceAddress").get("email", "otto@manufaktur13.de"),
         )
 
         order, created = Order.objects.get_or_create(
