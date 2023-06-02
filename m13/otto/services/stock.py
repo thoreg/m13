@@ -7,7 +7,6 @@ from datetime import datetime
 
 import requests
 
-from m13.lib import log as mlog
 from m13.lib.common import chunk
 from otto.common import get_auth_token
 
@@ -55,9 +54,9 @@ def sync_stock():
             )
             if resp.status_code != requests.codes.ok:
                 try:
-                    mlog.error(LOG, resp.json()["errors"][0]["detail"])
+                    LOG.error(LOG, resp.json()["errors"][0]["detail"])
                 except KeyError:
-                    mlog.error(LOG, resp.json())
+                    LOG.error(LOG, resp.json())
 
                 continue
 
