@@ -45,7 +45,7 @@ def test_pimp_prices():
 
     error = Error.objects.get()
     assert error.cleared is False
-    assert error.comment == ""
+    assert error.comment is None
     assert error.msg == (
         "No price factor found: pimp_prices in "
         "/Users/thoreg/src/m13/m13/zalando/services/feed.py:177"

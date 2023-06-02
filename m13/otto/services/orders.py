@@ -125,6 +125,8 @@ def save_orders(orders_as_json):
             street=entry.get("deliveryAddress").get("street"),
             title=entry.get("deliveryAddress").get("title"),
             zip_code=entry.get("deliveryAddress").get("zipCode"),
+            # delivery address is already joined in view for csv creation
+            email=entry.get("invoiceAddress").get("email", "otto@manufaktur13.de"),
         )
         invoice_address, _created = Address.objects.get_or_create(
             addition=entry.get("deliveryAddress").get("addition"),
