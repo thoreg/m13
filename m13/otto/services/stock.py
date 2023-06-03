@@ -53,7 +53,7 @@ def sync_stock():
             )
             if resp.status_code != requests.codes.ok:
                 LOG.info(f"updated - sku: {sku} quantity : {quantity} failed - begin")
-                LOG.error(LOG, resp.json())
+                LOG.error(resp.json())
                 LOG.info(f"updated - sku: {sku} quantity : {quantity} failed - end")
                 continue
 
