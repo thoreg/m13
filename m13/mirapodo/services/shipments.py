@@ -112,7 +112,7 @@ def upload_tracking_info(order, tracking_info):
     )
 
     msg = f"resp: {response.status_code} : {response.text}"
-    if response.status_code == codes.ok:
+    if response.status_code == codes.created:
         LOG.info(msg)
         LOG.info("mark all orderitems as shipped")
         for orderitem in order.orderitem_set.all():

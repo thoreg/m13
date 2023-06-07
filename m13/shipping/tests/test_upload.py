@@ -58,7 +58,7 @@ def test_handle_uploaded_file(client, django_user_model):
         ) as mocked_otto_do_post,
         patch(
             "mirapodo.services.shipments._post",
-            return_value=MockResponse(200, "success"),
+            return_value=MockResponse(201, "created"),
         ) as mocked_mirapodo_do_post,
     ):
         client.post(shipping_info_upload_url, {"file": _file}, format="multipart")

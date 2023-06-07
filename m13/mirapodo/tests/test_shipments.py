@@ -39,7 +39,7 @@ def test_upload_tracking_info(httpbin):
 
     order = Order.objects.get()
     with patch("mirapodo.services.shipments._post") as mock_post:
-        mock_post.return_value = MockResponse(200, "success")
+        mock_post.return_value = MockResponse(201, "created")
         upload_tracking_info(order, "1234321")
 
     mock_post.assert_called_once()
@@ -75,7 +75,7 @@ def test_upload_tracking_info(httpbin):
 
     order = Order.objects.get()
     with patch("mirapodo.services.shipments._post") as mock_post:
-        mock_post.return_value = MockResponse(200, "success")
+        mock_post.return_value = MockResponse(201, "created")
         upload_tracking_info(order, "1234321")
 
     mock_post.assert_called_once()
@@ -113,7 +113,7 @@ def test_upload_tracking_info(httpbin):
 
     order = Order.objects.get()
     with patch("mirapodo.services.shipments._post") as mock_post:
-        mock_post.return_value = MockResponse(200, "success")
+        mock_post.return_value = MockResponse(201, "created")
         upload_tracking_info(order, "1234321")
 
     mock_post.assert_called_once()
