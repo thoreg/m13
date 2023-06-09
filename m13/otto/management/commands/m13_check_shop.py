@@ -78,9 +78,9 @@ class Command(BaseCommand):
 
         resp = requests.get(M13_URL)
         if resp.status_code != requests.codes.ok:
-            msg = "Request status code of the $hop is not 200"
-            msg += resp.status_code
-            msg += resp.content
+            msg = "Request status code of the $hop is not 200 "
+            msg += f" - it is tada: {resp.status_code}"
+            msg += f"resp_content: {resp.content}"
             return self.suspicious(msg)
 
         soup = BeautifulSoup(resp.text, "html.parser")
