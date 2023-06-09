@@ -72,6 +72,7 @@ class Price(TimeStampedModel):
         max_digits=6, decimal_places=2, null=True, blank=True
     )
     vk_otto = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    pimped_zalando = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.category} : {self.sku}"
