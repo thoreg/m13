@@ -68,6 +68,7 @@ class PriceAdmin(admin.ModelAdmin):
         "sku",
         "category",
         "vk_zalando",
+        "pimped_zalando",
         "vk_otto",
     )
 
