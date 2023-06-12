@@ -4,9 +4,9 @@ from unittest.mock import patch
 import pytest
 from django.core.management import call_command
 
-from core.models import Category, Error
+from core.models import Category, Error, Price
 from m13.lib.csv_reader import read_csv
-from zalando.models import PriceTool, ZProduct
+from zalando.models import PriceTool
 from zalando.services.feed import ZalandoException, pimp_prices
 
 
@@ -17,19 +17,21 @@ def test_pimp_prices():
     # Prepare two products - one price gets overwritten, one not
     #
     c1 = Category.objects.create(name="test_category_1")
-    ZProduct.objects.create(
-        article="CORJACKET-BO-M",
+    Price.objects.create(
+        sku="CORJACKET-BO-M",
         category=c1,
         costs_production="14.99",
         vk_zalando="24.99",
-        pimped=True,
+        vk_otto="25.99",
+        pimped_zalando=True,
     )
-    ZProduct.objects.create(
-        article="CORJACKET-BO-S",
+    Price.objects.create(
+        sku="CORJACKET-BO-S",
         category=c1,
         costs_production="14.99",
         vk_zalando="24.99",
-        pimped=False,
+        vk_otto="25.99",
+        pimped_zalando=False,
     )
 
     with open("zalando/tests/data/original_stock_price_feed.csv", "r") as f:
@@ -48,7 +50,7 @@ def test_pimp_prices():
     assert error.comment is None
     assert error.msg == (
         "No price factor found: pimp_prices in "
-        "/Users/thoreg/src/m13/m13/zalando/services/feed.py:177"
+        "/Users/thoreg/src/m13/m13/zalando/services/feed.py:178"
     )
 
     pt = PriceTool.objects.create(z_factor=1.3, active=True)

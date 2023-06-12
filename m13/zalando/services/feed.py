@@ -7,10 +7,11 @@ from typing import NamedTuple
 import requests
 from django.conf import settings
 
+from core.models import Price
 from m13.common import now_as_str
 from m13.lib import log as mlog
 from zalando.constants import SKU_BLACKLIST
-from zalando.models import FeedUpload, PriceTool, Product, ZProduct
+from zalando.models import FeedUpload, PriceTool, Product
 
 LOG = logging.getLogger(__name__)
 
@@ -205,14 +206,11 @@ def pimp_prices(lines):
         try:
             # Special overwrite on certain products - just take hard the vk_zalando
             # without further any further modification
+            core_price = Price.objects.get(sku=row[5], pimped_zalando=True)
+            price = core_price.vk_zalando
+            LOG.debug(f"{sku} - price via pimped_zalando=True : {price}")
 
-            # !!! DEPRECATED !!!
-            # TODO: use Price here
-            zproduct = ZProduct.objects.get(article=row[5], pimped=True)
-            price = zproduct.vk_zalando
-            LOG.debug(f"{sku} - price via pimped=True : {price}")
-
-        except ZProduct.DoesNotExist:
+        except Price.DoesNotExist:
             _price = float(row[2].replace(",", "."))
             price = _get_price(_price, FACTOR)
             LOG.debug(f"{sku} - price via _get_price() : {price}")
