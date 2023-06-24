@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ORDER xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.1" type="standard" xmlns="http://www.opentrans.org/XMLSchema/2.1">
+	<ORDER_HEADER>
+		<CONTROL_INFO>
+			<GENERATION_DATE>2022-03-28T11:55:32</GENERATION_DATE>
+		</CONTROL_INFO>
+		<ORDER_INFO>
+			<ORDER_ID>61730211</ORDER_ID>
+			<ORDER_DATE>2022-03-28T11:55:29</ORDER_DATE>
+			<LANGUAGE xmlns="http://www.bmecat.org/bmecat/2005">ger</LANGUAGE>
+			<PARTIES>
+				<PARTY>
+					<PARTY_ID type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">406802</PARTY_ID>
+					<PARTY_ID type="gln" xmlns="http://www.bmecat.org/bmecat/2005">7640151820008</PARTY_ID>
+					<PARTY_ROLE>buyer</PARTY_ROLE>
+					<ADDRESS>
+						<NAME xmlns="http://www.bmecat.org/bmecat/2005">Digitec Galaxus AG</NAME>
+						<DEPARTMENT xmlns="http://www.bmecat.org/bmecat/2005">Accounting</DEPARTMENT>
+						<STREET xmlns="http://www.bmecat.org/bmecat/2005">Pfingstweidstrasse 60b</STREET>
+						<ZIP xmlns="http://www.bmecat.org/bmecat/2005">8005</ZIP>
+						<CITY xmlns="http://www.bmecat.org/bmecat/2005">Zürich</CITY>
+						<COUNTRY xmlns="http://www.bmecat.org/bmecat/2005">Schweiz</COUNTRY>
+						<COUNTRY_CODED xmlns="http://www.bmecat.org/bmecat/2005">CH</COUNTRY_CODED>
+						<EMAIL xmlns="http://www.bmecat.org/bmecat/2005">spmpartnerresponses@digitecgalaxus.ch</EMAIL>
+						<VAT_ID xmlns="http://www.bmecat.org/bmecat/2005">CHE-109.049.266</VAT_ID>
+					</ADDRESS>
+				</PARTY>
+				<PARTY>
+					<PARTY_ID type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">407514</PARTY_ID>
+					<PARTY_ROLE>supplier</PARTY_ROLE>
+					<ADDRESS>
+						<NAME xmlns="http://www.bmecat.org/bmecat/2005">Testfirma AG</NAME>
+						<STREET xmlns="http://www.bmecat.org/bmecat/2005">Teststrasse 7</STREET>
+						<ZIP xmlns="http://www.bmecat.org/bmecat/2005">6032</ZIP>
+						<CITY xmlns="http://www.bmecat.org/bmecat/2005">Emmen</CITY>
+						<COUNTRY xmlns="http://www.bmecat.org/bmecat/2005">Schweiz</COUNTRY>
+						<COUNTRY_CODED xmlns="http://www.bmecat.org/bmecat/2005">CH</COUNTRY_CODED>
+						<EMAIL xmlns="http://www.bmecat.org/bmecat/2005">spmpartnerresponses@digitecgalaxus.ch</EMAIL>
+					</ADDRESS>
+				</PARTY>
+				<PARTY>
+					<PARTY_ID type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">2210700</PARTY_ID>
+					<PARTY_ROLE>delivery</PARTY_ROLE>
+					<ADDRESS>
+						<NAME xmlns="http://www.bmecat.org/bmecat/2005">Ver 2.0 Firma der Richi Verlagsgesellschafterei AG</NAME>
+						<NAME2 xmlns="http://www.bmecat.org/bmecat/2005">Richard Meier’s privates Ablagefach der Blockchain</NAME2>
+						<NAME3 xmlns="http://www.bmecat.org/bmecat/2005">Im Westpartk Nord-West im 5. Stockwerk Lift rechts</NAME3>
+						<DEPARTMENT xmlns="http://www.bmecat.org/bmecat/2005">Integration Management on the bright sides of Life</DEPARTMENT>
+						<STREET xmlns="http://www.bmecat.org/bmecat/2005">Bei der Kaufmannstrasse 3</STREET>
+						<ZIP xmlns="http://www.bmecat.org/bmecat/2005">0000</ZIP>
+						<CITY xmlns="http://www.bmecat.org/bmecat/2005">Testort in Zürich West (Firmenadresse Privatkunde)</CITY>
+						<COUNTRY xmlns="http://www.bmecat.org/bmecat/2005">Schweiz</COUNTRY>
+						<COUNTRY_CODED xmlns="http://www.bmecat.org/bmecat/2005">CH</COUNTRY_CODED>
+						<PHONE xmlns="http://www.bmecat.org/bmecat/2005">0444444444</PHONE>
+						<EMAIL xmlns="http://www.bmecat.org/bmecat/2005">spmpartnerresponses@digitecgalaxus.ch</EMAIL>
+					</ADDRESS>
+				</PARTY>
+				<PARTY>
+					<PARTY_ID type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">10709476</PARTY_ID>
+					<PARTY_ROLE>marketplace</PARTY_ROLE>
+					<ADDRESS>
+						<NAME xmlns="http://www.bmecat.org/bmecat/2005">Digitec Galaxus AG</NAME>
+						<STREET xmlns="http://www.bmecat.org/bmecat/2005">Pfingstweidstrasse 60b</STREET>
+						<ZIP xmlns="http://www.bmecat.org/bmecat/2005">8005</ZIP>
+						<CITY xmlns="http://www.bmecat.org/bmecat/2005">Zürich</CITY>
+						<COUNTRY xmlns="http://www.bmecat.org/bmecat/2005">Schweiz</COUNTRY>
+						<COUNTRY_CODED xmlns="http://www.bmecat.org/bmecat/2005">CH</COUNTRY_CODED>
+						<EMAIL xmlns="http://www.bmecat.org/bmecat/2005">spmpartnerresponses@digitecgalaxus.ch</EMAIL>
+					</ADDRESS>
+				</PARTY>
+			</PARTIES>
+			<CUSTOMER_ORDER_REFERENCE>
+				<ORDER_ID>61730208</ORDER_ID>
+			</CUSTOMER_ORDER_REFERENCE>
+			<ORDER_PARTIES_REFERENCE>
+				<BUYER_IDREF type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">406802</BUYER_IDREF>
+				<SUPPLIER_IDREF type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">407514</SUPPLIER_IDREF>
+			</ORDER_PARTIES_REFERENCE>
+			<CURRENCY xmlns="http://www.bmecat.org/bmecat/2005">CHF</CURRENCY>
+			<HEADER_UDX>
+				<UDX.DG.CUSTOMER_TYPE>private_customer</UDX.DG.CUSTOMER_TYPE>
+				<UDX.DG.DELIVERY_TYPE>direct_delivery</UDX.DG.DELIVERY_TYPE>
+				<UDX.DG.IS_COLLECTIVE_ORDER>false</UDX.DG.IS_COLLECTIVE_ORDER>
+				<UDX.DG.PHYSICAL_DELIVERY_NOTE_REQUIRED>false</UDX.DG.PHYSICAL_DELIVERY_NOTE_REQUIRED>
+			</HEADER_UDX>
+		</ORDER_INFO>
+	</ORDER_HEADER>
+	<ORDER_ITEM_LIST>
+		<ORDER_ITEM>
+			<LINE_ITEM_ID>1</LINE_ITEM_ID>
+			<PRODUCT_ID>
+				<SUPPLIER_PID type="supplierProductKey" xmlns="http://www.bmecat.org/bmecat/2005">4135378</SUPPLIER_PID>
+				<INTERNATIONAL_PID type="gtin" xmlns="http://www.bmecat.org/bmecat/2005">00889842737240</INTERNATIONAL_PID>
+				<BUYER_PID type="DgProductId" xmlns="http://www.bmecat.org/bmecat/2005">15395678</BUYER_PID>
+				<DESCRIPTION_SHORT xmlns="http://www.bmecat.org/bmecat/2005">Microsoft Surface Laptop 4 (13.50 ", Intel Core i7-1185G7, 16 GB, 512 GB)</DESCRIPTION_SHORT>
+			</PRODUCT_ID>
+			<QUANTITY>1</QUANTITY>
+			<ORDER_UNIT xmlns="http://www.bmecat.org/bmecat/2005">C62</ORDER_UNIT>
+			<PRODUCT_PRICE_FIX>
+				<PRICE_AMOUNT xmlns="http://www.bmecat.org/bmecat/2005">1390.33</PRICE_AMOUNT>
+				<TAX_DETAILS_FIX>
+					<TAX_AMOUNT>107.06</TAX_AMOUNT>
+				</TAX_DETAILS_FIX>
+			</PRODUCT_PRICE_FIX>
+			<PRICE_LINE_AMOUNT>1390.33</PRICE_LINE_AMOUNT>
+			<DELIVERY_DATE type="optional">
+				<DELIVERY_START_DATE>2022-07-20T00:00:00</DELIVERY_START_DATE>
+				<DELIVERY_END_DATE>2022-07-20T00:00:00</DELIVERY_END_DATE>
+			</DELIVERY_DATE>
+		</ORDER_ITEM>
+	</ORDER_ITEM_LIST>
+	<ORDER_SUMMARY>
+		<TOTAL_ITEM_NUM>1</TOTAL_ITEM_NUM>
+		<TOTAL_AMOUNT>1390.33</TOTAL_AMOUNT>
+	</ORDER_SUMMARY>
+</ORDER>
