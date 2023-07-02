@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ORDER xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.1" type="standard" xmlns="http://www.opentrans.org/XMLSchema/2.1">
+	<ORDER_HEADER>
+		<CONTROL_INFO>
+			<GENERATION_DATE>2022-03-28T11:51:43</GENERATION_DATE>
+		</CONTROL_INFO>
+		<ORDER_INFO>
+			<ORDER_ID>61730210</ORDER_ID>
+			<ORDER_DATE>2022-03-28T11:51:41</ORDER_DATE>
+			<LANGUAGE xmlns="http://www.bmecat.org/bmecat/2005">ger</LANGUAGE>
+			<PARTIES>
+				<PARTY>
+					<PARTY_ID type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">2705624</PARTY_ID>
+					<PARTY_ID type="gln" xmlns="http://www.bmecat.org/bmecat/2005">7640489630003</PARTY_ID>
+					<PARTY_ROLE>buyer</PARTY_ROLE>
+					<ADDRESS>
+						<NAME xmlns="http://www.bmecat.org/bmecat/2005">Galaxus Deutschland GmbH</NAME>
+						<STREET xmlns="http://www.bmecat.org/bmecat/2005">Schützenstraße 5</STREET>
+						<ZIP xmlns="http://www.bmecat.org/bmecat/2005">22761</ZIP>
+						<CITY xmlns="http://www.bmecat.org/bmecat/2005">Hamburg</CITY>
+						<COUNTRY xmlns="http://www.bmecat.org/bmecat/2005">Deutschland</COUNTRY>
+						<COUNTRY_CODED xmlns="http://www.bmecat.org/bmecat/2005">DE</COUNTRY_CODED>
+						<EMAIL xmlns="http://www.bmecat.org/bmecat/2005">spmpartnerresponses@digitecgalaxus.ch</EMAIL>
+						<VAT_ID xmlns="http://www.bmecat.org/bmecat/2005">ATU77168912</VAT_ID>
+					</ADDRESS>
+				</PARTY>
+				<PARTY>
+					<PARTY_ID type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">6503114</PARTY_ID>
+					<PARTY_ROLE>supplier</PARTY_ROLE>
+					<ADDRESS>
+						<NAME xmlns="http://www.bmecat.org/bmecat/2005">Testfirma GmbH</NAME>
+						<STREET xmlns="http://www.bmecat.org/bmecat/2005">Teststrasse 14</STREET>
+						<ZIP xmlns="http://www.bmecat.org/bmecat/2005">2301</ZIP>
+						<CITY xmlns="http://www.bmecat.org/bmecat/2005">Gross Enzersdorf</CITY>
+						<COUNTRY xmlns="http://www.bmecat.org/bmecat/2005">Österreich</COUNTRY>
+						<COUNTRY_CODED xmlns="http://www.bmecat.org/bmecat/2005">AT</COUNTRY_CODED>
+						<EMAIL xmlns="http://www.bmecat.org/bmecat/2005">spmpartnerresponses@digitecgalaxus.ch</EMAIL>
+					</ADDRESS>
+				</PARTY>
+				<PARTY>
+					<PARTY_ID type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">3486316</PARTY_ID>
+					<PARTY_ROLE>delivery</PARTY_ROLE>
+					<ADDRESS>
+						<NAME xmlns="http://www.bmecat.org/bmecat/2005">Firma der Richi Verlagsgesellschaft in Meringen AG</NAME>
+						<CONTACT_DETAILS>
+							<FIRST_NAME xmlns="http://www.bmecat.org/bmecat/2005">Richard Mayerhofer</FIRST_NAME>
+							<CONTACT_NAME xmlns="http://www.bmecat.org/bmecat/2005">Kaufmann+Meiermann Fam</CONTACT_NAME>
+						</CONTACT_DETAILS>
+						<STREET xmlns="http://www.bmecat.org/bmecat/2005">Kaufmannstrasse 31</STREET>
+						<ZIP xmlns="http://www.bmecat.org/bmecat/2005">7777</ZIP>
+						<BOXNO xmlns="http://www.bmecat.org/bmecat/2005">1234</BOXNO>
+						<CITY xmlns="http://www.bmecat.org/bmecat/2005">Wienerschnitzel mit Pommes Frites und Ketchup Song</CITY>
+						<COUNTRY xmlns="http://www.bmecat.org/bmecat/2005">Österreich</COUNTRY>
+						<COUNTRY_CODED xmlns="http://www.bmecat.org/bmecat/2005">AT</COUNTRY_CODED>
+						<PHONE xmlns="http://www.bmecat.org/bmecat/2005">01234567890</PHONE>
+						<EMAIL xmlns="http://www.bmecat.org/bmecat/2005">spmpartnerresponses@digitecgalaxus.ch</EMAIL>
+					</ADDRESS>
+				</PARTY>
+				<PARTY>
+					<PARTY_ID type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">AT</PARTY_ID>
+					<PARTY_ROLE>marketplace</PARTY_ROLE>
+					<ADDRESS>
+						<NAME xmlns="http://www.bmecat.org/bmecat/2005">Galaxus Deutschland GmbH</NAME>
+						<STREET xmlns="http://www.bmecat.org/bmecat/2005">Schützenstraße 5</STREET>
+						<ZIP xmlns="http://www.bmecat.org/bmecat/2005">22761</ZIP>
+						<CITY xmlns="http://www.bmecat.org/bmecat/2005">Hamburg</CITY>
+						<COUNTRY xmlns="http://www.bmecat.org/bmecat/2005">Deutschland</COUNTRY>
+						<COUNTRY_CODED xmlns="http://www.bmecat.org/bmecat/2005">DE</COUNTRY_CODED>
+						<EMAIL xmlns="http://www.bmecat.org/bmecat/2005">spmpartnerresponses@digitecgalaxus.ch</EMAIL>
+					</ADDRESS>
+				</PARTY>
+			</PARTIES>
+			<CUSTOMER_ORDER_REFERENCE>
+				<ORDER_ID>61730209</ORDER_ID>
+			</CUSTOMER_ORDER_REFERENCE>
+			<ORDER_PARTIES_REFERENCE>
+				<BUYER_IDREF type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">2705624</BUYER_IDREF>
+				<SUPPLIER_IDREF type="buyer_specific" xmlns="http://www.bmecat.org/bmecat/2005">6503114</SUPPLIER_IDREF>
+			</ORDER_PARTIES_REFERENCE>
+			<CURRENCY xmlns="http://www.bmecat.org/bmecat/2005">EUR</CURRENCY>
+			<HEADER_UDX>
+				<UDX.DG.CUSTOMER_TYPE>private_customer</UDX.DG.CUSTOMER_TYPE>
+				<UDX.DG.DELIVERY_TYPE>direct_delivery</UDX.DG.DELIVERY_TYPE>
+				<UDX.DG.IS_COLLECTIVE_ORDER>false</UDX.DG.IS_COLLECTIVE_ORDER>
+				<UDX.DG.PHYSICAL_DELIVERY_NOTE_REQUIRED>false</UDX.DG.PHYSICAL_DELIVERY_NOTE_REQUIRED>
+			</HEADER_UDX>
+		</ORDER_INFO>
+	</ORDER_HEADER>
+	<ORDER_ITEM_LIST>
+		<ORDER_ITEM>
+			<LINE_ITEM_ID>1</LINE_ITEM_ID>
+			<PRODUCT_ID>
+				<SUPPLIER_PID type="supplierProductKey" xmlns="http://www.bmecat.org/bmecat/2005">12345</SUPPLIER_PID>
+				<INTERNATIONAL_PID type="gtin" xmlns="http://www.bmecat.org/bmecat/2005">04062319432909</INTERNATIONAL_PID>
+				<BUYER_PID type="DgProductId" xmlns="http://www.bmecat.org/bmecat/2005">15249321</BUYER_PID>
+				<DESCRIPTION_SHORT xmlns="http://www.bmecat.org/bmecat/2005">Apple Mac Mini (M1, 16 GB, 256 GB, SSD)</DESCRIPTION_SHORT>
+			</PRODUCT_ID>
+			<QUANTITY>1</QUANTITY>
+			<ORDER_UNIT xmlns="http://www.bmecat.org/bmecat/2005">C62</ORDER_UNIT>
+			<PRODUCT_PRICE_FIX>
+				<PRICE_AMOUNT xmlns="http://www.bmecat.org/bmecat/2005">1.00</PRICE_AMOUNT>
+				<TAX_DETAILS_FIX>
+					<TAX_AMOUNT>0.20</TAX_AMOUNT>
+				</TAX_DETAILS_FIX>
+			</PRODUCT_PRICE_FIX>
+			<PRICE_LINE_AMOUNT>1.00</PRICE_LINE_AMOUNT>
+			<DELIVERY_DATE type="optional">
+				<DELIVERY_START_DATE>2022-04-05T00:00:00</DELIVERY_START_DATE>
+				<DELIVERY_END_DATE>2022-04-05T00:00:00</DELIVERY_END_DATE>
+			</DELIVERY_DATE>
+		</ORDER_ITEM>
+	</ORDER_ITEM_LIST>
+	<ORDER_SUMMARY>
+		<TOTAL_ITEM_NUM>1</TOTAL_ITEM_NUM>
+		<TOTAL_AMOUNT>1.00</TOTAL_AMOUNT>
+	</ORDER_SUMMARY>
+</ORDER>

@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "shipping",
     "core",
     "mirapodo",
+    "galaxus",
 ]
 
 MIDDLEWARE = [
