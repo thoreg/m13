@@ -155,5 +155,6 @@ def orderitems_csv(request):
 @login_required
 def import_orders(request):
     """Import orders from Mirapodo via button click"""
-    fetch_orders()
-    return index(request)
+    resp_str = fetch_orders()
+    # return index(request)
+    return render(request, "galaxus/resp_str.html", {"resp_str": resp_str})

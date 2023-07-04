@@ -1,7 +1,9 @@
 """Import Orders from marketplace Galaxus"""
 import logging
+import os
 from decimal import Decimal
 
+import paramiko
 import xmltodict
 
 from galaxus.models import Address, Order, OrderItem
@@ -9,6 +11,10 @@ from galaxus.models import Address, Order, OrderItem
 DELIVERY_FEE_STANDARD = "DHL Paket (R)"
 
 LOG = logging.getLogger(__name__)
+
+M13_GALAXUS_FTP_SERVER = os.getenv("M13_GALAXUS_FTP_SERVER", "")
+M13_GALAXUS_FTP_USER = os.getenv("M13_GALAXUS_FTP_USER", "")
+M13_GALAXUS_FTP_PASSWORD = os.getenv("M13_GALAXUS_FTP_PASSWORD", "")
 
 
 def import_orders(good_old_xml):
@@ -113,20 +119,41 @@ def import_orders(good_old_xml):
 
 def fetch_orders():
     """Fetch receivable orders from marketplace Mirapodo."""
-    # try:
-    #     response = requests.get(f"{ORDER_IMPORT_URL}", auth=(USER_NAME, PASSWD))
-    #     # If the response was successful, no Exception will be raised
-    #     response.raise_for_status()
-    # except HTTPError as http_err:
-    #     print(f"HTTP error occurred: {http_err}")
-    # except Exception as err:
-    #     print(f"Other error occurred: {err}")
-    # else:
-    #     if not response.content:
-    #         LOG.info("No new orders on Mirapodo")
-    #         return
-    #     parsed_order = xmltodict.parse(response.content)
-    #     import_orders(parsed_order)
 
-    LOG.info("Not implemented yet")
-    return
+    # Open a transport
+    host, port = M13_GALAXUS_FTP_SERVER, 22
+    transport = paramiko.Transport((host, port))
+
+    # Auth
+    username, password = M13_GALAXUS_FTP_USER, M13_GALAXUS_FTP_PASSWORD
+    transport.connect(None, username, password)
+
+    # Go!
+    sftp = paramiko.SFTPClient.from_transport(transport)
+
+    DIRS = [
+        "/OrderData/",
+        "/OrderData/Live/",
+        "/OrderData/Live/dg2partner",
+        "/OrderData/Live/partner2dg",
+        "/OrderData/Test",
+        "/OrderData/Test/dg2partner",
+        "/OrderData/Test/partner2dg",
+    ]
+
+    resp_str = ""
+    for directory in DIRS:
+        files = sftp.listdir(directory)
+
+        resp_str += f"\nFILES in dir: {directory}\n"
+        resp_str += f"  {files}\n"
+        resp_str += "END\n---\n"
+
+    # Close
+    if sftp:
+        sftp.close()
+
+    if transport:
+        transport.close()
+
+    return resp_str
