@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block header %}
+<div id="header">
+    __galaxus_maximus_in_da_house__
+  <form action={% url 'galaxus_import_orders' %}>
+    <button type="submit" class="m13-btn" title="Bestellungen von Galaxus importieren">
+      BESTELLUNGEN IMPORTIEREN
+    </button>
+  </form>
+  <form action={% url 'galaxus_orderitems_csv' %}>
+    <button type="submit" class="m13-btn" title="Alle aktuellen Bestellungen als CSV laden">
+      DOWNLOAD BESTELLUNGEN CSV
+    </button>
+  </form>
+</div>
+<div id="header_right">
+  {% comment %} _processable: {{ number_of_processable }} {% endcomment %}
+</div>
+{% endblock %}
+
+{% block content %}
+  <div id="main">
+    <pre>
+        {{ resp_str }}
+    </pre>
+  </div>
+{% endblock %}

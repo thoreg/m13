@@ -27,6 +27,7 @@ django-filter = "*"
 colorama = "*"
 beautifulsoup4 = "*"
 ipdb = "*"
+paramiko = "*"
 
 [dev-packages]
 black = "*"
