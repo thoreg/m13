@@ -41,6 +41,7 @@ class Order(TimeStampedModel):
         PAID = "PAID", "Paid"
         PAYMENT_PROCESSING = "PAYMENT_PROCESSING", "Payment Processing"
         CANCELED = "CANCELED"
+        PARTIALLY_REFUNDED = "PARTIALLY_REFUNDED", "Partially Refunded"
 
     status = models.CharField(
         max_length=18,

@@ -22,6 +22,7 @@ STATUS_MAP = {
     "Open": Order.Status.OPEN,
     "Paid": Order.Status.PAID,
     "Payment Processing": Order.Status.PAYMENT_PROCESSING,
+    "Partially Refunded": Order.Status.PARTIALLY_REFUNDED,
 }
 
 
