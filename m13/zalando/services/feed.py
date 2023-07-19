@@ -153,11 +153,11 @@ def save_original_feed(csv_content_as_list):
                 continue
 
             if row[5] in SKU_BLACKLIST:
-                print(f"SKU {row[5]} black listed")
+                LOG.debug(f"SKU {row[5]} black listed")
                 continue
 
             if row[4] == "":
-                print(f"LINE No {idx} - no quantity - {row[7]}")
+                LOG.debug(f"LINE No {idx} - no quantity - {row[7]}")
                 meta["no_quantity"] += 1
                 row[4] = 0
 
