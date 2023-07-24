@@ -122,7 +122,7 @@ class Command(BaseCommand):
                 headers=headers,
                 timeout=60,
             )
-            LOG.info(
+            print(
                 f"fetch_order() {order.marketplace_order_number} response_status_code: {r.status_code}"
             )
             with open(f"responses/{order.marketplace_order_number}.json", "w") as f:
