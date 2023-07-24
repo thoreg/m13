@@ -87,47 +87,48 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         """Fetch a single order by its unique order number.."""
-        # check_again = []
-        # count = 0
-        # for resp_file_path in glob.glob('./responses/*.json'):
-        #     with open(resp_file_path, "r") as f:
-        #         content_str = f.read()
-        #         order = json.loads(content_str)
-        #         try:
-        #             # print(order['orderNumber'])
-        #             check_order(order)
+        check_again = []
+        count = 0
+        for resp_file_path in glob.glob('./responses/*.json'):
+            with open(resp_file_path, "r") as f:
+                content_str = f.read()
+                order = json.loads(content_str)
+                try:
+                    # print(order['orderNumber'])
+                    check_order(order)
 
-        #         except KeyError:
-        #             check_again.append(resp_file_path)
-        #             # print(f"\nfile {resp_file_path} seems to have some issues")
-        #             # pprint(order)
-        #             # import ipdb; ipdb.set_trace()
+                except KeyError:
+                    check_again.append(resp_file_path)
+                    # print(f"\nfile {resp_file_path} seems to have some issues")
+                    # pprint(order)
+                    # import ipdb; ipdb.set_trace()
 
-        #         count += 1
+                count += 1
 
-        # print(f"check again {len(check_again)}")
-        # print(f"order_count: {count}")
+        print(f"check again {len(check_again)}")
+        print(f"order_count: {count}")
 
-        headers = {
-            "Authorization": f"Bearer {token}",
-        }
+        # Download part
+        # headers = {
+        #     "Authorization": f"Bearer {token}",
+        # }
 
-        orders = Order.objects.prefetch_related("orderitem_set").all()
+        # orders = Order.objects.prefetch_related("orderitem_set").all()
 
-        order_count = orders.count()
-        count = 1
-        for order in orders:
-            r = requests.get(
-                f"{ORDERS_URL}/{order.marketplace_order_number}",
-                headers=headers,
-                timeout=60,
-            )
-            print(
-                f"fetch_order() {order.marketplace_order_number} response_status_code: {r.status_code}"
-            )
-            with open(f"responses/{order.marketplace_order_number}.json", "w") as f:
-                f.write(json.dumps(r.json()))
+        # order_count = orders.count()
+        # count = 1
+        # for order in orders:
+        #     r = requests.get(
+        #         f"{ORDERS_URL}/{order.marketplace_order_number}",
+        #         headers=headers,
+        #         timeout=60,
+        #     )
+        #     print(
+        #         f"fetch_order() {order.marketplace_order_number} response_status_code: {r.status_code}"
+        #     )
+        #     with open(f"responses/{order.marketplace_order_number}.json", "w") as f:
+        #         f.write(json.dumps(r.json()))
 
-            count += 1
-            print(f"progress {count}/{order_count}")
-            time.sleep(0.5)
+        #     count += 1
+        #     print(f"progress {count}/{order_count}")
+        #     time.sleep(0.5)
