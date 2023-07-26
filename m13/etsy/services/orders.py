@@ -19,6 +19,7 @@ M13_ETSY_SHOP_ID = os.getenv("M13_ETSY_SHOP_ID")
 
 STATUS_MAP = {
     "Completed": Order.Status.COMPLETED,
+    "Canceled": Order.Status.CANCELED,
     "Open": Order.Status.OPEN,
     "Paid": Order.Status.PAID,
     "Payment Processing": Order.Status.PAYMENT_PROCESSING,
