@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load dicts_extra %}
+
+{% block header %}
+ <div id="header" style="margin-top: 3em">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form }}
+      <button type="submit">SUBMIT</button>
+    </form>
+</div>
+<div id="header_right">
+  _g_factor: {{ g_factor }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="main">
+  <hr style="margin: 3em 0; border-top: 1px; color: #aaa;">
+  <h2>_last_5_feed_uploadz</h2>
+  <table style='width: 75%'>
+    <thead>
+      <th align= "center">datetime</th>
+      <th align= "center">original_csv</th>
+      <th align= "center">pimped_csv</th>
+      <th align= "center">pimped_xlsx</th>
+    </thead>
+    <tbody>
+    {% for f in feed_uploads %}
+      <tr>
+        <td align= "center">{{ f.created|date:"Y-m-d:H:i:s" }}</td>
+        <td align= "center">
+            <a href="/media/{{ f.path_to_original_csv|slice:'37:' }}">
+                Link
+            </a>
+        </td>
+        <td align= "center">
+            <a href="/media/{{ f.path_to_pimped_csv|slice:'37:' }}">
+                Link
+            </a>
+        </td>
+        <td align= "center">
+          <a href="/media/{{ f.path_to_pimped_xlsx|slice:'37:' }}">
+              Link
+          </a>
+      </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'galeria/footer.html' %}
+{% endblock %}
