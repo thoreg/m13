@@ -152,6 +152,9 @@ def pimp_prices(lines):
         _price = float(row[4].replace(",", "."))
         price = _get_price(_price, FACTOR)
 
+        if int(row[1]) < 0:
+            row[1] = 0
+
         LOG.debug(f"{sku} : {row[4]} -> {price}")
 
         row[4] = str(price).replace(".", ",")
