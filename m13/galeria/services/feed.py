@@ -1,10 +1,10 @@
 import csv
 import logging
 import os
+from dataclasses import dataclass
 
 import pandas as pd
 import requests
-from attr import dataclass
 from django.conf import settings
 
 from galeria.models import FeedUpload
