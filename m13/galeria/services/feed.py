@@ -107,7 +107,7 @@ def save_original_feed(csv_content_as_list):
     """Save the original stock+price feed for Galeria."""
     lines = []
     path_origin_feed = os.path.join(
-        settings.MEDIA_ROOT, "original", "galeria", f"{now_as_str()}.galeria.csv"
+        settings.MEDIA_ROOT, "original", "galeria", f"{now_as_str()}.orig.galeria.csv"
     )
 
     with open(path_origin_feed, "w", encoding="UTF8") as f:
@@ -154,7 +154,7 @@ def pimp_prices(lines):
 
         LOG.debug(f"{sku} : {row[4]} -> {price}")
 
-        row[4] = str(price)
+        row[4] = str(price).replace(".", ",")
 
     pimped_file_name = os.path.join(
         settings.MEDIA_ROOT, "pimped", "galeria", f"{now_as_str()}.galeria.csv"
