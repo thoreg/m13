@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "core",
     "mirapodo",
     "galaxus",
+    "galeria",
 ]
 
 MIDDLEWARE = [

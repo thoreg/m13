@@ -29,6 +29,7 @@ urlpatterns = [
     path("addi/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
     path("galaxus/", include("galaxus.urls")),
+    path("galeria/", include("galeria.urls")),
     path("mirapodo/", include("mirapodo.urls")),
     path("otto/", include("otto.urls")),
     path("z/", include("zalando.urls")),
