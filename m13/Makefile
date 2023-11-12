@@ -3,6 +3,9 @@ clean:
 	rm -rf htmlcov
 
 test:
+	pytest --import-mode=importlib --ds=m13.config.develop .
+
+testv:
 	pytest -vv -s --import-mode=importlib --ds=m13.config.develop .
 
 test_over:
