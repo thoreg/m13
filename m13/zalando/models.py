@@ -21,6 +21,7 @@ class FeedUpload(TimeStampedModel):
     path_to_original_csv = models.CharField(max_length=128)
     path_to_pimped_csv = models.CharField(max_length=128)
     z_factor = models.DecimalField(max_digits=3, decimal_places=2)
+    validation_result = models.TextField()
 
 
 class PriceTool(TimeStampedModel):

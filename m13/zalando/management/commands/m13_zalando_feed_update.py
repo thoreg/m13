@@ -57,7 +57,7 @@ class Command(BaseCommand):
 
             dto = save_original_feed(csv_content_as_list)
             pimped_file_name = pimp_prices(dto.lines)
-            status_code_validation = validate_feed(pimped_file_name)
+            validation_result = validate_feed(pimped_file_name)
 
             if dry_run:
                 LOG.info("Return early because of --dry-run")
@@ -65,7 +65,12 @@ class Command(BaseCommand):
             else:
                 LOG.info("Uploading transformed feed now")
 
-            upload_pimped_feed(pimped_file_name, status_code_validation, dto)
+            upload_pimped_feed(
+                pimped_file_name,
+                200,
+                dto,
+                validation_result,
+            )
 
         except Exception as exc:
             LOG.exception(exc)

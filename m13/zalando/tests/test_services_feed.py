@@ -48,9 +48,9 @@ def test_pimp_prices():
     error = Error.objects.get()
     assert error.cleared is False
     assert error.comment is None
-    assert error.msg == (
+    assert error.msg.startswith(
         "No price factor found: pimp_prices in "
-        "/Users/thoreg/src/m13/m13/zalando/services/feed.py:178"
+        "/Users/thoreg/src/m13/m13/zalando/services/feed.py"
     )
 
     pt = PriceTool.objects.create(z_factor=1.3, active=True)

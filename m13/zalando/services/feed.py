@@ -1,7 +1,9 @@
 import csv
+import json
 import logging
 import os
 import sys
+from dataclasses import dataclass
 from typing import NamedTuple
 
 import requests
@@ -83,6 +85,21 @@ HEADERS = {
 }
 
 
+@dataclass
+class Row:
+    store: str
+    ean: str
+    price: str
+    retail_price: str
+    quantity: int
+    article_number: str
+    article_color: str
+    product_name: str
+    store_article_location: str
+    product_number: str
+    article_size: str
+
+
 def _get_price(price, factor):
     """Return beautiful price after factor was applied."""
     price = round(price * factor, 2) + SHIPPING_FEE
@@ -145,7 +162,6 @@ def save_original_feed(csv_content_as_list):
             #   'store', 'ean', 'price', 'retail_price', 'quantity',
             #   'article_number', 'article_color', 'product_name',
             #   'store_article_location', 'product_number', 'article_size']
-            # import ipdb; ipdb.set_trace()
             #
             if row[1] == "":
                 # print(f'SKIP LINE No {idx} - no ean - {row[5]} - {row[7]}')
@@ -195,44 +211,99 @@ def pimp_prices(lines):
     if not lines:
         raise ZalandoException("No feed found")
 
-    for row in lines[1:]:
-        # print(row)
-        # 2 price
-        # 3 retail_price
-        # 5 sku
-        # 7 name
-        sku = row[5]
+    pimped_lines = []
+    # Original order from Z docs:
+    # https://docs.partner-solutions.zalan.do/en/fci/getting-started.html
+    pimped_lines.append(
+        (
+            "store",
+            "ean",
+            "price",
+            "retail_price",
+            "quantity",
+            "product_number",
+            "product_name",
+            "article_number",
+            "article_color",
+            "article_size",
+            "store_article_location",
+        )
+    )
+
+    for current_row in lines[1:]:
+        # M13
+        # "store";"ean";"price";"retail_price";"quantity";"article_number";
+        # "article_color";"product_name";"store_article_location";
+        # "product_number";"article_size"
+        row = Row(
+            store=current_row[0],
+            ean=current_row[1],
+            price=current_row[2],
+            retail_price=current_row[3],
+            quantity=current_row[4],
+            article_number=current_row[5],
+            article_color=current_row[6],
+            product_name=current_row[7],
+            store_article_location=current_row[8],
+            product_number=current_row[9],
+            article_size=current_row[10],
+        )
 
         try:
             # Special overwrite on certain products - just take hard the vk_zalando
             # without further any further modification
-            core_price = Price.objects.get(sku=row[5], pimped_zalando=True)
+            core_price = Price.objects.get(sku=row.article_number, pimped_zalando=True)
             price = core_price.vk_zalando
-            LOG.debug(f"{sku} - price via pimped_zalando=True : {price}")
+            LOG.debug(f"{row.article_number} - price via pimped_zalando=True : {price}")
 
         except Price.DoesNotExist:
-            _price = float(row[2].replace(",", "."))
+            _price = float(row.price.replace(",", "."))
             price = _get_price(_price, FACTOR)
-            LOG.debug(f"{sku} - price via _get_price() : {price}")
+            LOG.debug(f"{row.article_number} - price via _get_price() : {price}")
 
-        ean = row[1]
-        retail_price = price
-        product_name = row[7]
-        LOG.debug(f"{sku} - {product_name}: {row[2]} -> {price}")
+        LOG.debug(f"{row.article_number} - {row.product_name}: {row.price} -> {price}")
 
         # TODO: use Price here
-        Product.objects.get_or_create(ean=ean, defaults={"title": product_name})
+        Product.objects.get_or_create(ean=row.ean, defaults={"title": row.product_name})
 
-        row[2] = str(price)
-        row[3] = str(retail_price)
+        row.price = str(price)
+        row.retail_price = str(price)
+        if int(row.quantity) < 0:
+            row.quantity = 0
+
+        pimped_lines.append(row)
 
     pimped_file_name = os.path.join(
         settings.MEDIA_ROOT, "pimped", f"{now_as_str()}.csv"
     )
+
+    # with open(pimped_file_name, "w", encoding="UTF8") as f:
+    #     writer = csv.writer(f, delimiter=";", quoting=csv.QUOTE_NONNUMERIC)
+    #     for row in lines:
+    #         writer.writerow(row)
+
     with open(pimped_file_name, "w", encoding="UTF8") as f:
         writer = csv.writer(f, delimiter=";", quoting=csv.QUOTE_NONNUMERIC)
-        for row in lines:
-            writer.writerow(row)
+        count = 0
+        for row in pimped_lines:
+            if count == 0:
+                writer.writerow(row)
+                count += 1
+            else:
+                resolved_row = (
+                    row.store,
+                    row.ean,
+                    row.price,
+                    row.retail_price,
+                    row.quantity,
+                    row.product_number,
+                    row.product_name,
+                    row.article_number,
+                    row.article_color,
+                    row.article_size,
+                    row.store_article_location,
+                )
+                writer.writerow(resolved_row)
 
     LOG.info(f"{pimped_file_name} written")
     return pimped_file_name
@@ -244,16 +315,36 @@ def validate_feed(file_name):
         resp = requests.put(ZALANDO_VALIDATION_URL, headers=HEADERS, data=f.read())
 
     LOG.info(f"Response code (validation): {resp.status_code}")
-    # LOG.info(resp.json())
+
+    json_response = json.dumps(resp.json())
+    LOG.info(json_response)
+
     if resp.status_code != requests.codes.ok:
         mlog.error(LOG, "Got other than 200")
         mlog.error(LOG, resp.json())
         raise ZalandoException("Feed is not valid")
 
-    return resp.status_code
+    # Summarize warnings by line number for lazy chef bosses
+    lines = []
+    with open(file_name, "r") as f:
+        lines = f.readlines()
+
+    result = ""
+    resp = json.loads(json_response)
+    for warning in resp["warnings"]:
+        result += warning["message"]
+        result += f" ({warning['details'][0]})\n"
+        for ln in warning["line_numbers"]:
+            result += lines[ln["line_number"]]
+        result += "\n"
+
+    result = result.replace("\n", "<br>")
+    return result
 
 
-def upload_pimped_feed(pimped_file_name, status_code_validation, dto):
+def upload_pimped_feed(
+    pimped_file_name, status_code_validation, dto, validation_result
+):
     """..."""
     global FACTOR
 
@@ -264,7 +355,6 @@ def upload_pimped_feed(pimped_file_name, status_code_validation, dto):
 
     # Response is empty - b''
     LOG.info(f"Response code (feed): {resp.status_code}")
-    status_code_feed_upload = resp.status_code
     if resp.status_code != requests.codes.ok:
         mlog.error(LOG, "Got other than 200")
         mlog.error(LOG, resp.json())
@@ -272,10 +362,11 @@ def upload_pimped_feed(pimped_file_name, status_code_validation, dto):
 
     fupload = FeedUpload(
         status_code_validation=status_code_validation,
-        status_code_feed_upload=status_code_feed_upload,
+        status_code_feed_upload=resp.status_code,
         number_of_valid_items=dto.number_of_valid_items,
         path_to_original_csv=dto.path_origin_feed,
         path_to_pimped_csv=pimped_file_name,
         z_factor=FACTOR,
+        validation_result=validation_result,
     )
     fupload.save()

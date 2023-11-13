@@ -27,6 +27,7 @@
       <th>z_factor</th>
       <th>original_csv</th>
       <th>pimped_csv</th>
+      <th align="left" style="padding-left: 2em;">validation_result</th>
     </thead>
     <tbody>
     {% for f in feed_uploads %}
@@ -45,6 +46,9 @@
             <a href="/media/{{ f.path_to_pimped_csv|slice:'37:' }}">
                 Link
             </a>
+        </td>
+        <td nowrap>
+          {{ f.validation_result|safe }}
         </td>
       </tr>
     {% endfor %}
