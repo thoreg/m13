@@ -13,6 +13,8 @@ from zalando.models import (
 
 LOG = logging.getLogger(__name__)
 
+LACK_OF_DATA_MSG = "{'lack_of_data': 'No data exists for the selected time range.'}"
+
 
 class FieldsV0(StrEnum):
     """Field mapping for the original version."""
@@ -82,6 +84,10 @@ def import_daily_shipment_report(file: TransactionFileUpload) -> None:
         elif sorted([k for k in line])[0] == "article_name":
             keys = FieldsV1
         else:
+            if line == LACK_OF_DATA_MSG:
+                LOG.info(LACK_OF_DATA_MSG)
+                return
+
             mlog.error(LOG, line)
             LOG.exception("unknown line format in daily shipment report")
             return
