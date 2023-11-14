@@ -30,6 +30,7 @@ pyyaml = "*"
 requests = "*"
 werkzeug = "==2.0.3"
 xmltodict = "*"
+pip = "*"
 
 [dev-packages]
 black = "*"
