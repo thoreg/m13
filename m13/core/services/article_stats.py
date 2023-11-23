@@ -11,6 +11,8 @@ from m13.lib.psql import dictfetchall
 
 LOG = logging.getLogger(__name__)
 
+OTTO_PROVISION_IN_PERCENT = 15
+
 
 class Marketplace(StrEnum):
     OTTO = "OTTO"
@@ -155,7 +157,7 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
         for entry in dictfetchall(cursor):
             category = entry["category_name"]
             price = _r(Decimal(entry["reported_price"] / 100))
-            provision_in_percent = get_z_provision_in_percent(price)
+            provision_in_percent = OTTO_PROVISION_IN_PERCENT
 
             astats = ArticleStats(
                 sku=entry["article_sku"],
