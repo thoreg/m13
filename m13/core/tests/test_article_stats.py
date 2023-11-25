@@ -2,12 +2,19 @@ import datetime
 import hashlib
 import json
 from decimal import Decimal
+from pprint import pprint
 
 import pytest
 from django.urls import reverse
 
 from core.models import Category, MarketplaceConfig, Price
 from core.services import article_stats
+from core.services.article_stats import (
+    OTTO_PROVISION_IN_PERCENT,
+    ArticleStats,
+    Marketplace,
+)
+from otto.models import OrderItem as otto_oi
 from zalando.models import RawDailyShipmentReport, TransactionFileUpload
 
 
@@ -62,10 +69,10 @@ def test_article_stats_zalando_basic():
                     "canceled": 0,
                     "category": "Woman Bomber Jacken",
                     "costs_production": Decimal("12.13"),
-                    "eight_percent_provision": Decimal("1.43"),
+                    "provision": Decimal("1.43"),
                     "generic_costs": Decimal("0.84"),
-                    "nineteen_percent_vat": Decimal("4.46"),
-                    "profit_after_taxes": Decimal("5.54"),
+                    "nineteen_percent_vat": Decimal("5.31"),
+                    "profit_after_taxes": Decimal("4.69"),
                     "return_costs": Decimal("3.55"),
                     "returned": 1,
                     "sales": Decimal("0.00"),
@@ -103,10 +110,10 @@ def test_article_stats_zalando_basic():
                     "canceled": 0,
                     "category": "Woman Bomber Jacken",
                     "costs_production": Decimal("12.13"),
-                    "eight_percent_provision": Decimal("1.43"),
+                    "provision": Decimal("1.43"),
                     "generic_costs": Decimal("0.84"),
-                    "nineteen_percent_vat": Decimal("4.46"),
-                    "profit_after_taxes": Decimal("5.54"),
+                    "nineteen_percent_vat": Decimal("5.31"),
+                    "profit_after_taxes": Decimal("4.69"),
                     "return_costs": Decimal("3.55"),
                     "returned": 2,
                     "sales": Decimal("55.90"),
@@ -144,18 +151,18 @@ def test_article_stats_zalando_basic():
                     "canceled": 0,
                     "category": "Woman Bomber Jacken",
                     "costs_production": Decimal("12.13"),
-                    "eight_percent_provision": Decimal("1.43"),
+                    "provision": Decimal("1.43"),
                     "generic_costs": Decimal("0.84"),
-                    "nineteen_percent_vat": Decimal("4.46"),
-                    "profit_after_taxes": Decimal("5.54"),
+                    "nineteen_percent_vat": Decimal("5.31"),
+                    "profit_after_taxes": Decimal("4.69"),
                     "return_costs": Decimal("3.55"),
                     "returned": 2,
                     "sales": Decimal("139.75"),
                     "shipped": 5,
                     "shipping_costs": Decimal("3.55"),
-                    "total_diff": Decimal("0.74"),
+                    "total_diff": Decimal("-1.81"),
                     "total_return_costs": Decimal("15.88"),
-                    "total_revenue": Decimal("16.62"),
+                    "total_revenue": Decimal("14.07"),
                     "vk_zalando": Decimal("27.95"),
                 },
                 {
@@ -163,18 +170,18 @@ def test_article_stats_zalando_basic():
                     "canceled": 0,
                     "category": "Woman Bomber Jacken",
                     "costs_production": Decimal("12.13"),
-                    "eight_percent_provision": Decimal("1.22"),
+                    "provision": Decimal("1.22"),
                     "generic_costs": Decimal("0.72"),
-                    "nineteen_percent_vat": Decimal("3.82"),
-                    "profit_after_taxes": Decimal("2.51"),
+                    "nineteen_percent_vat": Decimal("4.55"),
+                    "profit_after_taxes": Decimal("1.78"),
                     "return_costs": Decimal("3.55"),
                     "returned": 0,
                     "sales": Decimal("47.90"),
                     "shipped": 2,
                     "shipping_costs": Decimal("3.55"),
-                    "total_diff": Decimal("5.02"),
+                    "total_diff": Decimal("3.56"),
                     "total_return_costs": Decimal("0.00"),
-                    "total_revenue": Decimal("5.02"),
+                    "total_revenue": Decimal("3.56"),
                     "vk_zalando": Decimal("23.95"),
                 },
             ],
@@ -184,9 +191,9 @@ def test_article_stats_zalando_basic():
                 "returned": 2,
                 "sales": Decimal("187.65"),
                 "shipped": 7,
-                "total_diff": Decimal("5.76"),
+                "total_diff": Decimal("1.75"),
                 "total_return_costs": Decimal("15.88"),
-                "total_revenue": Decimal("21.64"),
+                "total_revenue": Decimal("17.63"),
             },
         }
     }
@@ -296,3 +303,92 @@ def test_different_configs_reflected_in_stats(
     assert (
         stats["example_category"]["content"][-1]["return_costs"] == config2.return_costs
     )
+
+
+@pytest.mark.django_db
+def test_article_stats_otto_basic():
+    """Basic test with small data set for ocalculator."""
+    _cleanup()
+
+    # Note id needs to be '3' for otto stats :(
+    MarketplaceConfig.objects.create(
+        id=3,
+        name=article_stats.Marketplace.OTTO,
+        shipping_costs=Decimal("3.55"),
+        return_costs=Decimal("3.55"),
+        provision_in_percent=None,
+        vat_in_percent=19,
+        generic_costs_in_percent=3,
+    )
+
+    fixtures = [
+        ("core/tests/fixtures/core_category.json", Category),
+        ("core/tests/fixtures/core_price.json", Price),
+    ]
+    for fixture_file, model in fixtures:
+        with open(fixture_file) as f:
+            file_contents = f.read()
+            data = json.loads(file_contents)
+            for fields in data:
+                model.objects.create(**fields)
+
+    start_date = datetime.date(2020, 2, 14)
+    end_date = datetime.date(2023, 3, 13)
+    stats = article_stats.get_article_stats(
+        article_stats.Marketplace.OTTO, start_date, end_date
+    )
+
+    def __debug():
+        print("orderitems_start")
+        for oi in otto_oi.objects.all():
+            pprint(oi)
+        print("orderitems_end")
+
+        print("stats_start")
+        pprint(stats)
+        print("stats_end")
+
+    __debug()
+
+    with open("core/tests/expected/otto_stats.json", encoding="utf-8") as f:
+        file_contents = f.read()
+        excpected_otto_stats = json.loads(file_contents)
+
+    # Take all the Decimal() values and convert them into string to allow
+    # comparison with the dumped json
+    def __decimal2str(d):
+        for k, v in d.items():
+            if isinstance(v, dict):
+                __decimal2str(v)
+            elif isinstance(v, list):
+                for element in v:
+                    __decimal2str(element)
+            else:
+                if isinstance(v, Decimal):
+                    d[k] = str(v)
+
+    __decimal2str(stats)
+
+    assert stats == excpected_otto_stats
+
+
+def test_article_stats_basic():
+    """Dataclass works as expected with all its properties."""
+    astats = ArticleStats(
+        sku="example_sku",
+        category="example_category",
+        marketplace=Marketplace.OTTO,
+        price=Decimal("100.00"),
+        provision_in_percent=OTTO_PROVISION_IN_PERCENT,
+        vat_in_percent=19,
+        generic_costs_in_percent=3,
+        production_costs=Decimal("33"),
+        shipping_costs=Decimal("3"),
+        return_costs=Decimal("4"),
+        shipped=1,
+        returned=0,
+    )
+    assert astats.provision_amount == Decimal("15.00")
+    assert astats.vat_amount == Decimal("19.00")
+    assert astats.generic_costs_amount == Decimal("3.00")
+    assert astats.profit_after_taxes == Decimal("27.00")

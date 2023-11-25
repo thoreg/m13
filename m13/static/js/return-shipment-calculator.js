@@ -154,10 +154,10 @@ $(function() {
                   <th class="column-xl">Artikel</th>
                   <th class="column-xl">Kategorie</th>
                   <th class="column-xl">Herstellungskosten</th>
-                  <th class="column-xl">VK (Zalando)</th>
+                  <th class="column-xl">VK</th>
                   <th class="column-l">Retourenkosten</th>
                   <th class="column-l">Versandkosten</th>
-                  <th class="column-l">8% Provision</th>
+                  <th class="column-l">Provision</th>
                   <th class="column-l">19% MwSt.</th>
                   <th class="column-l">Gemeinkosten</th>
                   <th class="column-xl">Gewinn nach Steuern</th>
@@ -187,7 +187,7 @@ $(function() {
               <td class="column-xl">` + article.vk_zalando + `</td>
               <td class="column-l">` + article.return_costs + `</td>
               <td class="column-l">` + article.shipping_costs + `</td>
-              <td class="column-l">` + article.eight_percent_provision + `</td>
+              <td class="column-l">` + article.provision + `</td>
               <td class="column-l">` + article.nineteen_percent_vat + `</td>
               <td class="column-l">` + article.generic_costs + `</td>
               <td class="column-xl">` + article.profit_after_taxes + `</td>

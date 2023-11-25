@@ -11,7 +11,7 @@ from m13.lib.psql import dictfetchall
 
 LOG = logging.getLogger(__name__)
 
-OTTO_PROVISION_IN_PERCENT = 15
+OTTO_PROVISION_IN_PERCENT = Decimal("15")
 
 
 class Marketplace(StrEnum):
@@ -54,7 +54,7 @@ class ArticleStats:
     @property
     def vat_amount(self):
         """Return the amount of the vat (aka 'Märchensteuer')."""
-        return _r(self.price - self.price / Decimal(f"1.{self.vat_in_percent}"))
+        return _r(self.price * self.vat_in_percent / 100)
 
     @property
     def generic_costs_amount(self):
@@ -157,14 +157,13 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
         for entry in dictfetchall(cursor):
             category = entry["category_name"]
             price = _r(Decimal(entry["reported_price"] / 100))
-            provision_in_percent = OTTO_PROVISION_IN_PERCENT
 
             astats = ArticleStats(
                 sku=entry["article_sku"],
                 category=category,
                 marketplace=Marketplace.OTTO,
                 price=price,
-                provision_in_percent=provision_in_percent,
+                provision_in_percent=OTTO_PROVISION_IN_PERCENT,
                 vat_in_percent=entry["vat_in_percent"],
                 generic_costs_in_percent=entry["generic_costs_in_percent"],
                 production_costs=entry["costs_production"],
@@ -193,7 +192,7 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
                     "article_number": astats.sku,
                     "category": astats.category,
                     "costs_production": astats.production_costs,
-                    "eight_percent_provision": astats.provision_amount,
+                    "provision": astats.provision_amount,
                     "generic_costs": astats.generic_costs_amount,
                     "nineteen_percent_vat": astats.vat_amount,
                     "profit_after_taxes": astats.profit_after_taxes,
@@ -329,7 +328,7 @@ def get_article_stats_zalando(start_date: date, end_date: date) -> dict:
                     "canceled": astats.canceled,
                     "category": astats.category,
                     "costs_production": astats.production_costs,
-                    "eight_percent_provision": astats.provision_amount,
+                    "provision": astats.provision_amount,
                     "generic_costs": astats.generic_costs_amount,
                     "nineteen_percent_vat": astats.vat_amount,
                     "profit_after_taxes": astats.profit_after_taxes,

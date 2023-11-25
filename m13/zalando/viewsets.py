@@ -1,21 +1,10 @@
 from datetime import date, timedelta
 
 import django_filters.rest_framework
-from rest_framework import generics
 from rest_framework import viewsets as drf_viewsets
 
-from .models import RawDailyShipmentReport, ZProduct
-from .serializers import RawDailyShipmentReportSerializer, ZProductSerializer
-
-
-class ZProductList(generics.ListCreateAPIView):
-    queryset = ZProduct.objects.all().order_by("-shipped")
-    serializer_class = ZProductSerializer
-
-
-class ZProductDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ZProduct.objects.all()
-    serializer_class = ZProductSerializer
+from .models import RawDailyShipmentReport
+from .serializers import RawDailyShipmentReportSerializer
 
 
 class RawDailyShipmentReportList(drf_viewsets.ModelViewSet):

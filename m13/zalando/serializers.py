@@ -1,38 +1,6 @@
 from rest_framework import serializers
 
-from zalando.models import RawDailyShipmentReport, ZProduct
-
-
-class ZProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ZProduct
-        fields = (
-            "article",
-            "canceled",
-            "category_name",
-            "costs_production",
-            "eight_percent_provision",
-            "generic_costs",
-            "nineteen_percent_vat",
-            "profit_after_taxes",
-            "return_costs",
-            "returned",
-            "shipped",
-            "shipping_costs",
-            "total_revenue",
-            "total_return_costs",
-            "total_diff",
-            "vk_zalando",
-        )
-        read_only_fields = (
-            "eight_percent_provision",
-            "generic_costs",
-            "nineteen_percent_vat",
-            "profit_after_taxes",
-            "total_revenue",
-            "total_return_costs",
-            "total_diff",
-        )
+from zalando.models import RawDailyShipmentReport
 
 
 class RawDailyShipmentReportSerializer(serializers.ModelSerializer):

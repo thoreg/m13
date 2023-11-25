@@ -72,6 +72,13 @@ class OrderItem(TimeStampedModel):
     carrier_service_code = models.CharField(max_length=128, null=True, blank=True)
     tracking_number = models.CharField(max_length=128, null=True, blank=True)
 
+    def __repr__(self) -> str:
+        return (
+            f"({self.order}:{self.order.order_date}) sku: {self.sku} "
+            f"price: {self.price_in_cent} "
+            f"fulfillment_status: {self.fulfillment_status}"
+        )
+
 
 class Shipment(TimeStampedModel):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
