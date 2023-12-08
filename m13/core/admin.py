@@ -1,4 +1,5 @@
 from django.contrib import admin
+from massadmin.massadmin import MassEditMixin
 
 from .models import Category, Error, Job, MarketplaceConfig, Price, Product
 
@@ -63,7 +64,7 @@ class JobAdmin(admin.ModelAdmin):
         return runtime
 
 
-class PriceAdmin(admin.ModelAdmin):
+class PriceAdmin(MassEditMixin, admin.ModelAdmin):
     list_display = (
         "sku",
         "category",
@@ -71,6 +72,9 @@ class PriceAdmin(admin.ModelAdmin):
         "pimped_zalando",
         "vk_otto",
     )
+    massadmin_exclude = [
+        "sku",
+    ]
 
     search_fields = [
         "sku",
@@ -79,6 +83,11 @@ class PriceAdmin(admin.ModelAdmin):
     @admin.display()
     def category(self, obj):
         return obj.category.name
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "category":
+            kwargs["queryset"] = Category.objects.order_by("name")
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class ErrorAdmin(admin.ModelAdmin):
