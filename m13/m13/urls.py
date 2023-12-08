@@ -21,6 +21,7 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("api/v2/core/return-shipments-stats/", core_views.api_return_shipments_stats),
     path("api/", include(router.urls)),
+    path("addi/", include("massadmin.urls")),
     path("addi/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
     path("galaxus/", include("galaxus.urls")),

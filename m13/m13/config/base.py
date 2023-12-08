@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "mathfilters",
     "corsheaders",
     "django_filters",
+    "massadmin",
     "otto",
     "zalando",
     "etsy",
@@ -37,6 +38,10 @@ INSTALLED_APPS = [
     "galaxus",
     "galeria",
 ]
+
+MASSEDIT = {
+    "ADD_ACTION_GLOBALLY": False,
+}
 
 MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
