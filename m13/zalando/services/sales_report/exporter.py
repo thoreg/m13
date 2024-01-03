@@ -65,7 +65,7 @@ def export_sales_report(from_order_date, to_order_date):
     path = f"{from_date}_{to_date}_export_zalando_sales_report.csv"
     with open(path, "w", encoding="UTF8") as fd:
         csv_writer = csv.DictWriter(
-            fd, EXPORT_FIELDS, delimiter=";", escapechar="", quoting=csv.QUOTE_ALL
+            fd, EXPORT_FIELDS, delimiter=";", escapechar="\\", quoting=csv.QUOTE_ALL
         )
         csv_writer.writeheader()
         csv_writer.writerows(result_list)
