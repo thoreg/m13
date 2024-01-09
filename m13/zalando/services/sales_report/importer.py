@@ -5,15 +5,11 @@ they are grabbed for further processing.
 
 """
 import csv
-import os
-import tempfile
-import zipfile
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from decimal import Decimal
 
 from m13.lib.csv_reader import read_csv
-
 
 EXPECTED_TYPES = [
     "Cancelation",
