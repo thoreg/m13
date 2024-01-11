@@ -357,8 +357,12 @@ def get_article_stats_zalando(start_date: date, end_date: date) -> dict:
 def get_article_stats(
     marketplace: Marketplace, start_date: date, end_date: date
 ) -> dict:
-    """Return list of marketplace dependent statistics about shipments/returns."""
-    LOG.info(f"marketplace: {marketplace} start_date: {start_date}")
+    """Return list of marketplace dependent statistics shipments/returns."""
+    LOG.info(
+        f"marketplace: {marketplace} ",
+        f"start_date: {start_date} ",
+        f"end_date: {start_date}"
+    )
 
     match (marketplace.upper()):
         case Marketplace.OTTO:

@@ -32,6 +32,7 @@ werkzeug = "==2.0.3"
 xmltodict = "*"
 pip = "*"
 django-mass-edit = "*"
+flake8 = "*"
 
 [dev-packages]
 black = "*"
