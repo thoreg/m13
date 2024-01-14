@@ -361,7 +361,7 @@ def get_article_stats(
     LOG.info(
         f"marketplace: {marketplace} ",
         f"start_date: {start_date} ",
-        f"end_date: {start_date}"
+        f"end_date: {start_date}",
     )
 
     match (marketplace.upper()):
