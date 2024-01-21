@@ -71,6 +71,7 @@ class PriceAdmin(MassEditMixin, admin.ModelAdmin):
         "vk_zalando",
         "pimped_zalando",
         "vk_otto",
+        "ean",
     )
     massadmin_exclude = [
         "sku",

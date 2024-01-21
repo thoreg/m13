@@ -8,7 +8,6 @@ import calendar
 from django.core.management.base import BaseCommand
 
 from m13.lib import finance_reports
-from zalando.models import SalesReport
 from zalando.services import reports
 
 

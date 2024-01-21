@@ -180,7 +180,7 @@ def import_monthly_sales_report(file: TransactionFileUpload) -> None:
 
         entry, created = SalesReport.objects.get_or_create(
             currency=line.get("Currency", "EUR"),
-            ean=line["EAN"],
+            ean=line["EAN"].zfill(13),
             order_date=order_date,
             order_number=order_number,
             pai_fee=abs(float(line["MKT/PAI"])),

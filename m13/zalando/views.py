@@ -2,7 +2,7 @@ import csv
 import datetime as dt
 import json
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from secrets import compare_digest
 
 from django.conf import settings
@@ -35,7 +35,6 @@ from .models import (
     PriceTool,
     Product,
     StatsOrderItems,
-    TransactionFileUpload,
 )
 
 LOG = logging.getLogger(__name__)
@@ -214,8 +213,7 @@ def upload_files(request):
     else:
         form = UploadFileForm()
 
-    file_uploads = SalesReportFileUpload.objects.all().order_by(
-        "-created")[:50]
+    file_uploads = SalesReportFileUpload.objects.all().order_by("-created")[:50]
     LOG.info(f"we have {len(file_uploads)} objects")
 
     return render(

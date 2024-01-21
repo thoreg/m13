@@ -5,12 +5,6 @@ from django_extensions.db.models import TimeStampedModel
 
 from core.models import Category
 
-from .constants import (
-    ACCOUNT_ONLINE_FEE,
-    NINETEEN_PERCENT_GERMANY_ZALANDO,
-    NINETEEN_PERCENT_VAT,
-)
-
 
 class FeedUpload(TimeStampedModel):
     """Track when we did which feed upload."""
@@ -311,7 +305,7 @@ class SalesReport(TimeStampedModel):
     currency = models.CharField(
         max_length=3, choices=Currency.choices, default=Currency.EUR
     )
-    ean = models.CharField(max_length=16)
+    ean = models.CharField(max_length=13)
     order_date = models.DateTimeField()
     order_number = models.BigIntegerField()
     pai_fee = models.DecimalField(max_digits=8, decimal_places=2)
@@ -323,6 +317,10 @@ class SalesReport(TimeStampedModel):
 
     import_reference = models.ForeignKey(
         SalesReportFileUpload, on_delete=models.PROTECT, null=True
+    )
+
+    zalando_marketplace_config = models.ForeignKey(
+        "core.MarketplaceConfig", on_delete=models.PROTECT, blank=True, null=True
     )
 
     class Meta:
