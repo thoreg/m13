@@ -1,26 +1,43 @@
-"""Export sales report for zalando."""
+"""Export sales report for zalando in DATEV compatible format.
+
+python manage.py m13_zalando_export_sales_report 2024 12 2024-12-zalando-single-transactions.csv
+
+"""
+import calendar
+
 from django.core.management.base import BaseCommand
 
-from m13.lib.common import monitor
-from zalando.services import sales_report
+from m13.lib import finance_reports
+from zalando.services import reports
 
 
 class Command(BaseCommand):
-    help = "Export sales report for the requested month."
+    help = __doc__
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "from",
+            "year",
             type=str,
-            help="e.g. '2022-05-01 00:00:00'",
+            help="e.g. '2024'",
         )
         parser.add_argument(
-            "to",
+            "month",
             type=str,
-            help="e.g. '2022-05-31 23:59:59'",
+            help="e.g. '01'",
+        )
+        parser.add_argument(
+            "output",
+            type=str,
+            help="e.g. '2024-01-zalando-single-transactions.csv'",
         )
 
-    @monitor
     def handle(self, *args, **kwargs):
         """..."""
-        sales_report.exporter.export_sales_report(kwargs["from"], kwargs["to"])
+        year = kwargs["year"]
+        month = kwargs["month"]
+        last_day_of_month = calendar.monthrange(int(year), int(month))[1]
+        range_from = f"{year}-{month}-01 00:00:00"
+        range_to = f"{year}-{month}-{last_day_of_month} 23:59:59"
+
+        result_rows = reports.export(range_from, range_to)
+        finance_reports.dump_result_to_file(result_rows, kwargs["output"])

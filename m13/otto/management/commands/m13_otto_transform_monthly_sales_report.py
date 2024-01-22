@@ -7,6 +7,7 @@ import logging
 
 from django.core.management.base import BaseCommand
 
+from m13.lib import finance_reports
 from otto.services import reports as otto_reports
 
 
@@ -40,4 +41,4 @@ class Command(BaseCommand):
         result_rows = otto_reports.transform_monthly_sales_report(
             kwargs["year"], kwargs["month"]
         )
-        otto_reports.dump_result_to_file(result_rows, kwargs["output"])
+        finance_reports.dump_result_to_file(result_rows, kwargs["output"])

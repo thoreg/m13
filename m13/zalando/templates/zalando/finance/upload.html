@@ -2,16 +2,35 @@
 {% load dicts_extra %}
 
 {% block header %}
-<h2>Finance > Upload Single Transaction CSV Files</h2>
+<h2>Finance > Upload CSV Files</h2>
+Supported formats:
+<ul>
+  <li>Monthly Sales Report (e.g. Sales_Report_NOV_2023_Manufaktur13-ChopShopSt_DE.CSV)</li>
+</ul>
 <div id="msg">
   {{ msg }}
 </div>
 
+{% if messages %}
+  {% for message in messages %}
+    <div class={{ message.tags }}>{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
 <form method = "post", enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit"> Submit</button>
+  <button type="submit" class="m13-btn" title="Submit this form" style="float: left;">
+    SUBMIT
+  </button>
 </form>
+
+<form action={% url "zalando_finance_upload_files" %}>
+  <button type="submit" class="m13-btn" title="Clear this form" style="float: left;">
+    CLEAR
+  </button>
+</form>
+
 {% endblock %}
 
 {% block content %}

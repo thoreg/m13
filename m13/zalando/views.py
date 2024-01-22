@@ -2,10 +2,11 @@ import csv
 import datetime as dt
 import json
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from secrets import compare_digest
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.transaction import atomic, non_atomic_requests
 from django.http import (
@@ -14,7 +15,7 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse,
 )
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -22,8 +23,9 @@ from django.views.decorators.http import require_POST
 
 from m13.lib import log as mlog
 from m13.lib.file_upload import handle_uploaded_file
-from zalando.services.daily_shipment_reports import import_daily_shipment_report
+from zalando.models import SalesReportFileUpload
 from zalando.services.prices import update_z_factor
+from zalando.services.reports import import_monthly_sales_report
 
 from .forms import PriceToolForm, UploadFileForm
 from .models import (
@@ -33,7 +35,6 @@ from .models import (
     PriceTool,
     Product,
     StatsOrderItems,
-    TransactionFileUpload,
 )
 
 LOG = logging.getLogger(__name__)
@@ -175,30 +176,44 @@ def upload_files(request):
         files = request.FILES.getlist("original_csv")
         if form.is_valid():
             for f in files:
+                # Check if the csv file is already known - we need to
+                # prevent duplicate uploads which would lead to duplicate
+                # inserts (all entries of the file are inserted)
+                try:
+                    SalesReportFileUpload.objects.get(file_name=f.name)
+                    msg = f"{f.name} is already imported - skipping"
+                    LOG.info(msg)
+                    messages.error(request, msg)
+                    return redirect(reverse("zalando_finance_upload_files"))
+
+                except SalesReportFileUpload.DoesNotExist:
+                    pass
+
                 path = handle_uploaded_file(settings.ZALANDO_FINANCE_CSV_UPLOAD_PATH, f)
-                tfu, created = TransactionFileUpload.objects.get_or_create(
+                srfu, created = SalesReportFileUpload.objects.get_or_create(
                     file_name=f.name,
                     defaults={
                         "original_csv": path,
                         "processed": False,
                     },
                 )
-                import_daily_shipment_report(tfu)
+                import_monthly_sales_report(srfu)
 
                 if created:
                     LOG.info(f"{path} successfully uploaded")
                 else:
                     LOG.info(f"{path} already exist")
 
-            context = {"msg": f"{len(files)} files uploaded successfully"}
-            return render(request, "zalando/finance/upload.html", context)
+            msg = f"{len(files)} files uploaded successfully"
+            messages.success(request, msg)
+            return redirect(reverse("zalando_finance_upload_files"))
 
         context = {"msg": "Form is invalid"}
         return render(request, "zalando/finance/upload.html", context)
     else:
         form = UploadFileForm()
 
-    file_uploads = TransactionFileUpload.objects.all().order_by("-created")[:50]
+    file_uploads = SalesReportFileUpload.objects.all().order_by("-created")[:50]
     LOG.info(f"we have {len(file_uploads)} objects")
 
     return render(

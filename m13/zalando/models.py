@@ -5,12 +5,6 @@ from django_extensions.db.models import TimeStampedModel
 
 from core.models import Category
 
-from .constants import (
-    ACCOUNT_ONLINE_FEE,
-    NINETEEN_PERCENT_GERMANY_ZALANDO,
-    NINETEEN_PERCENT_VAT,
-)
-
 
 class FeedUpload(TimeStampedModel):
     """Track when we did which feed upload."""
@@ -161,8 +155,6 @@ class SalesReportImport(TimeStampedModel):
 
     name = models.CharField(max_length=256, unique=True)
     """File name of the report"""
-    month = models.PositiveIntegerField()
-    """YYYYMM month which this report is about - corresponds to folder name from Dropbox"""
 
 
 class SalesReportExport(TimeStampedModel):
@@ -172,80 +164,6 @@ class SalesReportExport(TimeStampedModel):
     """The complete report as JSON (used for CSV export)"""
     import_reference = models.ForeignKey(SalesReportImport, on_delete=models.PROTECT)
     """Reference to the original import"""
-
-
-class SalesReport(TimeStampedModel):
-    """Zalando Sales Export Item."""
-
-    class Currency(models.TextChoices):
-        EUR = "EUR", "Euro"
-
-    year = models.PositiveSmallIntegerField()
-    month = models.PositiveSmallIntegerField()
-    created_date = models.DateTimeField()
-    currency = models.CharField(
-        max_length=3, choices=Currency.choices, default=Currency.EUR
-    )
-    order_number = models.CharField(max_length=32)
-    ean = models.CharField(max_length=16)
-    shipping_return_date = models.DateTimeField()
-    order_date = models.DateTimeField()
-    partner_units = models.PositiveSmallIntegerField()
-    partner_revenue = models.DecimalField(max_digits=10, decimal_places=5)
-    partner_provision = models.DecimalField(max_digits=10, decimal_places=5)
-
-    import_reference = models.ForeignKey(
-        SalesReportImport, on_delete=models.PROTECT, null=True
-    )
-    """Reference to the file from which the record was imported"""
-
-    @property
-    def debit_or_credit_indicator_fees(self):
-        """Return indicator if this value is debit or credit for fees."""
-        if self.partner_revenue < 0:
-            return "S"
-        return "H"
-
-    @property
-    def debit_or_credit_indicator_income(self):
-        """Return indicator if this value is debit or credit for income."""
-        if self.partner_revenue < 0:
-            return "H"
-        return "S"
-
-    @property
-    def short_order_date(self):
-        """Accounting request format: DDMM"""
-        return "{d.day:02}{d.month:02}".format(d=self.shipping_return_date)
-
-    def get_bu_key(self, revenue=False):
-        """Return 9 for target account 3101."""
-        if revenue:
-            return ""
-        return 9
-
-    def get_target(self, revenue=False):
-        """Return indicator if this value is debit or credit."""
-        if revenue:
-            return NINETEEN_PERCENT_GERMANY_ZALANDO
-        return ACCOUNT_ONLINE_FEE
-
-    def get_abs_value(self, revenue=False):
-        """Return absolute value of either revenue or provision."""
-
-        def __as_str(value):
-            # Do not round here by intention -> diff is getting to big quickly
-            return str(abs(value)).replace(".", ",")
-
-        if revenue:
-            return __as_str(self.partner_revenue)
-        return __as_str(round(self.partner_provision * NINETEEN_PERCENT_VAT, 4))
-
-    def get_description(self, revenue=False):
-        """Return description depending on revnue or not."""
-        if revenue:
-            return "Erlöse 19% für Zielland Dtld Marktplatz Zalando"
-        return "Aufwandskonto Gebühren Onlinehandel"
 
 
 class ZProduct(TimeStampedModel):
@@ -359,3 +277,64 @@ class RawDailyShipmentReport(TimeStampedModel):
 
     class Meta:
         db_table = "zalando_dailyshipmentreport_raw"
+
+
+class SalesReportFileUpload(TimeStampedModel):
+    """Upload of CSV files which contain monthly sales reports."""
+
+    processed = models.BooleanField(default=False)
+    original_csv = models.FileField(
+        upload_to="zalando/finance/monthly_sales_reports",
+        max_length=128,
+    )
+    file_name = models.CharField(max_length=128, unique=True)
+
+    def __repr__(self):
+        return f"SalesReportFileUploadFile({self.original_csv})"
+
+    class Meta:
+        db_table = "zalando_monthly_sales_report_file_upload"
+
+
+class SalesReport(TimeStampedModel):
+    """Data from monthly sales reports from Z."""
+
+    class Currency(models.TextChoices):
+        EUR = "EUR", "Euro"
+
+    currency = models.CharField(
+        max_length=3, choices=Currency.choices, default=Currency.EUR
+    )
+    ean = models.CharField(max_length=13)
+    order_date = models.DateTimeField()
+    order_number = models.BigIntegerField()
+    pai_fee = models.DecimalField(max_digits=8, decimal_places=2)
+    payment_service_fee = models.DecimalField(max_digits=8, decimal_places=2)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    shipment_subtype = models.CharField(max_length=32)  # Enum?
+    shipment_type = models.CharField(max_length=32)  # Enum?
+    shipping_return_date = models.DateTimeField()
+
+    import_reference = models.ForeignKey(
+        SalesReportFileUpload, on_delete=models.PROTECT, null=True
+    )
+
+    zalando_marketplace_config = models.ForeignKey(
+        "core.MarketplaceConfig", on_delete=models.PROTECT, blank=True, null=True
+    )
+
+    class Meta:
+        db_table = "zalando_monthly_sales_report"
+
+    @property
+    def price_as_str(self):
+        return str(self.price).replace(".", ",")
+
+    @property
+    def shipment(self):
+        return self.shipment_type == "Sale"
+
+    @property
+    def all_fees_as_str(self):
+        result = self.pai_fee + self.payment_service_fee
+        return str(result).replace(".", ",")
