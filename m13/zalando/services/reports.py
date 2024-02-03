@@ -152,6 +152,8 @@ def import_monthly_sales_report(file: TransactionFileUpload) -> None:
     e.g. Sales_Report_JAN_2023_Manufaktur13-ChopShopSt_DE.CSV
 
     Original fields are:
+
+        # 2023
         x Partner,
         x Merchant UU-ID,
         x Fulfillment Type,
@@ -169,11 +171,35 @@ def import_monthly_sales_report(file: TransactionFileUpload) -> None:
         Payment Service Fee,
         Settled already
 
+        # 2024
+        x Partner,
+        x Merchant UU-ID,
+        x Fulfillment Type,
+        Zalando Order Number,
+        EAN,
+        Order Date,
+        Partner Shipping/Return Date,
+        Document Date,
+        Type,
+        Subtype,
+        Currency,
+        Gross Partner Revenue,
+        MKT/PAI,
+        Fee Category,
+        Payment Service Fee,
+        Withheld VAT,
+        Settled already
+
     """
     for line in read_csv(file.original_csv.name, delimiter=","):
         order_number = line["Zalando Order Number"]
 
-        order_date = make_aware(datetime.strptime(line["ORDER_DATE"], "%d.%m.%Y"))
+        try:
+            order_date_data = line["ORDER_DATE"]
+        except KeyError:
+            order_date_data = line["Order Date"]
+
+        order_date = make_aware(datetime.strptime(order_date_data, "%d.%m.%Y"))
         shipping_return_date = make_aware(
             datetime.strptime(line["Partner Shipping/Return Date"], "%d.%m.%Y")
         )
