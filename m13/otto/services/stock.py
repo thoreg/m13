@@ -52,9 +52,10 @@ def sync_stock():
                 f"{OTTO_QUANTITIES_URL}", headers=headers, json=payload, timeout=60
             )
             if resp.status_code != requests.codes.ok:
-                LOG.info(f"updated - sku: {sku} quantity : {quantity} failed - begin")
+                LOG.error(f"updated - sku: {sku} quantity : {quantity} failed - begin")
+                LOG.error(f"status_code: {resp.status_code}")
                 LOG.error(resp.json())
-                LOG.info(f"updated - sku: {sku} quantity : {quantity} failed - end")
+                LOG.error(f"updated - sku: {sku} quantity : {quantity} failed - end")
                 continue
 
             LOG.info(f"updated - sku: {sku} quantity : {quantity} - ok")
