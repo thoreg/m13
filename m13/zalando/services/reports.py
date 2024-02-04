@@ -191,6 +191,10 @@ def import_monthly_sales_report(file: TransactionFileUpload) -> None:
         Settled already
 
     """
+    marketplace_config = MarketplaceConfig.objects.get(
+        name=Marketplace.ZALANDO, active=True
+    )
+
     for line in read_csv(file.original_csv.name, delimiter=","):
         order_number = line["Zalando Order Number"]
 
@@ -216,6 +220,7 @@ def import_monthly_sales_report(file: TransactionFileUpload) -> None:
             shipment_type=line["Type"],
             shipping_return_date=shipping_return_date,
             import_reference=file,
+            zalando_marketplace_config=marketplace_config,
         )
         print(f"z_order: {order_number} : {created}")
 
