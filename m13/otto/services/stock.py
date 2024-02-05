@@ -21,17 +21,21 @@ MAX_CHUNK_SIZE = 100
 
 def sync_stock():
     """Get the feed and upload stock information."""
-    token = get_auth_token()
-    LOG.info(f"token: {token}")
-    headers = {
-        "Authorization": f"Bearer {token}",
-    }
+
+    def _renew_token():
+        token = get_auth_token()
+        LOG.info(f"get fresh token: {token}")
+        headers = {
+            "Authorization": f"Bearer {token}",
+        }
+        return headers
 
     feed = requests.get(M13_OTTO_FEED_URL, timeout=60)
     stock = json.loads(feed.content)
 
     last_modified = f"{datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]}Z"
 
+    headers = _renew_token()
     for _chunk in chunk(stock, MAX_CHUNK_SIZE):
         LOG.info(len(_chunk))
 
@@ -51,11 +55,21 @@ def sync_stock():
             resp = requests.post(
                 f"{OTTO_QUANTITIES_URL}", headers=headers, json=payload, timeout=60
             )
-            if resp.status_code != requests.codes.ok:
-                LOG.error(f"updated - sku: {sku} quantity : {quantity} failed - begin")
-                LOG.error(f"status_code: {resp.status_code}")
-                LOG.error(resp.json())
-                LOG.error(f"updated - sku: {sku} quantity : {quantity} failed - end")
-                continue
 
-            LOG.info(f"updated - sku: {sku} quantity : {quantity} - ok")
+            if resp.status_code == requests.codes.unauthorized:
+                headers = _renew_token()
+                resp = requests.post(
+                    f"{OTTO_QUANTITIES_URL}", headers=headers, json=payload, timeout=60
+                )
+                if resp.status_code != requests.codes.ok:
+                    LOG.error(f"update sku: {sku} qu: {quantity} failed")
+                    LOG.error(f"status_code: {resp.status_code}")
+                    LOG.error(resp.json())
+                    continue
+
+            elif resp.status_code == requests.codes.ok:
+                LOG.info(f"updated - sku: {sku} quantity : {quantity} - ok")
+
+            else:
+                LOG.error(f"unexpected status_code: {resp.status_code}")
+                LOG.error(resp.json())
