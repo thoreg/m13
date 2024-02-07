@@ -14,12 +14,14 @@ class AuthToken(TimeStampedModel):
 
 
 class Address(TimeStampedModel):
-    """We get from otto only shipping and billing addresses.
+    """The customer address model for Etsy.
 
-    No customer id - no email
+    The email can be empty if the customer submits an order as guest.
+    The only effect on this is that there will be no shipping confirmation
+    email send out.
+
     """
-
-    buyer_email = models.EmailField()
+    buyer_email = models.EmailField(null=True, blank=True)
     buyer_user_id = models.IntegerField()
     city = models.CharField(max_length=128)
     country_code = models.CharField(max_length=32)
