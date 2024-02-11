@@ -79,7 +79,7 @@ class Command(BaseCommand):
         resp = requests.get(M13_URL)
         if resp.status_code != requests.codes.ok:
             msg = "Request status code of the $hop is not 200 "
-            msg += f" - it is tada: {resp.status_code}"
+            msg += f" - it is tada: >> {resp.status_code} << "
             msg += f"resp_content: {resp.content}"
             return self.suspicious(msg)
 
@@ -111,9 +111,9 @@ class Command(BaseCommand):
                 if suspicious:
                     msg = f"strange href: BEGIN:{href}:END "
                     try:
-                        msg += f"parent: {href.parent}"
+                        msg += f"parent: {href.parent} "
                     except Exception as e:
-                        msg += "appending parent failed"
+                        msg += "appending parent failed "
                         msg += str(e)
 
                     return self.suspicious(msg)
