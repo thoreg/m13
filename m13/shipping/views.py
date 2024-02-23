@@ -8,8 +8,6 @@ from django.urls import reverse
 
 from etsy.models import Shipment as EtsyShipment
 from etsy.services.shipments import handle_uploaded_file as etsy_handle_upload
-from mirapodo.models import Shipment as MirapodoShipment
-from mirapodo.services.shipments import handle_uploaded_file as mirapodo_handle_upload
 from otto.models import Shipment as OttoShipment
 from otto.services.shipments import handle_uploaded_file as otto_handle_upload
 
@@ -26,10 +24,8 @@ def index(request):
         if form.is_valid():
             file1 = deepcopy(request.FILES["file"])
             file2 = deepcopy(request.FILES["file"])
-            file3 = deepcopy(request.FILES["file"])
             otto_handle_upload(file1)
             etsy_handle_upload(file2)
-            mirapodo_handle_upload(file3)
             return HttpResponseRedirect(reverse("upload_shipping_infos_success"))
     else:
         form = UploadFileForm()
@@ -61,23 +57,11 @@ def upload_shipping_infos_success(request):
             "response_status_code",
         )[:100]
     )
-    mirapodo_shipments = (
-        MirapodoShipment.objects.all()
-        .order_by("-created")
-        .values_list(
-            "created",
-            "order__marketplace_order_id",
-            "carrier",
-            "tracking_info",
-            "response_status_code",
-        )[:100]
-    )
     return render(
         request,
         "shipping/upload_success.html",
         {
             "etsy_shipments": etsy_shipments,
-            "mirapodo_shipments": mirapodo_shipments,
             "otto_shipments": otto_shipments,
         },
     )

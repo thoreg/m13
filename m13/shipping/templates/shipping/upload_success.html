@@ -63,38 +63,6 @@
         </table>
       </td>
     </tr>
-    <tr>
-      <td>
-        <h3>_mirapodo</h3>
-        <table>
-          <thead>
-            <th class='date'>created_at</th>
-            <th>marketplace_order_id</th>
-            <th>tracking_info</th>
-            <th>carrier</th>
-            <th>status_code</th>
-          </thead>
-          <tbody>
-            {% for sh in mirapodo_shipments %}
-            <tr>
-              <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
-              <td>{{ sh.1 }}</td>
-              <td>{{ sh.2 }}</td>
-              <td>{{ sh.3 }}</td>
-              <td>{{ sh.4 }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td>No shipments found</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </td>
-    </tr>
   </table>
-
-
-
 </div>
 {% endblock %}
