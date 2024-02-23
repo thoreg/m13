@@ -208,7 +208,7 @@ def import_monthly_sales_report(file: TransactionFileUpload) -> None:
             datetime.strptime(line["Partner Shipping/Return Date"], "%d.%m.%Y")
         )
 
-        entry, created = SalesReport.objects.get_or_create(
+        _entry, created = SalesReport.objects.get_or_create(
             currency=line.get("Currency", "EUR"),
             ean=line["EAN"].zfill(13),
             order_date=order_date,

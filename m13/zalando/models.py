@@ -316,7 +316,10 @@ class SalesReport(TimeStampedModel):
     shipping_return_date = models.DateTimeField()
 
     import_reference = models.ForeignKey(
-        SalesReportFileUpload, on_delete=models.PROTECT, null=True
+        SalesReportFileUpload,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
     )
 
     zalando_marketplace_config = models.ForeignKey(

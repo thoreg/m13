@@ -5,6 +5,7 @@ from decimal import Decimal
 from pprint import pprint
 
 import pytest
+from django.core.management import call_command
 from django.urls import reverse
 
 from core.models import Category, MarketplaceConfig, Price
@@ -15,215 +16,276 @@ from core.services.article_stats import (
     Marketplace,
 )
 from otto.models import OrderItem as otto_oi
-from zalando.models import RawDailyShipmentReport, TransactionFileUpload
+from zalando.models import SalesReport, SalesReportFileUpload
 
 
 def _cleanup():
-    TransactionFileUpload.objects.all().delete()
-    RawDailyShipmentReport.objects.all().delete()
+    """..."""
+    SalesReport.objects.all().delete()
+    SalesReportFileUpload.objects.all().delete()
+    Price.objects.all().delete()
     MarketplaceConfig.objects.all().delete()
+    Price.objects.all().delete()
+    Category.objects.all().delete()
 
 
 @pytest.mark.django_db
-def test_article_stats_zalando_basic():
+def test_article_stats_zalando_basic(django_db_setup, django_db_blocker):
     """Basic test with small data set."""
+
     _cleanup()
-
-    # Config has to be in charge before the import
-    config = MarketplaceConfig.objects.create(
-        name=article_stats.Marketplace.ZALANDO,
-        shipping_costs=Decimal("3.55"),
-        return_costs=Decimal("3.55"),
-        provision_in_percent=None,
-        vat_in_percent=19,
-        generic_costs_in_percent=3,
-    )
-
     fixtures = [
-        ("core/tests/fixtures/core_category.json", Category),
-        ("core/tests/fixtures/core_price.json", Price),
-        (
-            "core/tests/fixtures/raw_dailyshipment_report.small.json",
-            RawDailyShipmentReport,
-        ),
+        "zalando/tests/fixtures/core.Category.json",
+        "zalando/tests/fixtures/core.Price.json",
+        "zalando/tests/fixtures/core.MarketplaceConfig.json",
+        "zalando/tests/fixtures/zalando.SalesReportFileUpload.json",
+        "zalando/tests/fixtures/zalando.SalesReport.json",
     ]
-    for fixture_file, model in fixtures:
-        with open(fixture_file) as f:
-            file_contents = f.read()
-            data = json.loads(file_contents)
-            for fields in data:
-                model.objects.create(**fields)
+    with django_db_blocker.unblock():
+        for fixture in fixtures:
+            call_command("loaddata", fixture)
 
-    RawDailyShipmentReport.objects.all().update(marketplace_config=config)
-
-    start_date = datetime.date(2023, 2, 14)
-    end_date = datetime.date(2023, 3, 13)
+    start_date = datetime.date(2023, 3, 15)
+    end_date = datetime.date(2023, 4, 1)
     stats = article_stats.get_article_stats(
         article_stats.Marketplace.ZALANDO, start_date, end_date
     )
+
     assert stats == {
-        "Woman Bomber Jacken": {
+        "Acid Washed Jacke": {
             "content": [
                 {
-                    "article_number": "women-bom-na-s",
+                    "article_number": "WOJacke-HE-L",
                     "canceled": 0,
-                    "category": "Woman Bomber Jacken",
-                    "costs_production": Decimal("12.13"),
-                    "provision": Decimal("1.43"),
-                    "generic_costs": Decimal("0.84"),
-                    "nineteen_percent_vat": Decimal("5.31"),
-                    "profit_after_taxes": Decimal("4.69"),
-                    "return_costs": Decimal("3.55"),
+                    "category": "Acid Washed Jacke",
+                    "costs_production": Decimal("31.13"),
+                    "generic_costs": Decimal("1.95"),
+                    "nineteen_percent_vat": Decimal("12.34"),
+                    "profit_after_taxes": Decimal("9.17"),
+                    "provision": Decimal("6.56"),
+                    "return_costs": Decimal("4.18"),
                     "returned": 1,
                     "sales": Decimal("0.00"),
                     "shipped": 0,
-                    "shipping_costs": Decimal("3.55"),
-                    "total_diff": Decimal("-7.94"),
-                    "total_return_costs": Decimal("7.94"),
+                    "shipping_costs": Decimal("3.80"),
+                    "total_diff": Decimal("-9.93"),
+                    "total_return_costs": Decimal("9.93"),
                     "total_revenue": Decimal("0.00"),
-                    "vk_zalando": Decimal("27.95"),
+                    "vk_zalando": Decimal("64.95"),
                 }
             ],
-            "name": "Woman Bomber Jacken",
+            "name": "Acid Washed Jacke",
             "stats": {
                 "canceled": 0,
                 "returned": 1,
                 "sales": Decimal("0.00"),
                 "shipped": 0,
-                "total_diff": Decimal("-7.94"),
-                "total_return_costs": Decimal("7.94"),
+                "total_diff": Decimal("-9.93"),
+                "total_return_costs": Decimal("9.93"),
                 "total_revenue": Decimal("0.00"),
             },
-        }
-    }
-
-    start_date = datetime.date(2023, 2, 12)
-    end_date = datetime.date(2023, 3, 13)
-    stats = article_stats.get_article_stats(
-        article_stats.Marketplace.ZALANDO, start_date, end_date
-    )
-    assert stats == {
-        "Woman Bomber Jacken": {
+        },
+        "Bucket Hats": {
             "content": [
                 {
-                    "article_number": "women-bom-na-s",
+                    "article_number": "BUHA-BOL",
                     "canceled": 0,
-                    "category": "Woman Bomber Jacken",
-                    "costs_production": Decimal("12.13"),
-                    "provision": Decimal("1.43"),
-                    "generic_costs": Decimal("0.84"),
-                    "nineteen_percent_vat": Decimal("5.31"),
-                    "profit_after_taxes": Decimal("4.69"),
-                    "return_costs": Decimal("3.55"),
-                    "returned": 2,
-                    "sales": Decimal("55.90"),
-                    "shipped": 2,
-                    "shipping_costs": Decimal("3.55"),
-                    "total_diff": Decimal("-15.88"),
-                    "total_return_costs": Decimal("15.88"),
-                    "total_revenue": Decimal("-0.00"),
-                    "vk_zalando": Decimal("27.95"),
+                    "category": "Bucket Hats",
+                    "costs_production": Decimal("20.82"),
+                    "generic_costs": Decimal("1.05"),
+                    "nineteen_percent_vat": Decimal("6.64"),
+                    "profit_after_taxes": Decimal("0.86"),
+                    "provision": Decimal("1.78"),
+                    "return_costs": Decimal("4.18"),
+                    "returned": 1,
+                    "sales": Decimal("0.00"),
+                    "shipped": 0,
+                    "shipping_costs": Decimal("3.80"),
+                    "total_diff": Decimal("-9.03"),
+                    "total_return_costs": Decimal("9.03"),
+                    "total_revenue": Decimal("0.00"),
+                    "vk_zalando": Decimal("34.95"),
                 }
             ],
-            "name": "Woman Bomber Jacken",
+            "name": "Bucket Hats",
             "stats": {
                 "canceled": 0,
-                "returned": 2,
-                "sales": Decimal("55.90"),
-                "shipped": 2,
-                "total_diff": Decimal("-15.88"),
-                "total_return_costs": Decimal("15.88"),
+                "returned": 1,
+                "sales": Decimal("0.00"),
+                "shipped": 0,
+                "total_diff": Decimal("-9.03"),
+                "total_return_costs": Decimal("9.03"),
                 "total_revenue": Decimal("0.00"),
             },
-        }
-    }
-
-    start_date = datetime.date(2023, 1, 1)
-    end_date = datetime.date(2023, 3, 13)
-    stats = article_stats.get_article_stats(
-        article_stats.Marketplace.ZALANDO, start_date, end_date
-    )
-    assert stats == {
+        },
         "Woman Bomber Jacken": {
             "content": [
                 {
-                    "article_number": "women-bom-na-s",
+                    "article_number": "women-bom-bo-l",
                     "canceled": 0,
                     "category": "Woman Bomber Jacken",
-                    "costs_production": Decimal("12.13"),
-                    "provision": Decimal("1.43"),
-                    "generic_costs": Decimal("0.84"),
-                    "nineteen_percent_vat": Decimal("5.31"),
-                    "profit_after_taxes": Decimal("4.69"),
-                    "return_costs": Decimal("3.55"),
-                    "returned": 2,
-                    "sales": Decimal("139.75"),
-                    "shipped": 5,
-                    "shipping_costs": Decimal("3.55"),
-                    "total_diff": Decimal("-1.81"),
-                    "total_return_costs": Decimal("15.88"),
-                    "total_revenue": Decimal("14.07"),
-                    "vk_zalando": Decimal("27.95"),
+                    "costs_production": Decimal("23.13"),
+                    "generic_costs": Decimal("2.10"),
+                    "nineteen_percent_vat": Decimal("13.29"),
+                    "profit_after_taxes": Decimal("20.57"),
+                    "provision": Decimal("7.06"),
+                    "return_costs": Decimal("4.18"),
+                    "returned": 1,
+                    "sales": Decimal("0.00"),
+                    "shipped": 0,
+                    "shipping_costs": Decimal("3.80"),
+                    "total_diff": Decimal("-10.08"),
+                    "total_return_costs": Decimal("10.08"),
+                    "total_revenue": Decimal("0.00"),
+                    "vk_zalando": Decimal("69.95"),
+                },
+                {
+                    "article_number": "women-bom-bo-m",
+                    "canceled": 0,
+                    "category": "Woman Bomber Jacken",
+                    "costs_production": Decimal("23.13"),
+                    "generic_costs": Decimal("2.10"),
+                    "nineteen_percent_vat": Decimal("13.29"),
+                    "profit_after_taxes": Decimal("20.57"),
+                    "provision": Decimal("7.06"),
+                    "return_costs": Decimal("4.18"),
+                    "returned": 1,
+                    "sales": Decimal("0.00"),
+                    "shipped": 0,
+                    "shipping_costs": Decimal("3.80"),
+                    "total_diff": Decimal("-10.08"),
+                    "total_return_costs": Decimal("10.08"),
+                    "total_revenue": Decimal("0.00"),
+                    "vk_zalando": Decimal("69.95"),
+                },
+                {
+                    "article_number": "women-bom-bo-s",
+                    "canceled": 0,
+                    "category": "Woman Bomber Jacken",
+                    "costs_production": Decimal("23.13"),
+                    "generic_costs": Decimal("2.10"),
+                    "nineteen_percent_vat": Decimal("13.29"),
+                    "profit_after_taxes": Decimal("20.57"),
+                    "provision": Decimal("7.06"),
+                    "return_costs": Decimal("4.18"),
+                    "returned": 1,
+                    "sales": Decimal("0.00"),
+                    "shipped": 0,
+                    "shipping_costs": Decimal("3.80"),
+                    "total_diff": Decimal("-10.08"),
+                    "total_return_costs": Decimal("10.08"),
+                    "total_revenue": Decimal("0.00"),
+                    "vk_zalando": Decimal("69.95"),
                 },
                 {
                     "article_number": "women-bom-na-s",
                     "canceled": 0,
                     "category": "Woman Bomber Jacken",
-                    "costs_production": Decimal("12.13"),
-                    "provision": Decimal("1.22"),
-                    "generic_costs": Decimal("0.72"),
-                    "nineteen_percent_vat": Decimal("4.55"),
-                    "profit_after_taxes": Decimal("1.78"),
-                    "return_costs": Decimal("3.55"),
+                    "costs_production": Decimal("23.13"),
+                    "generic_costs": Decimal("2.10"),
+                    "nineteen_percent_vat": Decimal("13.29"),
+                    "profit_after_taxes": Decimal("20.57"),
+                    "provision": Decimal("7.06"),
+                    "return_costs": Decimal("4.18"),
+                    "returned": 1,
+                    "sales": Decimal("69.95"),
+                    "shipped": 1,
+                    "shipping_costs": Decimal("3.80"),
+                    "total_diff": Decimal("-10.08"),
+                    "total_return_costs": Decimal("10.08"),
+                    "total_revenue": Decimal("0.00"),
+                    "vk_zalando": Decimal("69.95"),
+                },
+                {
+                    "article_number": "women-bom-na-xl",
+                    "canceled": 0,
+                    "category": "Woman Bomber Jacken",
+                    "costs_production": Decimal("23.13"),
+                    "generic_costs": Decimal("2.10"),
+                    "nineteen_percent_vat": Decimal("13.29"),
+                    "profit_after_taxes": Decimal("20.57"),
+                    "provision": Decimal("7.06"),
+                    "return_costs": Decimal("4.18"),
+                    "returned": 1,
+                    "sales": Decimal("0.00"),
+                    "shipped": 0,
+                    "shipping_costs": Decimal("3.80"),
+                    "total_diff": Decimal("-10.08"),
+                    "total_return_costs": Decimal("10.08"),
+                    "total_revenue": Decimal("0.00"),
+                    "vk_zalando": Decimal("69.95"),
+                },
+                {
+                    "article_number": "women-bom-vi-m",
+                    "canceled": 0,
+                    "category": "Woman Bomber Jacken",
+                    "costs_production": Decimal("23.13"),
+                    "generic_costs": Decimal("2.10"),
+                    "nineteen_percent_vat": Decimal("13.29"),
+                    "profit_after_taxes": Decimal("20.57"),
+                    "provision": Decimal("7.06"),
+                    "return_costs": Decimal("4.18"),
                     "returned": 0,
-                    "sales": Decimal("47.90"),
-                    "shipped": 2,
-                    "shipping_costs": Decimal("3.55"),
-                    "total_diff": Decimal("3.56"),
+                    "sales": Decimal("69.95"),
+                    "shipped": 1,
+                    "shipping_costs": Decimal("3.80"),
+                    "total_diff": Decimal("20.57"),
                     "total_return_costs": Decimal("0.00"),
-                    "total_revenue": Decimal("3.56"),
-                    "vk_zalando": Decimal("23.95"),
+                    "total_revenue": Decimal("20.57"),
+                    "vk_zalando": Decimal("69.95"),
+                },
+                {
+                    "article_number": "women-bom-vi-s",
+                    "canceled": 0,
+                    "category": "Woman Bomber Jacken",
+                    "costs_production": Decimal("23.13"),
+                    "generic_costs": Decimal("2.10"),
+                    "nineteen_percent_vat": Decimal("13.29"),
+                    "profit_after_taxes": Decimal("20.57"),
+                    "provision": Decimal("7.06"),
+                    "return_costs": Decimal("4.18"),
+                    "returned": 1,
+                    "sales": Decimal("0.00"),
+                    "shipped": 0,
+                    "shipping_costs": Decimal("3.80"),
+                    "total_diff": Decimal("-10.08"),
+                    "total_return_costs": Decimal("10.08"),
+                    "total_revenue": Decimal("0.00"),
+                    "vk_zalando": Decimal("69.95"),
                 },
             ],
             "name": "Woman Bomber Jacken",
             "stats": {
                 "canceled": 0,
-                "returned": 2,
-                "sales": Decimal("187.65"),
-                "shipped": 7,
-                "total_diff": Decimal("1.75"),
-                "total_return_costs": Decimal("15.88"),
-                "total_revenue": Decimal("17.63"),
+                "returned": 6,
+                "sales": Decimal("139.90"),
+                "shipped": 2,
+                "total_diff": Decimal("-39.91"),
+                "total_return_costs": Decimal("60.48"),
+                "total_revenue": Decimal("20.57"),
             },
-        }
+        },
     }
 
 
+@pytest.mark.django_db
 def test_different_configs_reflected_in_stats(
-    client, django_user_model, django_db_setup
+    client, django_user_model, django_db_setup, django_db_blocker
 ):
     """Article stats join marketplace configuration."""
+
     _cleanup()
 
-    category = Category.objects.create(name="example_category")
-    skus = [
-        "pizza_2_w-l",
-        "stra_wings_w-l",
-        "women-bom-da-l",
-        "women-bom-vi-s",
-        "Knit-Set-BL",
-        "KLOOP-NA",
-        "duffel-sand",
-        "BM013-FBM",
+    fixtures = [
+        "zalando/tests/fixtures/core.Category.json",
+        "zalando/tests/fixtures/core.Price.json",
+        "zalando/tests/fixtures/core.MarketplaceConfig.json",
+        "zalando/tests/fixtures/zalando.SalesReportFileUpload.json",
+        "zalando/tests/fixtures/zalando.SalesReport.json",
     ]
-    for sku in skus:
-        Price.objects.create(
-            sku=sku,
-            category=category,
-            costs_production=Decimal("10.42"),
-            vk_otto=Decimal("23.99"),
-            vk_zalando=Decimal("100.00"),
-        )
+    with django_db_blocker.unblock():
+        for fixture in fixtures:
+            call_command("loaddata", fixture)
 
     #
     # 0 - First upload of files - reference to the current marketplace configuration
@@ -250,7 +312,7 @@ def test_different_configs_reflected_in_stats(
     original_files = []
     original_files_md5sums = []
     for idx in [0, 1]:
-        fp = open(f"zalando/tests/fixtures/daily_sales_report_{idx}.csv", "rb")
+        fp = open(f"zalando/tests/fixtures/monthly_sales_report_{idx}.csv", "rb")
         content = fp.read()
         md5_hash = hashlib.md5()
         md5_hash.update(content)
@@ -260,6 +322,10 @@ def test_different_configs_reflected_in_stats(
         original_files_md5sums.append(md5_hash.hexdigest())
 
     response = client.post(upload_url, {"original_csv": original_files})
+
+    stats = article_stats.get_article_stats_zalando_msr_based(
+        "2023-09-01", "2024-02-01"
+    )
 
     #
     # 1 - Second upload of files - reference to the current marketplace configuration
@@ -275,7 +341,7 @@ def test_different_configs_reflected_in_stats(
     original_files = []
     original_files_md5sums = []
     for idx in [2, 3]:
-        fp = open(f"zalando/tests/fixtures/daily_sales_report_{idx}.csv", "rb")
+        fp = open(f"zalando/tests/fixtures/monthly_sales_report_{idx}.csv", "rb")
         content = fp.read()
         md5_hash = hashlib.md5()
         md5_hash.update(content)
@@ -286,30 +352,30 @@ def test_different_configs_reflected_in_stats(
 
     response = client.post(upload_url, {"original_csv": original_files})
 
-    stats = article_stats.get_article_stats_zalando("2020-01-01", "2023-03-13")
-
+    stats = article_stats.get_article_stats_zalando_msr_based(
+        "2023-09-01", "2024-02-01"
+    )
     assert (
-        stats["example_category"]["content"][0]["shipping_costs"]
+        stats["Boyfriend Shirts"]["content"][0]["shipping_costs"]
         == config1.shipping_costs
     )
     assert (
-        stats["example_category"]["content"][0]["return_costs"] == config1.return_costs
+        stats["Boyfriend Shirts"]["content"][0]["return_costs"] == config1.return_costs
     )
 
     assert (
-        stats["example_category"]["content"][-1]["shipping_costs"]
+        stats["Double Sided Beanies"]["content"][-1]["shipping_costs"]
         == config2.shipping_costs
     )
     assert (
-        stats["example_category"]["content"][-1]["return_costs"] == config2.return_costs
+        stats["Double Sided Beanies"]["content"][-1]["return_costs"]
+        == config2.return_costs
     )
 
 
 @pytest.mark.django_db
 def test_article_stats_otto_basic():
     """Basic test with small data set for ocalculator."""
-    _cleanup()
-
     # Note id needs to be '3' for otto stats :(
     MarketplaceConfig.objects.create(
         id=3,
