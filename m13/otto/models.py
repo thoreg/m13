@@ -97,3 +97,33 @@ class StatsOrderItems(models.Model):
     class Meta:
         managed = False
         db_table = "otto_orderitem_stats"
+
+
+class OrderItemJournal(TimeStampedModel):
+    """Entity to keep track of orderitems - used by OCalculator."""
+
+    class OrderItemStatus(models.TextChoices):
+        """Otto internal status of OrderItem"""
+        ANNOUNCED = "ANNOUNCED"
+        PROCESSABLE = "PROCESSABLE"
+        SENT = "SENT"
+        RETURNED = "RETURNED"
+        CANCELLED_BY_PARTNER = "CANCELLED_BY_PARTNER"
+        CANCELLED_BY_MARKETPLACE = "CANCELLED_BY_MARKETPLACE"
+
+    sku = models.CharField(max_length=32)
+    ean = models.CharField(max_length=16)
+    position_item_id = models.CharField(max_length=64)
+    order_number = models.CharField(max_length=16)
+    fulfillment_status = models.CharField(
+        max_length=24,
+        choices=OrderItemStatus.choices,
+    )
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    last_modified = models.DateTimeField()
+    """
+    # when RETURNED
+    'returnedDate': '2024-03-22T08:29:02.118+0000',
+    # otherwise
+    'sentDate': '2024-03-10T16:27:29.315+0000',
+    """
