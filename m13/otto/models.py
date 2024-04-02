@@ -104,6 +104,7 @@ class OrderItemJournal(TimeStampedModel):
 
     class OrderItemStatus(models.TextChoices):
         """Otto internal status of OrderItem"""
+
         ANNOUNCED = "ANNOUNCED"
         PROCESSABLE = "PROCESSABLE"
         SENT = "SENT"

@@ -184,7 +184,10 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
     result = {}
     params = {"start_date": start_date, "end_date": end_date}
     with connection.cursor() as cursor:
-        query = """
+        # Based on order item only
+        # - orderitems need to be synced up to X weeks
+        # -> overwritten/updated
+        _query_v0 = """
             SELECT
                 cc.name as category_name,
                 cp.sku as article_sku,
@@ -202,6 +205,52 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
                 otto_orderitem AS oi
             JOIN otto_order as oo
                 ON oo.id = oi.order_id
+            JOIN core_price AS cp
+                ON cp.sku = oi.sku
+            JOIN core_category AS cc
+                on cc.id = cp.category_id
+            JOIN core_marketplaceconfig AS config
+                on config.id = 3
+            WHERE
+                oo.order_date >= %(start_date)s
+                AND oo.order_date <= %(end_date)s
+            GROUP BY
+                category_name,
+                article_sku,
+                oi.fulfillment_status,
+                reported_price,
+                shipping_costs,
+                return_costs,
+                vat_in_percent,
+                generic_costs_in_percent,
+                config.id
+            HAVING
+                (case when oi.fulfillment_status = 'SENT' then 1 else 0 end) > 0
+                OR (case when oi.fulfillment_status = 'RETURNED' then 1 else 0 end) > 0
+            ORDER BY
+                config.id, article_sku, reported_price DESC;
+        """  # noqa
+
+        # Based on order item journal
+        # - orderitemjournal rows are just appended
+        query = """
+            SELECT
+                cc.name as category_name,
+                cp.sku as article_sku,
+                cp.costs_production as costs_production,
+                oi.price as reported_price,
+                SUM(case when oi.fulfillment_status = 'SENT' then oi.price else 0 end) AS sum_shipped,
+                SUM(case when oi.fulfillment_status = 'RETURNED' then oi.price else 0 end) AS sum_returned,
+                SUM(case when oi.fulfillment_status = 'SENT' then 1 else 0 end) AS shipped,
+                SUM(case when oi.fulfillment_status = 'RETURNED' then 1 else 0 end) AS returned,
+                config.shipping_costs as shipping_costs,
+                config.return_costs as return_costs,
+                config.vat_in_percent as vat_in_percent,
+                config.generic_costs_in_percent as generic_costs_in_percent
+            FROM
+                otto_orderitemjournal AS oi
+            JOIN otto_order as oo
+                ON oo.marketplace_order_number = oi.order_number
             JOIN core_price AS cp
                 ON cp.sku = oi.sku
             JOIN core_category AS cc

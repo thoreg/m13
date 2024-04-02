@@ -21,6 +21,7 @@ class Address(TimeStampedModel):
     email send out.
 
     """
+
     buyer_email = models.EmailField(null=True, blank=True)
     buyer_user_id = models.IntegerField()
     city = models.CharField(max_length=128)

@@ -6,9 +6,10 @@ from pprint import pprint
 
 import requests
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from otto.common import get_auth_token
-from otto.models import Order, OrderItemJournal
+from otto.models import Order, OrderItem, OrderItemJournal
 
 ORDERS_URL = "https://api.otto.market/v4/orders/"
 
@@ -26,10 +27,18 @@ if not all([USERNAME, PASSWORD]):
 
 
 class Command(BaseCommand):
+    """..."""
+
     help = "Get information about otto order items."
 
-    def handle(self, *args, **kwargs):
-        """Get information about otto order items."""
+    def _sync(self) -> None:
+        """Walk through all existing orders and sync orderitems with Otto.
+
+        GET on each order_number -> orderitem's fullfillment_status -> new Journal item
+
+        Note: You want to truncate the table otto_orderitemjournal before you
+              fire this command.
+        """
         token = get_auth_token()
         headers = {
             "Authorization": f"Bearer {token}",
@@ -94,5 +103,62 @@ class Command(BaseCommand):
                 print(f"created: {created}", flush=True)
 
             time.sleep(2)
+
+    def _wipe_n_rebuild(self):
+        """Truncate journal table and rebuild it based on existing orderitems."""
+        OrderItemJournal.objects.all().delete()
+
+        all_orderitems = OrderItem.objects.select_related().all()
+
+        for oi in all_orderitems:
+            if oi.fulfillment_status not in [
+                OrderItemJournal.OrderItemStatus.RETURNED,
+                OrderItemJournal.OrderItemStatus.SENT,
+            ]:
+                print(f"skipping {oi.sku} {oi.fulfillment_status}")
+                continue
+
+            last_modified = None
+            if oi.fulfillment_status == OrderItemJournal.OrderItemStatus.RETURNED:
+                last_modified = oi.returned_date
+                fulfillment_status = OrderItemJournal.OrderItemStatus.RETURNED
+            else:
+                last_modified = oi.sent_date
+                fulfillment_status = OrderItemJournal.OrderItemStatus.SENT
+
+            if not last_modified:
+                last_modified = timezone.now()
+
+            price = oi.price_in_cent / 100
+            ean = oi.ean
+            sku = oi.sku
+            position_item_id = oi.position_item_id
+            print(f"  {sku} ... ", end="")
+
+            _oij, created = OrderItemJournal.objects.get_or_create(
+                order_number=oi.order.marketplace_order_number,
+                last_modified=last_modified,
+                price=price,
+                ean=ean,
+                sku=sku,
+                position_item_id=position_item_id,
+                fulfillment_status=fulfillment_status,
+            )
+            print(f"created: {created}", flush=True)
+
+    def add_arguments(self, parser):
+        parser.add_argument("cmd_id", nargs="+", type=int)
+
+    def handle(self, *args, **options):
+        cmd = options["cmd_id"]
+        if cmd[0] == 1:
+            self._sync()
+        elif cmd[0] == 2:
+            self._wipe_n_rebuild()
+        else:
+            print("Unknown command - do you know what you are doing?")
+            import ipdb
+
+            ipdb.set_trace()
 
         return 0

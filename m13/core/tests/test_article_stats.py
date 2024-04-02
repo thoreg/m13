@@ -16,6 +16,7 @@ from core.services.article_stats import (
     Marketplace,
 )
 from otto.models import OrderItem as otto_oi
+from otto.models import OrderItemJournal
 from zalando.models import SalesReport, SalesReportFileUpload
 
 
@@ -398,6 +399,9 @@ def test_article_stats_otto_basic():
             for fields in data:
                 model.objects.create(**fields)
 
+    call_command("m13_otto_sync_orderitem_history", "2")
+    assert OrderItemJournal.objects.all().count() == 113
+
     start_date = datetime.date(2020, 2, 14)
     end_date = datetime.date(2023, 3, 13)
     stats = article_stats.get_article_stats(
@@ -414,7 +418,7 @@ def test_article_stats_otto_basic():
         pprint(stats)
         print("stats_end")
 
-    __debug()
+    # __debug()
 
     with open("core/tests/expected/otto_stats.json", encoding="utf-8") as f:
         file_contents = f.read()

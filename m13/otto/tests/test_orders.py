@@ -7,7 +7,7 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 from core.models import Price
-from otto.models import Address, Order, OrderItem
+from otto.models import Address, Order, OrderItem, OrderItemJournal
 from otto.services.orders import get_url, save_orders
 
 FETCH_ORDERS_RESPONSE = "./otto/tests/fixtures/fetch_orders_response.json"
@@ -21,6 +21,7 @@ def test_save_orders(mocked_fetch_orders):
     OrderItem.objects.all().delete()
     Order.objects.all().delete()
     Address.objects.all().delete()
+    OrderItemJournal.objects.all().delete()
 
     with open(FETCH_ORDERS_RESPONSE) as json_file:
         data = json.load(json_file)
@@ -41,6 +42,7 @@ def test_save_orders(mocked_fetch_orders):
     assert mail.outbox[2].subject == "New Product in BM - sku: women-bom-da-l"
 
     assert Price.objects.all().count() == 3
+    assert OrderItemJournal.objects.all().count() == 3
 
 
 test_data = [
