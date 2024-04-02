@@ -33,7 +33,7 @@ from django.utils import timezone
 
 from core.models import Price
 from m13.lib import log as mlog
-from otto.models import Address, Order, OrderItem
+from otto.models import Address, Order, OrderItem, OrderItemJournal
 
 LOG = logging.getLogger(__name__)
 
@@ -171,9 +171,13 @@ def save_orders(orders_as_json):
                     mlog.error(LOG, "otto - STILL empty expected_delivery_date")
                     mlog.error(LOG, oi)
 
+            position_item_id = oi["positionItemId"]
+            ean = oi["product"]["ean"]
+            sku = oi["product"]["sku"]
+
             order_item, created = OrderItem.objects.get_or_create(
                 order=order,
-                position_item_id=oi.get("positionItemId"),
+                position_item_id=position_item_id,
                 defaults={
                     "cancellation_date": oi.get("cancellationDate"),
                     "expected_delivery_date": expected_delivery_date,
@@ -181,9 +185,9 @@ def save_orders(orders_as_json):
                     "price_in_cent": oi.get("itemValueGrossPrice").get("amount") * 100,
                     "currency": oi.get("itemValueGrossPrice").get("currency"),
                     "article_number": oi.get("product").get("articleNumber"),
-                    "ean": oi.get("product").get("ean"),
+                    "ean": ean,
                     "product_title": oi.get("product").get("productTitle"),
-                    "sku": oi.get("product").get("sku"),
+                    "sku": sku,
                     "vat_rate": int(oi.get("product").get("vatRate")),
                     "returned_date": oi.get("returnedDate"),
                     "sent_date": oi.get("sentDate"),
@@ -198,15 +202,9 @@ def save_orders(orders_as_json):
                 order_item.fulfillment_status = oi.get("fulfillmentStatus")
                 order_item.save()
 
-            # DEPRECATED
-            # product, _created = Product.objects.get_or_create(
-            #     ean=oi.get("product").get("ean"),
-            #     defaults={"name": oi.get("product").get("productTitle")},
-            # )
-            # Article.objects.get_or_create(
-            #     sku=oi.get("product").get("sku"), product=product
-            # )
-
+            #
+            # Price
+            #
             sku = oi.get("product").get("sku")
             vk_otto = oi.get("itemValueGrossPrice").get("amount")
             price_obj, created = Price.objects.get_or_create(
@@ -239,6 +237,39 @@ def save_orders(orders_as_json):
                 )
                 number_of_messages = mail.send()
                 assert number_of_messages == 1
+
+            #
+            # OrderItemJournal
+            #
+            if fulfillment_status not in [
+                OrderItemJournal.OrderItemStatus.RETURNED,
+                OrderItemJournal.OrderItemStatus.SENT,
+            ]:
+                LOG.info(
+                    "   no journal entry because "
+                    f"fullfillment_status: {fulfillment_status}"
+                )
+                continue
+
+            if fulfillment_status == OrderItemJournal.OrderItemStatus.RETURNED:
+                last_modified = oi["returnedDate"]
+            else:
+                last_modified = oi["sentDate"]
+                fulfillment_status = OrderItemJournal.OrderItemStatus.SENT
+
+            price = oi["itemValueGrossPrice"]["amount"]
+            LOG.info(f"  journal entry {sku} {fulfillment_status} ... ")
+
+            _oij, created = OrderItemJournal.objects.get_or_create(
+                order_number=entry.get("orderNumber"),
+                last_modified=last_modified,
+                price=price,
+                ean=ean,
+                sku=sku,
+                position_item_id=position_item_id,
+                fulfillment_status=fulfillment_status,
+            )
+            LOG.info(f"created: {created}")
 
 
 def get_url(status, datum=None):
