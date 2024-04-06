@@ -128,3 +128,25 @@ class OrderItemJournal(TimeStampedModel):
     # otherwise
     'sentDate': '2024-03-10T16:27:29.315+0000',
     """
+
+    def __repr__(self) -> str:
+        _info_dbg = [
+            f"order_number {self.order_number}",
+            f"{self.position_item_id}",
+            f"{self.fulfillment_status}",
+            f"{self.sent_exist}",
+        ]
+        info = [
+            f"order_number {self.order_number}",
+            f"{self.position_item_id}",
+            f"{self.fulfillment_status}",
+        ]
+        return " : ".join(info)
+
+    @property
+    def sent_exist(self) -> bool:
+        """Return True if there is more than one journal entry for the orderitem."""
+        objects = OrderItemJournal.objects.filter(
+            position_item_id=self.position_item_id
+        )
+        return len(objects) > 1
