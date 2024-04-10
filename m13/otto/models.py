@@ -130,12 +130,6 @@ class OrderItemJournal(TimeStampedModel):
     """
 
     def __repr__(self) -> str:
-        _info_dbg = [
-            f"order_number {self.order_number}",
-            f"{self.position_item_id}",
-            f"{self.fulfillment_status}",
-            f"{self.sent_exist}",
-        ]
         info = [
             f"order_number {self.order_number}",
             f"{self.position_item_id}",

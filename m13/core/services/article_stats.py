@@ -279,7 +279,8 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
         cursor.execute(query, params)
         for entry in dictfetchall(cursor):
             category = entry["category_name"]
-            price = _r(Decimal(entry["reported_price"] / 100))
+            # price = _r(Decimal(entry["reported_price"] / 100))
+            price = entry["reported_price"]
 
             astats = ArticleStats(
                 sku=entry["article_sku"],
@@ -356,125 +357,6 @@ def get_z_provision_in_percent(price: Decimal) -> Decimal:
         pi_fee = Decimal("13.55")
 
     return payment_service_fee + pi_fee
-
-
-def get_article_stats_zalando(start_date: date, end_date: date) -> dict:
-    """Return dictionary with aggregated values for number of shipped, returned and canceled."""
-    LOG.info(f"get_article_stats_zalando - start_date: {start_date}")
-
-    result = {}
-    params = {"start_date": start_date, "end_date": end_date}
-    with connection.cursor() as cursor:
-        query = """
-            SELECT
-                cc.name as category_name,
-                cp.sku as sku,
-                cp.costs_production as costs_production,
-                zdr.price_in_cent as reported_price,
-                COALESCE(SUM(zdr.price_in_cent) FILTER (WHERE zdr.shipment), 0) AS sum_shipped,
-                COALESCE(SUM(zdr.price_in_cent) FILTER (WHERE zdr.returned), 0) AS sum_returned,
-                COALESCE(SUM(zdr.price_in_cent) FILTER (WHERE zdr.cancel), 0) AS sum_canceled,
-                COUNT(zdr.shipment) FILTER (WHERE zdr.shipment) AS shipped,
-                COUNT(zdr.returned) FILTER (WHERE zdr.returned) AS returned,
-                COUNT(zdr.cancel) FILTER (WHERE zdr.cancel) AS canceled,
-                config.shipping_costs as shipping_costs,
-                config.return_costs as return_costs,
-                config.vat_in_percent as vat_in_percent,
-                config.generic_costs_in_percent as generic_costs_in_percent
-
-            FROM
-                zalando_dailyshipmentreport_raw AS zdr
-            JOIN core_price AS cp
-                ON cp.sku = zdr.article_number
-            JOIN core_category AS cc
-                on cc.id = cp.category_id
-            JOIN core_marketplaceconfig AS config
-                on config.id = zdr.marketplace_config_id
-            WHERE
-                order_event_time >= %(start_date)s
-                AND order_event_time <= %(end_date)s
-                AND article_number <> ''
-            GROUP BY
-                category_name,
-                sku,
-                reported_price,
-                shipping_costs,
-                return_costs,
-                vat_in_percent,
-                generic_costs_in_percent,
-                config.id
-            HAVING
-                COUNT(zdr.shipment) FILTER (WHERE zdr.shipment) > 0
-                OR COUNT(zdr.returned) FILTER (WHERE zdr.returned) > 0
-            ORDER BY
-                config.id, sku, reported_price DESC
-        """
-        cursor.execute(query, params)
-        for entry in dictfetchall(cursor):
-            category = entry["category_name"]
-            price = _r(Decimal(entry["reported_price"] / 100))
-            provision_in_percent = get_z_provision_in_percent(price)
-
-            astats = ArticleStats(
-                sku=entry["sku"],
-                category=category,
-                marketplace=Marketplace.ZALANDO,
-                price=price,
-                provision_in_percent=provision_in_percent,
-                vat_in_percent=entry["vat_in_percent"],
-                generic_costs_in_percent=entry["generic_costs_in_percent"],
-                production_costs=entry["costs_production"],
-                shipping_costs=entry["shipping_costs"],
-                return_costs=entry["return_costs"],
-                shipped=entry["shipped"],
-                returned=entry["returned"],
-                canceled=entry["canceled"],
-            )
-            if category not in result:
-                result[category] = {
-                    "content": [],
-                    "name": category,
-                    "stats": {
-                        "canceled": 0,
-                        "returned": 0,
-                        "sales": 0,
-                        "shipped": 0,
-                        "total_diff": 0,
-                        "total_return_costs": 0,
-                        "total_revenue": 0,
-                    },
-                }
-
-            result[category]["content"].append(
-                {
-                    "article_number": astats.sku,
-                    "canceled": astats.canceled,
-                    "category": astats.category,
-                    "costs_production": astats.production_costs,
-                    "provision": astats.provision_amount,
-                    "generic_costs": astats.generic_costs_amount,
-                    "nineteen_percent_vat": astats.vat_amount,
-                    "profit_after_taxes": astats.profit_after_taxes,
-                    "return_costs": astats.return_costs,
-                    "returned": astats.returned,
-                    "sales": astats.sales,
-                    "shipped": astats.shipped,
-                    "shipping_costs": astats.shipping_costs,
-                    "total_diff": astats.total_diff,
-                    "total_return_costs": astats.total_return_costs,
-                    "total_revenue": astats.total_revenue,
-                    "vk_zalando": astats.price,
-                }
-            )
-            result[category]["stats"]["canceled"] += astats.canceled
-            result[category]["stats"]["sales"] += astats.sales
-            result[category]["stats"]["shipped"] += astats.shipped
-            result[category]["stats"]["returned"] += astats.returned
-            result[category]["stats"]["total_revenue"] += astats.total_revenue
-            result[category]["stats"]["total_return_costs"] += astats.total_return_costs
-            result[category]["stats"]["total_diff"] += astats.total_diff
-
-    return result
 
 
 def get_article_stats_zalando_msr_based(start_date: date, end_date: date) -> dict:
@@ -606,7 +488,6 @@ def get_article_stats(
             return get_article_stats_otto(start_date, end_date)
         case Marketplace.ZALANDO:
             return get_article_stats_zalando_msr_based(start_date, end_date)
-            # return get_article_stats_zalando(start_date, end_date)
         case _:
             mlog.error(LOG, f"unknown marketplace: {marketplace}")
             return {}
