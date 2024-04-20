@@ -12,3 +12,6 @@ python manage.py dumpdata      \
     -e admin                   \
     --indent 2 > ${NOW}-dump.json
 zip ${NOW}-dump.json.zip ${NOW}-dump.json
+echo
+echo "scp gaja:${pwd}/${NOW}-dump.json.zip ."
+echo
