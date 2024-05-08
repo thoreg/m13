@@ -13,5 +13,6 @@ python manage.py dumpdata      \
     --indent 2 > ${NOW}-dump.json
 zip ${NOW}-dump.json.zip ${NOW}-dump.json
 echo
-echo "scp gaja:${pwd}/${NOW}-dump.json.zip ."
+PWD=`pwd`
+echo "scp gaja:${PWD}/${NOW}-dump.json.zip ."
 echo
