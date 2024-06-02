@@ -1,5 +1,6 @@
 #!/bin/bash
 NOW=`date "+%Y%m%dT%H%M%S"`
+DIR=`pwd`
 python manage.py dumpdata      \
     --natural-foreign          \
     --natural-primary          \
@@ -14,5 +15,5 @@ python manage.py dumpdata      \
 zip ${NOW}-dump.json.zip ${NOW}-dump.json
 echo
 PWD=`pwd`
-echo "scp gaja:${PWD}/${NOW}-dump.json.zip ."
+echo "scp gaja:${DIR}/${NOW}-dump.json.zip ."
 echo
