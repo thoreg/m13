@@ -27,8 +27,8 @@ class MarketplaceConfigAdmin(admin.ModelAdmin):
                 "created",
                 "modified",
             ]
-        else:
-            return []
+
+        return []
 
     def has_delete_permission(self, _request, _obj=None):
         """Deletion of a marketplace is not allowed - there might be related values."""
