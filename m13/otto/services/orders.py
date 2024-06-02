@@ -18,6 +18,7 @@ CANCELLED_BY_MARKETPLACE -> This position item was cancelled by the market place
                             and won't be processed any further.
 
 """
+
 import logging
 import os
 import sys

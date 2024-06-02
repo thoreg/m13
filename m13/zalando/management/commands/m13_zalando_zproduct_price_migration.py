@@ -1,4 +1,5 @@
 """Take info like price and pimped flag from ZProduct and apply it to core.Price."""
+
 from django.core.management.base import BaseCommand
 
 from core.models import Price

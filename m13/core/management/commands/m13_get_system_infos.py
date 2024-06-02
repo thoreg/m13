@@ -1,4 +1,5 @@
 """Gather information about the used system, e.g. free disk space."""
+
 import shutil
 
 from django.conf import settings

@@ -1,4 +1,5 @@
 """Remove all job results wich are older then X days."""
+
 from datetime import timedelta
 
 from django.core.management.base import BaseCommand

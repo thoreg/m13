@@ -1,4 +1,5 @@
 """Otto sales/return reports processing code lives here."""
+
 import calendar
 from dataclasses import dataclass
 from decimal import Decimal

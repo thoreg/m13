@@ -7,6 +7,7 @@ Run for dry mode:
     python manage.py m13_zalando_feed_update --dry=1
 
 """
+
 import logging
 
 from django.conf import settings

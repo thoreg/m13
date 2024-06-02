@@ -8,6 +8,7 @@ from typing import NamedTuple
 
 import requests
 from django.conf import settings
+from django.db.utils import IntegrityError
 
 from core.models import Price
 from m13.common import now_as_str
@@ -252,7 +253,9 @@ def pimp_prices(lines):
         try:
             # Special overwrite on certain products - just take hard the vk_zalando
             # without further any further modification
-            core_price = Price.objects.get(sku=row.article_number, pimped_zalando=True)
+            core_price = Price.objects.get(
+                sku__iexact=row.article_number, pimped_zalando=True
+            )
             price = core_price.vk_zalando
             LOG.debug(f"{row.article_number} - price via pimped_zalando=True : {price}")
 
@@ -263,8 +266,27 @@ def pimp_prices(lines):
 
         LOG.debug(f"{row.article_number} - {row.product_name}: {row.price} -> {price}")
 
-        # TODO: use Price here
+        # Is this still needed? Where is this used?
         Product.objects.get_or_create(ean=row.ean, defaults={"title": row.product_name})
+
+        try:
+            # Create new price entries on the fly if EAN is unknown
+            _obj, price_created = Price.objects.get_or_create(
+                ean=row.ean, defaults={"sku": row.article_number}
+            )
+            if price_created:
+                LOG.info(f"New price entry created: {row.article_number}:{row.ean}")
+        except IntegrityError as exc:
+            # : duplicate key value violates unique constraint "core_price_pkey"
+            # Possible when there is a price with sku but without ean (both values
+            # have to be unique)
+            str_exc = str(exc)
+            if str_exc.startswith("duplicate key value violates unique"):
+                # This actually MUST find something
+                price = Price.objects.get(sku=row.article_number)
+                price.ean = row.ean
+                price.save()
+                LOG.info(f"EAN added sku: {row.article_number} ean: {row.ean}")
 
         row.price = str(price)
         row.retail_price = str(price)

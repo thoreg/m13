@@ -3,6 +3,7 @@
 python manage.py m13_zalando_export_sales_report 2024 12 2024-12-zalando-single-transactions.csv
 
 """
+
 import calendar
 
 from django.core.management.base import BaseCommand

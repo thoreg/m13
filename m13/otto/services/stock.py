@@ -1,4 +1,5 @@
 """Upload stock information to OTTO."""
+
 import json
 import logging
 import os

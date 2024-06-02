@@ -57,6 +57,7 @@ The order is ready to be shipped to the customer.):
 }
 
 """
+
 import logging
 
 from django.utils import timezone
