@@ -1,4 +1,5 @@
 """Export Sales Report (for zalando)."""
+
 import csv
 
 from zalando.constants import ZALANDO_OFFSET_ACCOUNT

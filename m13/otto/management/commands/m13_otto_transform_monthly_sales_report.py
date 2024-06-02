@@ -3,6 +3,7 @@
 The report needs to be in a format which can be importet to DATEV.
 
 """
+
 import logging
 
 from django.core.management.base import BaseCommand

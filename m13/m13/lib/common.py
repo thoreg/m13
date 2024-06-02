@@ -1,4 +1,5 @@
 """Library for common tasks."""
+
 from django.utils import timezone
 
 from core.models import Job

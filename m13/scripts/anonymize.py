@@ -1,4 +1,5 @@
 """Script to anonymize data in a given fixture."""
+
 import json
 import random
 import string

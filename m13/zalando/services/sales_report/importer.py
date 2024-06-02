@@ -4,6 +4,7 @@ Reports from Zalando about sales and returns are stored in Dropbox from where
 they are grabbed for further processing.
 
 """
+
 import csv
 from dataclasses import dataclass
 from datetime import datetime

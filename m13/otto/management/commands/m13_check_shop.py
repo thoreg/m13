@@ -1,4 +1,5 @@
 """Management command to verify the shop is running and it looks like expected."""
+
 import logging
 
 import requests

@@ -4,6 +4,7 @@ For import into DATEV we need a special format. This function transforms Z
 format into somthing which can be imported into DATEV.
 
 """
+
 import logging
 
 from django.core.management.base import BaseCommand
