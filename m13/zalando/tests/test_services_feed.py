@@ -13,6 +13,8 @@ from zalando.services.feed import ZalandoException, pimp_prices
 @pytest.mark.django_db
 def test_pimp_prices():
     """Pimp original stock n price feed."""
+    # Cleanup
+    Price.objects.all().delete()
     #
     # Prepare two products - one price gets overwritten, one not
     #
@@ -24,6 +26,7 @@ def test_pimp_prices():
         vk_zalando="24.99",
         vk_otto="25.99",
         pimped_zalando=True,
+        ean="0781491971740",
     )
     Price.objects.create(
         sku="CORJACKET-BO-S",
@@ -32,6 +35,7 @@ def test_pimp_prices():
         vk_zalando="24.99",
         vk_otto="25.99",
         pimped_zalando=False,
+        ean="0781491971733",
     )
 
     with open("zalando/tests/data/original_stock_price_feed.csv", "r") as f:
