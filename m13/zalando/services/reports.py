@@ -201,7 +201,10 @@ def import_monthly_sales_report(file: TransactionFileUpload) -> None:
         try:
             order_date_data = line["ORDER_DATE"]
         except KeyError:
-            order_date_data = line["Order Date"]
+            try:
+                order_date_data = line["Order Date"]
+            except KeyError:
+                order_date_data = line["Order date"]
 
         order_date = make_aware(datetime.strptime(order_date_data, "%d.%m.%Y"))
         shipping_return_date = make_aware(
