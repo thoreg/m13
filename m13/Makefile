@@ -1,27 +1,32 @@
-clean:
+.PHONY: help
+
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+clean: ## Delete all bytecode and coverage data
 	find . -name "__pycache__" | xargs rm -rf
 	rm -rf htmlcov
 
-test:
+test: ## Run the tests
 	pytest --import-mode=importlib --ds=m13.config.develop .
 
-testv:
+testv: ## Run the tests in verbose mode
 	pytest -vv -s --import-mode=importlib --ds=m13.config.develop .
 
-test_over:
+test_over: ## Run the tests and overwrite the dumps
 	pytest --overwrite --import-mode=importlib --ds=m13.config.develop .
 
-style:
+style: ## Run style checks and static code analyzers
 	# ruff .
 	flake8 --config ./tox.ini
 	pylint .
 
-format:
+format: ## Run formatter
 	isort .
 	black .
 
 check: clean style test
 
-py-cov:
+py-cov: ## Run the tests and collect coverage data
 	rm -rf htmlcov
 	pytest --import-mode=importlib --ds=m13.config.develop --cov-report=html --cov=.

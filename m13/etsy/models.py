@@ -29,6 +29,28 @@ class Address(TimeStampedModel):
     formatted_address = models.CharField(max_length=256)
     zip_code = models.CharField(max_length=32)
 
+    def get_address_as_columns(self) -> tuple[str, str, str]:
+        """Return single fields for firstname, surname, street"""
+        splitted_by_newline = self.formatted_address.split("\n")
+        splitted_by_newline = [
+            line.strip() for line in splitted_by_newline if len(line.strip()) > 0
+        ]
+        first_line = splitted_by_newline[0].strip().split()
+        first_name = " ".join(first_line[:-1])
+        last_name = first_line[-1]
+
+        # Part which holds the street
+        address_part = splitted_by_newline[1].strip()
+        if len(splitted_by_newline) == 5:
+            first_street_line = splitted_by_newline[1].strip()
+            second_street_line = splitted_by_newline[2].strip()
+            connector = " "
+            if len(second_street_line) > 5:  # more than a simple house number?
+                connector = "\n"
+            address_part = f"{connector}".join([first_street_line, second_street_line])
+
+        return first_name, last_name, address_part
+
 
 class Order(TimeStampedModel):
     marketplace_order_id = models.CharField(max_length=64)

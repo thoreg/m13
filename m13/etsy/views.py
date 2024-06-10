@@ -110,14 +110,11 @@ def orderitems_csv(request):
             price = "%0.2f" % (int(amount) / int(divisor))
             price = price.replace(".", ",")
 
-            parsed_address = current_order.delivery_address.formatted_address.split()
-            city = current_order.delivery_address.city
-
-            first_name = parsed_address[0]
-            last_name = parsed_address[1]
-            street = " ".join(parsed_address[2 : __get_street_offset(city)])  # noqa
+            first_name, last_name, street = (
+                current_order.delivery_address.get_address_as_columns()
+            )
             zip_code = current_order.delivery_address.zip_code
-            city = city
+            city = current_order.delivery_address.city
             country = current_order.delivery_address.country_code
 
             writer.writerow(
@@ -143,14 +140,11 @@ def orderitems_csv(request):
         price = "%0.2f" % round(oi.price_in_cent / 100, 2)
         price = price.replace(".", ",")
 
-        parsed_address = oi.order.delivery_address.formatted_address.split()
-        city = oi.order.delivery_address.city
-
-        first_name = parsed_address[0]
-        last_name = parsed_address[1]
-        street = " ".join(parsed_address[2 : __get_street_offset(city)])  # noqa
+        first_name, last_name, street = (
+            oi.order.delivery_address.get_address_as_columns()
+        )
         zip_code = oi.order.delivery_address.zip_code
-        city = city
+        city = oi.order.delivery_address.city
         country = oi.order.delivery_address.country_code
 
         writer.writerow(
@@ -182,12 +176,9 @@ def orderitems_csv(request):
         price = "%0.2f" % (int(amount) / int(divisor))
         price = price.replace(".", ",")
 
-        parsed_address = current_order.delivery_address.formatted_address.split()
-        city = current_order.delivery_address.city
-
-        first_name = parsed_address[0]
-        last_name = parsed_address[1]
-        street = " ".join(parsed_address[2 : __get_street_offset(city)])  # noqa
+        first_name, last_name, street = (
+            current_order.delivery_address.get_address_as_columns()
+        )
         zip_code = current_order.delivery_address.zip_code
         city = current_order.delivery_address.city
         country = current_order.delivery_address.country_code
