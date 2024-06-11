@@ -46,11 +46,14 @@ def test_address_get_address_as_columns():
         zip_code="94508",
     )
 
-    first_name, last_name, address_part = address.get_address_as_columns()
+    first_name, last_name, address_part, additional_info = (
+        address.get_address_as_columns()
+    )
 
     assert first_name == "Julia Alexandra"
     assert last_name == "Hartmann"
     assert address_part == "Ammanger Str.77"
+    assert additional_info == ""
 
 
 TEST_DATA = [
@@ -63,7 +66,8 @@ TEST_DATA = [
         Germany""",
         "Schmukas Schatzi",
         "Benetsborgaro",
-        "Ulrichsberger Straße 123\nFivethousandfingergames GmbH",
+        "Ulrichsberger Straße 123",
+        "Fivethousandfingergames GmbH",
     ),
     (
         """Stefanie Mechaelis
@@ -73,6 +77,7 @@ TEST_DATA = [
         "Stefanie",
         "Mechaelis",
         "Kollererstraße 217 a",
+        "",
     ),
     (
         """Nomia Tirsoni
@@ -82,6 +87,7 @@ TEST_DATA = [
         "Nomia",
         "Tirsoni",
         "Brüniggerstr. 146",
+        "",
     ),
     (
         """Sandro Reskoni
@@ -91,7 +97,8 @@ TEST_DATA = [
         Germany""",
         "Sandro",
         "Reskoni",
-        "Lombertstr. 15",
+        "Lombertstr.",
+        "15",
     ),
     (
         """Sarah Zoe Tobiaschischi
@@ -101,6 +108,7 @@ TEST_DATA = [
         "Sarah Zoe",
         "Tobiaschischi",
         "Neuer Berg 181",
+        "",
     ),
     (
         """Fiasi Themser
@@ -110,6 +118,7 @@ TEST_DATA = [
         "Fiasi",
         "Themser",
         "Glockerstr. 152D",
+        "",
     ),
     (
         """Selin Trümmel
@@ -119,6 +128,7 @@ TEST_DATA = [
         "Selin",
         "Trümmel",
         "Neckartalstr.551",
+        "",
     ),
     (
         """Elfi Horn
@@ -128,7 +138,8 @@ TEST_DATA = [
         Germany""",
         "Elfi",
         "Horn",
-        "Veilchenstr, 123 Frau",
+        "Veilchenstr, 123",
+        "Frau",
     ),
     (
         """Roberto Tardennoni
@@ -138,7 +149,8 @@ TEST_DATA = [
         Germany""",
         "Roberto",
         "Tardennoni",
-        "Schützenstr. 121",
+        "Schützenstr.",
+        "121",
     ),
     (
         """Martin Kundari
@@ -148,18 +160,23 @@ TEST_DATA = [
         Germany""",
         "Martin",
         "Kundari",
-        "Packstation 405\n8204269997",
+        "Packstation 405",
+        "8204269997",
     ),
 ]
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "formatted_address,expected_first_name,expected_last_name,expected_street",
+    "formatted_address,expected_first_name,expected_last_name,expected_street,expected_additional_info",
     TEST_DATA,
 )
 def test_extended_address_as_columns(
-    formatted_address, expected_first_name, expected_last_name, expected_street
+    formatted_address,
+    expected_first_name,
+    expected_last_name,
+    expected_street,
+    expected_additional_info,
 ):
     """Return proper first and surname and rest of address"""
     address, _created = Address.objects.get_or_create(
@@ -171,8 +188,11 @@ def test_extended_address_as_columns(
         zip_code="94508",
     )
 
-    first_name, last_name, address_part = address.get_address_as_columns()
+    first_name, last_name, address_part, additional_info = (
+        address.get_address_as_columns()
+    )
 
     assert first_name == expected_first_name
     assert last_name == expected_last_name
     assert address_part == expected_street
+    assert additional_info == expected_additional_info

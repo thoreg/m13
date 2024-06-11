@@ -90,6 +90,7 @@ def orderitems_csv(request):
             "Anmerkung",
             "EMAIL",
             "Auftragsdatum",
+            "Adresszusatz",
         ]
     )
 
@@ -110,7 +111,7 @@ def orderitems_csv(request):
             price = "%0.2f" % (int(amount) / int(divisor))
             price = price.replace(".", ",")
 
-            first_name, last_name, street = (
+            first_name, last_name, street, additional_info = (
                 current_order.delivery_address.get_address_as_columns()
             )
             zip_code = current_order.delivery_address.zip_code
@@ -134,13 +135,14 @@ def orderitems_csv(request):
                     f"ETSY{current_order.marketplace_order_id}",
                     current_order.delivery_address.buyer_email,
                     current_order.created.strftime("%d.%m.%y"),
+                    additional_info,
                 ]
             )
 
         price = "%0.2f" % round(oi.price_in_cent / 100, 2)
         price = price.replace(".", ",")
 
-        first_name, last_name, street = (
+        first_name, last_name, street, additional_info = (
             oi.order.delivery_address.get_address_as_columns()
         )
         zip_code = oi.order.delivery_address.zip_code
@@ -164,6 +166,7 @@ def orderitems_csv(request):
                 f"ETSY{oi.order.marketplace_order_id}",
                 oi.order.delivery_address.buyer_email,
                 oi.order.created.strftime("%d.%m.%y"),
+                additional_info,
             ]
         )
 
@@ -176,7 +179,7 @@ def orderitems_csv(request):
         price = "%0.2f" % (int(amount) / int(divisor))
         price = price.replace(".", ",")
 
-        first_name, last_name, street = (
+        first_name, last_name, street, additional_info = (
             current_order.delivery_address.get_address_as_columns()
         )
         zip_code = current_order.delivery_address.zip_code
@@ -200,6 +203,7 @@ def orderitems_csv(request):
                 f"ETSY{current_order.marketplace_order_id}",
                 current_order.delivery_address.buyer_email,
                 current_order.created.strftime("%d.%m.%y"),
+                additional_info,
             ]
         )
 
