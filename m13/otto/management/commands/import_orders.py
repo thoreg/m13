@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 from functools import reduce
 
 from django.core.management.base import BaseCommand
@@ -17,12 +16,6 @@ PASSWORD = os.getenv("OTTO_API_PASSWORD")
 
 LOG = logging.getLogger(__name__)
 
-token = ""
-
-if not all([USERNAME, PASSWORD]):
-    print("\nyou need to define username and password\n")
-    sys.exit(1)
-
 
 def safenget(dct, key, default=None):
     """Get nested dict items safely."""
@@ -35,6 +28,7 @@ def safenget(dct, key, default=None):
 
 
 def get_next_slice(token, orders):
+    """..."""
     LOG.info(f"paginated response - href: {orders['links'][0]['href']}")
     orders = fetch_next_slice(token, orders["links"][0]["href"])
     save_orders(orders)
