@@ -57,7 +57,7 @@ def get_auth_token():
         "grant_type": "client_credentials",
         "client_id": CLIENT_ID,
         "client_secret": CLIENT_SECRET,
-        "scope": "orders products",
+        "scope": "orders products shipments",
     }
     r = requests.post(
         TOKEN_URL,
