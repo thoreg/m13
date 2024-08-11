@@ -39,18 +39,25 @@ class Command(BaseCommand):
         Note: You want to truncate the table otto_orderitemjournal before you
               fire this command.
         """
+        # prune the journal table
+        OrderItemJournal.objects.all().delete()
+
         token = get_auth_token()
         headers = {
             "Authorization": f"Bearer {token}",
         }
 
-        all_orders = Order.objects.all()
+        # all_orders = Order.objects.all()
+        all_orders = Order.objects.all()[1203:]
+        # all_orders = Order.objects.filter(order_date__gt="2024-01-01")
+        # all_orders = Order.objects.filter(marketplace_order_number="cbn4kqmhyn")
         number_of_all_orders = len(all_orders)
 
         for idx, order in enumerate(all_orders):
             order_number = order.marketplace_order_number
+            order_date = order.order_date
 
-            print(f"Fetching infos for {order_number} ...")
+            print(f"Fetching infos for {order_number} ... ", end="")
             url = f"{ORDERS_URL}/{order_number}"
             response = requests.get(url, headers=headers, timeout=60)
 
@@ -65,11 +72,15 @@ class Command(BaseCommand):
                     response_json = response.json()
                     pprint(response_json)
                     return
+            print(f"{response.status_code}", flush=True)
 
             print(
                 f"[{idx:05}/{number_of_all_orders}] processing order_number: {order_number}"
             )
-            response_json = response.json()
+            try:
+                response_json = response.json()
+            except:
+                import ipdb ; ipdb.set_trace()
 
             for oi in response_json["positionItems"]:
                 if oi["fulfillmentStatus"] not in [
@@ -99,6 +110,7 @@ class Command(BaseCommand):
                     sku=sku,
                     position_item_id=position_item_id,
                     fulfillment_status=fulfillment_status,
+                    order_date=order_date,
                 )
                 print(f"created: {created}", flush=True)
 
