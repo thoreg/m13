@@ -116,6 +116,7 @@ class OrderItemJournal(TimeStampedModel):
     ean = models.CharField(max_length=16)
     position_item_id = models.CharField(max_length=64)
     order_number = models.CharField(max_length=16)
+    order_date = models.DateTimeField(null=True)
     fulfillment_status = models.CharField(
         max_length=24,
         choices=OrderItemStatus.choices,
