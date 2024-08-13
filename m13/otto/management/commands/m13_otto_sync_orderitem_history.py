@@ -75,7 +75,9 @@ class Command(BaseCommand):
                 }
                 response = requests.get(url, headers=headers, timeout=60)
                 if response.status_code != requests.codes.ok:
-                    LOG.info(f"[{response.status_code}] Nein man - hier ist gar nichts ok")
+                    LOG.info(
+                        f"[{response.status_code}] Nein man - hier ist gar nichts ok"
+                    )
                     response_json = response.json()
                     pLOG.info(response_json)
                     return

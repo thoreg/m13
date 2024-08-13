@@ -34,7 +34,7 @@ from django.utils import timezone
 
 from core.models import Price
 from m13.lib import log as mlog
-from otto.models import Address, Order, OrderItem, OrderItemJournal
+from otto.models import Address, Order, OrderItem
 
 LOG = logging.getLogger(__name__)
 
@@ -238,39 +238,6 @@ def save_orders(orders_as_json):
                 )
                 number_of_messages = mail.send()
                 assert number_of_messages == 1
-
-            #
-            # OrderItemJournal
-            #
-            if fulfillment_status not in [
-                OrderItemJournal.OrderItemStatus.RETURNED,
-                OrderItemJournal.OrderItemStatus.SENT,
-            ]:
-                LOG.info(
-                    "   no journal entry because "
-                    f"fullfillment_status: {fulfillment_status}"
-                )
-                continue
-
-            if fulfillment_status == OrderItemJournal.OrderItemStatus.RETURNED:
-                last_modified = oi["returnedDate"]
-            else:
-                last_modified = oi["sentDate"]
-                fulfillment_status = OrderItemJournal.OrderItemStatus.SENT
-
-            price = oi["itemValueGrossPrice"]["amount"]
-            LOG.info(f"  journal entry {sku} {fulfillment_status} ... ")
-
-            _oij, created = OrderItemJournal.objects.get_or_create(
-                order_number=entry.get("orderNumber"),
-                last_modified=last_modified,
-                price=price,
-                ean=ean,
-                sku=sku,
-                position_item_id=position_item_id,
-                fulfillment_status=fulfillment_status,
-            )
-            LOG.info(f"created: {created}")
 
 
 def get_url(status, datum=None):
