@@ -2,9 +2,10 @@ import logging
 import os
 import sys
 import time
-from pprint import pprint
+from datetime import date
 
 import requests
+from dateutil.relativedelta import relativedelta
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -22,7 +23,7 @@ urllib_logger = logging.getLogger("urllib3")
 urllib_logger.setLevel(logging.INFO)
 
 if not all([USERNAME, PASSWORD]):
-    print("\nyou need to define username and password\n")
+    LOG.info("\nyou need to define username and password\n")
     sys.exit(1)
 
 
@@ -39,8 +40,11 @@ class Command(BaseCommand):
         Note: You want to truncate the table otto_orderitemjournal before you
               fire this command.
         """
-        # prune the journal table
-        OrderItemJournal.objects.all().delete()
+        # twelve_months_ago = date.today() + relativedelta(months=-12)
+        six_months_ago = date.today() + relativedelta(months=-6)
+        # OrderItemJournal.objects.all().delete()
+        # OrderItemJournal.objects.filter(order_date__gt=twelve_months_ago)
+        OrderItemJournal.objects.filter(order_date__gt=six_months_ago).delete()
 
         token = get_auth_token()
         headers = {
@@ -48,7 +52,10 @@ class Command(BaseCommand):
         }
 
         # all_orders = Order.objects.all()
-        all_orders = Order.objects.all()[1203:]
+        # all_orders = Order.objects.filter(order_date__gt=twelve_months_ago)
+        all_orders = Order.objects.filter(order_date__gt=six_months_ago)
+
+        # all_orders = Order.objects.all()[1203:]
         # all_orders = Order.objects.filter(order_date__gt="2024-01-01")
         # all_orders = Order.objects.filter(marketplace_order_number="cbn4kqmhyn")
         number_of_all_orders = len(all_orders)
@@ -57,7 +64,7 @@ class Command(BaseCommand):
             order_number = order.marketplace_order_number
             order_date = order.order_date
 
-            print(f"Fetching infos for {order_number} ... ", end="")
+            LOG.info(f"Fetching infos for {order_number} ... ")
             url = f"{ORDERS_URL}/{order_number}"
             response = requests.get(url, headers=headers, timeout=60)
 
@@ -68,19 +75,20 @@ class Command(BaseCommand):
                 }
                 response = requests.get(url, headers=headers, timeout=60)
                 if response.status_code != requests.codes.ok:
-                    print(f"[{response.status_code}] Nein man - hier ist gar nichts ok")
+                    LOG.info(f"[{response.status_code}] Nein man - hier ist gar nichts ok")
                     response_json = response.json()
-                    pprint(response_json)
+                    pLOG.info(response_json)
                     return
-            print(f"{response.status_code}", flush=True)
+            LOG.info(f"{response.status_code}")
 
-            print(
+            LOG.info(
                 f"[{idx:05}/{number_of_all_orders}] processing order_number: {order_number}"
             )
             try:
                 response_json = response.json()
             except:
-                import ipdb ; ipdb.set_trace()
+                LOG.error(response)
+                continue
 
             for oi in response_json["positionItems"]:
                 if oi["fulfillmentStatus"] not in [
@@ -100,7 +108,7 @@ class Command(BaseCommand):
                 ean = oi["product"]["ean"]
                 sku = oi["product"]["sku"]
                 position_item_id = oi["positionItemId"]
-                print(f"  {sku} ... ", end="")
+                LOG.info(f"  {sku} ... ")
 
                 _oij, created = OrderItemJournal.objects.get_or_create(
                     order_number=order_number,
@@ -112,7 +120,7 @@ class Command(BaseCommand):
                     fulfillment_status=fulfillment_status,
                     order_date=order_date,
                 )
-                print(f"created: {created}", flush=True)
+                LOG.info(f"created: {created}")
 
             time.sleep(2)
 
@@ -127,7 +135,7 @@ class Command(BaseCommand):
                 OrderItemJournal.OrderItemStatus.RETURNED,
                 OrderItemJournal.OrderItemStatus.SENT,
             ]:
-                print(f"skipping {oi.sku} {oi.fulfillment_status}")
+                LOG.info(f"skipping {oi.sku} {oi.fulfillment_status}")
                 continue
 
             last_modified = None
@@ -145,7 +153,7 @@ class Command(BaseCommand):
             ean = oi.ean
             sku = oi.sku
             position_item_id = oi.position_item_id
-            print(f"  {sku} ... ", end="")
+            LOG.info(f"  {sku} ... ")
 
             _oij, created = OrderItemJournal.objects.get_or_create(
                 order_number=oi.order.marketplace_order_number,
@@ -156,7 +164,7 @@ class Command(BaseCommand):
                 position_item_id=position_item_id,
                 fulfillment_status=fulfillment_status,
             )
-            print(f"created: {created}", flush=True)
+            LOG.info(f"created: {created}")
 
     def add_arguments(self, parser):
         parser.add_argument("cmd_id", nargs="+", type=int)
@@ -168,7 +176,7 @@ class Command(BaseCommand):
         elif cmd[0] == 2:
             self._wipe_n_rebuild()
         else:
-            print("Unknown command - do you know what you are doing?")
+            LOG.info("Unknown command - do you know what you are doing?")
             import ipdb
 
             ipdb.set_trace()
