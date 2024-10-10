@@ -118,6 +118,8 @@ REST_FRAMEWORK = {
 
 DEFAULT_FROM_EMAIL = os.getenv("M13_FROM_EMAIL_ADDRESS")
 FROM_EMAIL_ADDRESS = os.getenv("M13_FROM_EMAIL_ADDRESS")
+SERVER_EMAIL =  os.getenv("M13_FROM_EMAIL_ADDRESS")
+
 ADMINS = [
     ("thoreg", "thoreg@gmail.com"),
 ]
