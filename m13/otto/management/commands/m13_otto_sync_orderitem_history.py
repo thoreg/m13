@@ -79,7 +79,7 @@ class Command(BaseCommand):
                         f"[{response.status_code}] Nein man - hier ist gar nichts ok"
                     )
                     response_json = response.json()
-                    pLOG.info(response_json)
+                    LOG.info(response_json)
                     return
             LOG.info(f"{response.status_code}")
 
