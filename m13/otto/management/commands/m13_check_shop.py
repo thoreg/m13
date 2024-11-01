@@ -32,6 +32,7 @@ WHITE_LIST = [
     "https://www.instagram.com/manufaktur13/",
     "https://www.youtube.com/channel/UCLHKAq7rTPTOcPTGXygkeLg",
     "https://www.panfilm.de",
+    "https://linktr.ee/manufaktur13",
     "javascript:void(0);",
     "#slides__0",
     "#slides__1",
