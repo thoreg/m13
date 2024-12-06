@@ -183,20 +183,34 @@ $(function() {
             <tr>
               <td class="column-xl">` + article.article_number + `</td>
               <td class="column-xl">` + article.category + `</td>
-              <td class="column-xl">` + article.costs_production + `</td>
-              <td class="column-xl">` + article.vk_zalando + `</td>
-              <td class="column-l">` + article.return_costs + `</td>
-              <td class="column-l">` + article.shipping_costs + `</td>
-              <td class="column-l">` + article.provision + `</td>
-              <td class="column-l">` + article.nineteen_percent_vat + `</td>
-              <td class="column-l">` + article.generic_costs + `</td>
-              <td class="column-xl">` + article.profit_after_taxes + `</td>
-              <td class="column-l">` + article.shipped + `</td>
-              <td class="column-l">` + article.returned + `</td>
-              <td class="column-xl">` + article.total_revenue + `</td>
-              <td class="column-xl">` + article.total_return_costs + `</td>
-              <td class="column-xl">` + article.sales + `</td>
-              <td class="diff">` + article.total_diff + `</td>
+              <td class="column-xl"><span title="Original Eintrag 'production_costs' aus der DB">` + article.costs_production + `</span></td>
+              <td class="column-xl"><span title="Reported Preis vom Marktplatz">` + article.vk_zalando + `</span></td>
+              <td class="column-l"><span title="Wert aus der Marktplatz Configuration (DB)">` + article.return_costs + `</span></td>
+              <td class="column-l"><span title="Wert aus der Marktplatz Configuration (DB)">` + article.shipping_costs + `</span></td>
+              <td class="column-l"><span title="Reported vom Marktplatz pai_fee + payment_service_fee">` + article.provision + `</span></td>
+              <td class="column-l"><span title="self.price * self.vat_in_percent / 100">` + article.nineteen_percent_vat + `</span></td>
+              <td class="column-l"><span title="self.price * self.generic_costs_in_percent / 100">` + article.generic_costs + `</span></td>
+              <td class="column-xl"><span title=" self.price
+                - self.production_costs
+                - self.shipping_costs
+                - self.provision_amount
+                - self.vat_amount
+                - self.generic_costs_amount">` + article.profit_after_taxes + `</span></td>
+              <td class="column-l"><span title="Anzahl Zeilen aus der DB welche 'Sale' sind(DB) => self.shipped">` + article.shipped + `</span></td>
+              <td class="column-l"><span title="Anzahl Zeilen aus der DB welche nicht 'Sale' sind(DB) => self.returned">` + article.returned + `</span></td>
+              <td class="column-xl"><span title="
+result = self.profit_after_taxes * (self.shipped - self.returned)
+if result < 0:
+    return Decimal('0.00')
+return result
+              ">` + article.total_revenue + `</span></td>
+              <td class="column-xl"><span title="
+return self.returned * (
+    self.shipping_costs + self.return_costs + self.generic_costs_amount
+)
+              ">` + article.total_return_costs + `</span></td>
+              <td class="column-xl"><span title="return self.price * self.shipped">` + article.sales + `</span></td>
+              <td class="diff"><span title="return self.total_revenue - self.total_return_costs">` + article.total_diff + `</span></td>
             </tr>
           `);
         });
