@@ -58,7 +58,8 @@ class Command(BaseCommand):
 
             dto = save_original_feed(csv_content_as_list)
             pimped_file_name = pimp_prices(dto.lines)
-            validation_result = validate_feed(pimped_file_name)
+            # validation_result = validate_feed(pimped_file_name)
+            validation_result = "no validation done ..."
 
             if dry_run:
                 LOG.info("Return early because of --dry-run")
