@@ -145,6 +145,7 @@ $(function() {
                   <td class="column-xxl">Verlust (Retouren): ` + value.stats.total_return_costs + ` </td>
                   <td class="column-xxl">Umsatz: ` + value.stats.sales + ` </td>
                   <td class="column-l diffHeader">Differenz: ` + value.stats.total_diff + ` </td>
+                  <td class="column-l diffHeader">Alarm</td>
                 </tr>
               </table>
             </div>
@@ -167,6 +168,7 @@ $(function() {
                   <th class="column-xl">Verlust (Retouren)</th>
                   <th class="column-xl">Umsatz</th>
                   <th class="column-xl">Differenz</th>
+                  <th class="column-xl">Entfernen</th>
                 </thead>
                 <tbody id=` + value.name.replace(/\s/g, "").replace(/\(/g, "").replace(/\)/g, "") + `>
                 </tbody>
@@ -211,6 +213,8 @@ return self.returned * (
               ">` + article.total_return_costs + `</span></td>
               <td class="column-xl"><span title="return self.price * self.shipped">` + article.sales + `</span></td>
               <td class="diff"><span title="return self.total_revenue - self.total_return_costs">` + article.total_diff + `</span></td>
+              <td class="column-l ` + article.removal_alarm + `">
+                <span title="wenn verkaufte Artikel > 50 und retouren quote > 50% und (1) self.total_diff > -200 and self.total_diff < 50 => yellow (2) self.total_diff < -200 => red">` + article.removal_alarm + `</span></td>
             </tr>
           `);
         });

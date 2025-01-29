@@ -16,12 +16,11 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from m13.lib.common import monitor
-from zalando.services.feed import (
+from zalando.services.feed import (  # validate_feed,
     download_feed,
     pimp_prices,
     save_original_feed,
     upload_pimped_feed,
-    validate_feed,
 )
 
 LOG = logging.getLogger(__name__)
