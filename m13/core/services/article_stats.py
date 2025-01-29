@@ -102,6 +102,32 @@ class ArticleStats:
         """Return amount which was generated due to sales."""
         return self.price * self.shipped
 
+    @property
+    def removal_alarm(self) -> str:
+        """Return alarm indicator if
+
+        sales > 50
+        returned > 50%
+        total_revenue -50 - -200 => yellow
+        total_revenue > -200 => red
+
+        """
+        if self.shipped < 50:
+            return "vk_<_50"
+
+        if self.returned < (self.shipped / 2):
+            return "rt_<_50_percent"
+
+        if self.total_diff < -200:
+            return "red"
+
+        # if self.total_diff > -200 and self.total_diff < -50:
+        # if self.total_diff > -200 and self.total_diff < 0:
+        if self.total_diff > -200 and self.total_diff < 50:
+            return "yellow"
+
+        return "unexpected"
+
 
 @dataclass
 class ArticleStats2:
@@ -199,6 +225,8 @@ class ArticleStats2:
         # if self.total_diff > -200 and self.total_diff < 0:
         if self.total_diff > -200 and self.total_diff < 50:
             return "yellow"
+
+        return "unexpected"
 
 
 def get_article_stats_otto(start_date: date, end_date: date) -> dict:
@@ -344,6 +372,7 @@ def get_article_stats_otto(start_date: date, end_date: date) -> dict:
                     "generic_costs": astats.generic_costs_amount,
                     "nineteen_percent_vat": astats.vat_amount,
                     "profit_after_taxes": astats.profit_after_taxes,
+                    "removal_alarm": astats.removal_alarm,
                     "return_costs": astats.return_costs,
                     "returned": astats.returned,
                     "sales": astats.sales,
