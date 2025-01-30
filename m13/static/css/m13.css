@@ -208,7 +208,7 @@ img.center {
   height: 100%;
   width: 0;
   position: fixed;
-  z-index: 1;
+  z-index: 3;
   top: 0;
   left: 0;
   background-color: #222;
@@ -245,6 +245,8 @@ img.center {
   color: white;
   padding: 10px 15px;
   border: none;
+  position: fixed;
+  z-index: 2;
 }
 
 .openbtn:hover {
@@ -272,18 +274,54 @@ img.center {
   padding: 10px;
 }
 
-.alert-error {
-  background-color: red;
-}
-
-.alert-success {
-  background-color: green;
-}
-
 .yellow {
-  background-color: yellow;
+  background-color: #ffff73;
 }
 
-.red {
-  background-color: red;
+.alert-error, .red {
+  background-color: #ff7c7c;
+}
+
+.alert-success, .green{
+  background-color: #aafda6;
+}
+
+#main > div:nth-of-type(1) {
+    position: fixed;
+    background: #f6f6f6;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    -webkit-box-shadow: 0px 0px 5px 0px #d6d6d6;
+    box-shadow: 0px 0px 5px 0px #d6d6d6;
+}
+
+#main > div:nth-of-type(1) > p {
+    position: relative;
+    top: 0;
+    left: 50%;
+    margin-left: -25%;
+}
+
+#main > div:nth-of-type(1) label {
+    margin: 0 0 0 10%;
+}
+
+#main > div:nth-of-type(1) label:nth-of-type(3), #main > div:nth-of-type(1) label:nth-of-type(4) {
+    float: right;
+    margin: 0;
+}
+
+#main > div:nth-of-type(1) label:nth-of-type(2) {
+    margin: 0;
+}
+
+#main > div:nth-of-type(1) label:nth-of-type(3) {
+    margin: 0 20px 0 0;
+}
+
+table#returnShipmentCalculatorOranUtanClaus {
+    background-color: transparent;
+    margin: 100px auto;
 }
