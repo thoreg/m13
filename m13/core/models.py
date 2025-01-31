@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
+from django_pgviews import view as pg
 
 
 def set_active(instance_id, marketplace_name):
@@ -123,3 +124,78 @@ class Error(TimeStampedModel):
     msg = models.TextField()
     comment = models.CharField(max_length=128, blank=True, null=True)
     cleared = models.BooleanField(default=False)
+
+
+TOP13_SQL = """
+    SELECT
+        1 as id,
+        cc.name as category_name,
+        cp.sku as sku,
+        COUNT(1) FILTER ( WHERE msr.shipment_type = 'Sale' ) as shipped
+
+    FROM
+        zalando_monthly_sales_report as msr
+    JOIN core_price AS cp
+        ON cp.ean = msr.ean
+    JOIN core_category AS cc
+        on cc.id = cp.category_id
+    WHERE
+        msr.order_date >= '2024-01-01 00:00:00'
+        AND msr.order_date <= '2025-01-01 00:00:00'
+    GROUP BY
+        category_name,
+        sku
+    ORDER BY shipped DESC
+    LIMIT 13;
+"""
+
+class SalesStatsTop13(pg.View):
+    """Top13 sales by sku."""
+    sku = models.CharField(max_length=100)
+    category_name = models.CharField(max_length=100)
+    shipped = models.IntegerField()
+
+    sql = TOP13_SQL
+
+    class Meta:
+        """..."""
+        db_table = 'core_salesstats_top13_view'
+        managed = False
+
+
+TOP13_RETURN_SQL = """
+    SELECT
+        1 as id,
+        cc.name as category_name,
+        cp.sku as sku,
+        COUNT(1) FILTER ( WHERE msr.shipment_type <> 'Sale' ) as returned
+
+    FROM
+        zalando_monthly_sales_report as msr
+    JOIN core_price AS cp
+        ON cp.ean = msr.ean
+    JOIN core_category AS cc
+        on cc.id = cp.category_id
+    WHERE
+        msr.order_date >= '2024-01-01 00:00:00'
+        AND msr.order_date <= '2025-01-01 00:00:00'
+    GROUP BY
+        category_name,
+        sku
+    ORDER BY returned DESC
+    LIMIT 13;
+"""
+
+class SalesStatsReturnTop13(pg.View):
+    """Top13 return articles by sku."""
+
+    sku = models.CharField(max_length=100)
+    category_name = models.CharField(max_length=100)
+    returned = models.IntegerField()
+
+    sql = TOP13_RETURN_SQL
+
+    class Meta:
+        """..."""
+        db_table = 'core_salesstats_top13_return_view'
+        managed = False

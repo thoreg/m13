@@ -36,25 +36,21 @@
   <p>Hooray - no errors</p>
 {% endfor %}
 
-<h3>WARN - Action needed :|</h3>
-<hr>
-{% if prices_without_category %}
-<table>
-  <thead>
-    <th>sku</th>
-    <th>admin</th>
-  </thead>
-  {% for price in prices_without_category %}
-    <tr>
-        <td>{{ price.sku }}</td>
-        <td><a href="{{ price.admin_url }}">Fixit</a></td>
-    </tr>
-  {% endfor %}
-</table>
-{% endif %}
+<div class="flex-container">
+    <div class="flex-item">
+      <canvas id="top13shipped"></canvas>
+    </div>
+    <div class="flex-item">
+      <canvas id="top13returned"></canvas>
+    </div>
+    <div class="flex-item">
+      <canvas id="top5profitBySku"></canvas>
+    </div>
+    <div class="flex-item">
+      <canvas id="top5category"></canvas>
+    </div>
+</div>
 
-
-<h3>PASSED - This is good :)</h3>
 <hr>
 {% for job, values in green_jobs.items %}
   <div style="float: left; min-height: 350px;">
@@ -84,9 +80,8 @@
   </div>
 {% endfor %}
 
-{% comment %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.1/dist/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="{% static '/js/m13.index.js' %}"></script>
-{% endcomment %}
+<script src="{% static '/js/m13.dashboard.js' %}"></script>
+
 {% endblock %}

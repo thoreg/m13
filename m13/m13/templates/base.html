@@ -11,6 +11,8 @@
   <title>M13BM - M13 Business Machine</title>
   <link rel="stylesheet" type="text/css" href="{% static '/css/jquery-ui.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/css/m13.css' %}">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div id="m13-sidebar" class="sidebar">
@@ -45,5 +47,6 @@
   {% block content %}{% endblock %}
   {% block footer %}{% endblock %}
   <script type="text/javascript" src="{% static '/js/m13.js' %}"></script>
+
 </body>
 </html>
