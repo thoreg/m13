@@ -534,6 +534,7 @@ def get_article_stats_zalando_msr_based(start_date: date, end_date: date) -> dic
             result[category]["stats"]["total_return_costs"] += astats.total_return_costs
             result[category]["stats"]["total_diff"] += astats.total_diff
 
+    LOG.info(f"get_article_stats_zalando_msr_based - return {len(result)} entries")
     return result
 
 

@@ -29,6 +29,7 @@ werkzeug = "==2.0.3"
 xmltodict = "*"
 django-ses = "*"
 requests = "*"
+django-pgviews = "*"
 
 [dev-packages]
 black = "*"

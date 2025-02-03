@@ -7,6 +7,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from core import views as core_views
+from core.viewsets import SalesStatsTop13ViewSet, SalesStatsTop13ReturnViewSet
 from otto.viewsets import OrderItemViewSet as OttoOrderItemsViewSet
 from zalando import viewsets as zalando_viewsets
 
@@ -17,6 +18,8 @@ router.register(r"otto/orderitems", OttoOrderItemsViewSet)
 router.register(
     r"zalando/raw-daily-shipement-reports", zalando_viewsets.RawDailyShipmentReportList
 )
+router.register(r"sales-stats/top13/sales", SalesStatsTop13ViewSet)
+router.register(r"sales-stats/top13/return", SalesStatsTop13ReturnViewSet)
 
 urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
