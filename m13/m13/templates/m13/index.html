@@ -50,6 +50,16 @@
       <canvas id="top5category"></canvas>
     </div>
 </div>
+<div class="flex-container">
+  <div class="flex-item-100">
+    <canvas id="sales-development"></canvas>
+  </div>
+  <div class="flex-item-100">
+    <p>Beginn: <input type="text" id="datepicker-begin"></p>
+    <p>Ende: <input type="text" id="datepicker-end"></p>
+  </div>
+
+</div>
 
 <hr>
 {% for job, values in green_jobs.items %}
@@ -79,9 +89,5 @@
     </table>
   </div>
 {% endfor %}
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.1/dist/chart.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="{% static '/js/m13.dashboard.js' %}"></script>
 
 {% endblock %}

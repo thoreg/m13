@@ -349,6 +349,18 @@ table#returnShipmentCalculatorOranUtanClaus {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.flex-item-100 {
+  flex: 1 1 calc(95% - 20px);
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: #f6f6f6;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
 #top13shipped {
   height: 250px;
 }

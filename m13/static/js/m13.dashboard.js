@@ -127,8 +127,6 @@ $(function() {
     const top5profitSkus = top5profit.map(item => item[0]);
     const top5profitValues = top5profit.map(item => item[1]);
 
-    console.log(top5profitValues)
-
     // // Get the context of the canvas element we want to select
     const ctxTop5profit = document.getElementById('top5profitBySku').getContext('2d');
 
@@ -171,12 +169,9 @@ $(function() {
       resultAllCategories[category] = shippedByCategory;
 
     });
-    console.log(resultAllCategories);
 
     // Convert object to array of [key, value] pairs, then sort by value in descending order
     let sortedItems = Object.entries(resultAllCategories).sort((a, b) => b[1] - a[1]);
-    console.log("sortedItems:")
-    console.log(sortedItems);
 
     // Slice the array to get top 5 items
     let top5Items = sortedItems.slice(0, 5);
@@ -185,9 +180,7 @@ $(function() {
     const top5categories = top5Items.map(item => item[0]);
     const top5categoriesValues = top5Items.map(item => item[1]);
 
-    console.log(top5categoriesValues)
-
-    // // Get the context of the canvas element we want to select
+    // Get the context of the canvas element we want to select
     const ctxTop5categoriesValues = document.getElementById('top5category').getContext('2d');
 
     // Create the chart
@@ -210,4 +203,7 @@ $(function() {
         }
     });
   });
+
+  $( "#datepicker-begin" ).datepicker();
+  $( "#datepicker-end" ).datepicker();
 });
