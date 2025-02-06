@@ -1,12 +1,14 @@
 from rest_framework import serializers
 
-from .models import SalesStatsTop13, SalesStatsReturnTop13
+from .models import SalesStatsReturnTop13, SalesStatsTop13
 
 
 class SalesStatsTop13Serializer(serializers.HyperlinkedModelSerializer):
     """..."""
+
     class Meta:
         """..."""
+
         model = SalesStatsTop13
         fields = [
             "sku",
@@ -17,8 +19,10 @@ class SalesStatsTop13Serializer(serializers.HyperlinkedModelSerializer):
 
 class SalesStatsReturnTop13Serializer(serializers.HyperlinkedModelSerializer):
     """..."""
+
     class Meta:
         """..."""
+
         model = SalesStatsReturnTop13
         fields = [
             "sku",

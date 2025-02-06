@@ -149,17 +149,25 @@ TOP13_SQL = """
     LIMIT 13;
 """
 
+
 class SalesStatsTop13(pg.View):
-    """Top13 sales by sku."""
+    """Top13 sales by sku.
+
+    Note: not called via api endpoint and viewset -> extra query defined in
+          get_queryset()
+    """
+
     sku = models.CharField(max_length=100)
     category_name = models.CharField(max_length=100)
     shipped = models.IntegerField()
+    order_date = models.DateTimeField()
 
     sql = TOP13_SQL
 
     class Meta:
         """..."""
-        db_table = 'core_salesstats_top13_view'
+
+        db_table = "core_salesstats_top13_view"
         managed = False
 
 
@@ -186,8 +194,13 @@ TOP13_RETURN_SQL = """
     LIMIT 13;
 """
 
+
 class SalesStatsReturnTop13(pg.View):
-    """Top13 return articles by sku."""
+    """Top13 return articles by sku.
+
+    Note: not called via api endpoint and viewset -> extra query defined in
+          get_queryset()
+    """
 
     sku = models.CharField(max_length=100)
     category_name = models.CharField(max_length=100)
@@ -197,5 +210,6 @@ class SalesStatsReturnTop13(pg.View):
 
     class Meta:
         """..."""
-        db_table = 'core_salesstats_top13_return_view'
+
+        db_table = "core_salesstats_top13_return_view"
         managed = False

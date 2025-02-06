@@ -7,7 +7,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from core import views as core_views
-from core.viewsets import SalesStatsTop13ViewSet, SalesStatsTop13ReturnViewSet
+from core.viewsets import SalesStatsTop13ReturnViewSet, SalesStatsTop13ViewSet
 from otto.viewsets import OrderItemViewSet as OttoOrderItemsViewSet
 from zalando import viewsets as zalando_viewsets
 
