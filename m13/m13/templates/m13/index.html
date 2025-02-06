@@ -49,6 +49,24 @@
     <div class="flex-item">
       <canvas id="top5category"></canvas>
     </div>
+    <div class="flex-item">
+      placeholder
+    </div>
+    <div class="flex-item">
+      placeholder
+    </div>
+</div>
+<div class="flex-container">
+  <div class="flex-item-100">
+    <canvas id="sales-volume"></canvas>
+  </div>
+  <div class="flex-item-100">
+    <label for="from">From</label>
+    <input type="text" id="from" name="from">
+    <label for="to">to</label>
+    <input type="text" id="to" name="to">
+    <input id="updateButton" type="button" value="update"/>
+  </div>
 </div>
 
 <hr>
@@ -79,9 +97,5 @@
     </table>
   </div>
 {% endfor %}
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.1/dist/chart.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="{% static '/js/m13.dashboard.js' %}"></script>
 
 {% endblock %}

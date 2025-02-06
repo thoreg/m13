@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
-  font-family:  Roboto;
-  font-size: 12px;
-  color: #2c2c2c;
-  background-color: #f6f6f6;
-  min-height: 75rem;
+    font-family:  Roboto;
+    font-size: 12px;
+    color: #2c2c2c;
+    background-color: #f6f6f6;
+    min-height: 75rem;
 }
 
 .category-header {
@@ -62,7 +62,7 @@ body {
   font-size: 1.1em !important;
 }
 
-.category:nth-child(2n) {
+.category:nth-child(2n), tr:nth-child(2n) {
     background: #ededed;
 }
 
@@ -70,7 +70,7 @@ tr:hover{
   background: none !important; /* resettededet... */
 }
 
-.category-body > table > tbody > tr:hover {
+tr:hover {
     background-color: #e1e1e1 !important;
 }
 
@@ -135,19 +135,21 @@ label {
     width: 50%;
 }
 
-button.ui-button {
+button.ui-button, .m13-btn {
     padding: 10px !important;
     border: 3px solid #000;
     font-weight: 800;
     text-transform: uppercase;
     font-family: 'Roboto' !important;
+    font-size: 1em;
+    cursor: pointer;
 }
 
-button.ui-button:hover {
+button.ui-button:hover, .m13-btn:hover {
     border: 3px solid #f6f6f6;
     background: #f00;
     color: #f6f6f6 !important;
-      font-weight: 800;
+    font-weight: 800;
     text-transform: uppercase;
     font-family: 'Roboto';
 }
@@ -189,11 +191,6 @@ img.center {
     display: inline;
 }
 
-#header {
-  position: absolute;
-  top: 5px;
-  left: 181px;
-}
 #header > form {
     display: inline;
 }
@@ -202,6 +199,9 @@ img.center {
   float: right;
   padding-top: 15px;
   padding-right: 30px;
+  position: fixed;
+  top: 0;
+  right: 0;
 }
 
 .sidebar {
@@ -253,12 +253,18 @@ img.center {
   background-color: #444;
 }
 
-#main {
-  transition: margin-left .5s;
-  padding: 16px;
+/* Fix für ein paar Seiten die nicht vernünftig genested sind */
+.openbtn + h2 {
+  padding: 20px 60px;
 }
 
-/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+#main {
+  padding: 75px 0 0 0;
+  width: 80%;
+  margin: 0 auto;
+}
+
+/* Für ganz kleine Displays  */
 @media screen and (max-height: 450px) {
   .sidebar {padding-top: 15px;}
   .sidebar a {font-size: 18px;}
@@ -286,7 +292,7 @@ img.center {
   background-color: #aafda6;
 }
 
-#main > div:nth-of-type(1) {
+#header, #main > div:nth-of-type(1) {
     position: fixed;
     background: #f6f6f6;
     top: 0;
@@ -295,13 +301,14 @@ img.center {
     z-index: 0;
     -webkit-box-shadow: 0px 0px 5px 0px #d6d6d6;
     box-shadow: 0px 0px 5px 0px #d6d6d6;
+    text-align: center;
 }
 
 #main > div:nth-of-type(1) > p {
     position: relative;
     top: 0;
     left: 50%;
-    margin-left: -25%;
+    margin-left: -100%;
 }
 
 #main > div:nth-of-type(1) label {
@@ -326,6 +333,8 @@ table#returnShipmentCalculatorOranUtanClaus {
     margin: 100px auto;
 }
 
+/* Dashboard */
+
 .flex-container {
   display: flex;
   flex-wrap: wrap;
@@ -338,17 +347,29 @@ table#returnShipmentCalculatorOranUtanClaus {
 }
 
 .flex-item {
-  flex: 1 1 calc(33.333% - 20px);
+  flex: 1 1 calc(32.333% - 20px);
   box-sizing: border-box;
   padding: 20px;
   background-color: #f6f6f6;
   border: 1px solid #ddd;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 #top13shipped {
   height: 250px;
+}
+
+.flex-item-100 {
+  flex: 1 1 calc(95% - 20px);
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: #f6f6f6;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
