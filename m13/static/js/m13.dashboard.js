@@ -24,6 +24,51 @@ $(function() {
     updateTop5Categories(fromDate, toDate)
     updateTopSales(fromDate, toDate);
     updateTopReturns(fromDate, toDate);
+    updateSalesVolume(fromDate, toDate);
+  }
+
+  function updateSalesVolume (from, to) {
+    let dataSalesVolume = [];
+    let url = `/api/sales-stats/z/sales-volume/?from=${from}&to=${to}`;
+    console.log(url);
+
+    $.getJSON(url, function( data ) {
+      $.each( data.results, function( idx, value) {
+        dataSalesVolume.push(value);
+      });
+
+      // Prepare data for Chart.js
+      const labels = dataSalesVolume.map(item => item.week);
+      const salesVolumeValues  = dataSalesVolume.map(item => item.sum_sales);
+
+      let chartStatus = Chart.getChart("sales-volume");
+      if (chartStatus != undefined) {
+        chartStatus.destroy();
+      }
+      // Get the context of the canvas element we want to select
+      const ctx = document.getElementById('sales-volume').getContext('2d');
+
+      // Create the chart
+      const salesVolumeChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Umsatz Volumen Zalando',
+                  data: salesVolumeValues,
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 2
+              }]
+          },
+          options: {
+              responsive: true,
+              legend: {
+                  display: false
+              }
+          }
+      });
+    });
   }
 
   /***************************************************************************
@@ -34,6 +79,7 @@ $(function() {
   function updateTopSales (from, to) {
     let dataTop13 = [];
     let url = `/api/sales-stats/top13/sales?from=${from}&to=${to}`;
+    console.log(url);
 
     $.getJSON(url, function( data ) {
       $.each( data.results, function( idx, value) {

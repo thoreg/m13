@@ -213,3 +213,37 @@ class SalesStatsReturnTop13(pg.View):
 
         db_table = "core_salesstats_top13_return_view"
         managed = False
+
+
+SALES_VOLUME_ZALANDO_SQL = """
+    SELECT
+        1 as id,
+        COALESCE(SUM(msr.price) FILTER (WHERE msr.shipment_type = 'Sale'), 0) AS sum_sales,
+        msr.order_date::date as day
+    FROM
+        zalando_monthly_sales_report as msr
+    WHERE
+        msr.order_date >= '2024-01-01 00:00:00'
+        AND msr.order_date <= '2025-01-01 00:00:00'
+    GROUP BY
+        day
+"""
+
+
+class SalesVolumeZalando(pg.View):
+    """Sales volume summed by day.
+
+    Note: not called via api endpoint and viewset -> extra query defined in
+          get_queryset()
+    """
+
+    sum_sales = models.CharField(max_length=100)
+    week = models.CharField(max_length=100)
+
+    sql = SALES_VOLUME_ZALANDO_SQL
+
+    class Meta:
+        """..."""
+
+        db_table = "core_sales_volume_zalando_view"
+        managed = False
