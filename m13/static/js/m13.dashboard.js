@@ -22,6 +22,8 @@ $(function() {
 
     updateTop5ProfitableArticles(fromDate, toDate);
     updateTop5Categories(fromDate, toDate)
+    updateTopSales(fromDate, toDate);
+    updateTopReturns(fromDate, toDate);
   }
 
   /***************************************************************************
@@ -29,98 +31,98 @@ $(function() {
    * TOP 13 SALES
    *
    ***************************************************************************/
-  let dataTop13 = [];
-  let url = `/api/sales-stats/top13/sales`;
+  function updateTopSales (from, to) {
+    let dataTop13 = [];
+    let url = `/api/sales-stats/top13/sales?from=${from}&to=${to}`;
 
-  console.log(`url: ${url}`);
+    $.getJSON(url, function( data ) {
+      $.each( data.results, function( idx, value) {
+        dataTop13.push(value);
+      });
 
-  $.getJSON(url, function( data ) {
-    $.each( data.results, function( idx, value) {
-      dataTop13.push(value);
+      // Prepare data for Chart.js
+      const labels = dataTop13.map(item => item.category_name + ' - ' + item.sku);
+      const shippedQuantities = dataTop13.map(item => item.shipped);
+
+      let chartStatus = Chart.getChart("top13shipped");
+      if (chartStatus != undefined) {
+        chartStatus.destroy();
+      }
+      // Get the context of the canvas element we want to select
+      const ctx = document.getElementById('top13shipped').getContext('2d');
+
+      // Create the chart
+      const top13shipped = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Top 13 verkaufte Artikel (nach SKU sortiert)',
+                  data: shippedQuantities,
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 2
+              }]
+          },
+          options: {
+              indexAxis: 'y',
+              responsive: true,
+              legend: {
+                  display: false
+              }
+          }
+      });
     });
-
-    // Prepare data for Chart.js
-    const labels = dataTop13.map(item => item.category_name + ' - ' + item.sku);
-    const shippedQuantities = dataTop13.map(item => item.shipped);
-
-    let chartStatus = Chart.getChart("top13shipped");
-    if (chartStatus != undefined) {
-      chartStatus.destroy();
-    }
-    // Get the context of the canvas element we want to select
-    const ctx = document.getElementById('top13shipped').getContext('2d');
-
-    // Create the chart
-    const top13shipped = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Top 13 verkaufte Artikel (nach SKU sortiert)',
-                data: shippedQuantities,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            legend: {
-                display: false
-            }
-        }
-    });
-  });
+  }
 
   /***************************************************************************
    *
    * TOP 13 RETURN
    *
    ***************************************************************************/
-  let dataTop13return = [];
-  url = `/api/sales-stats/top13/return`;
+  function updateTopReturns (from, to) {
+    let dataTop13return = [];
+    let url = `/api/sales-stats/top13/return?from=${from}&to=${to}`;
 
-  console.log(`url2: ${url}`);
+    $.getJSON(url, function( data ) {
+      $.each( data.results, function( idx, value) {
+        dataTop13return.push(value);
+      });
 
-  $.getJSON(url, function( data ) {
-    $.each( data.results, function( idx, value) {
-      dataTop13return.push(value);
+      // Prepare data for Chart.js
+      const returnedLabels = dataTop13return.map(item => item.category_name + ' - ' + item.sku);
+      const returnedQuantities = dataTop13return.map(item => item.returned);
+
+      let chartStatus = Chart.getChart("top13returned");
+      if (chartStatus != undefined) {
+        chartStatus.destroy();
+      }
+      // Get the context of the canvas element we want to select
+      const ctxReturned = document.getElementById('top13returned').getContext('2d');
+
+      // Create the chart
+      const top13returned = new Chart(ctxReturned, {
+          type: 'bar',
+          data: {
+              labels: returnedLabels,
+              datasets: [{
+                  label: 'Top 13 retournierte Artikel (nach SKU sortiert)',
+                  data: returnedQuantities,
+                  backgroundColor: 'rgba(188, 24, 24, 0.2)',
+                  borderColor: 'rgb(137, 3, 3)',
+                  borderWidth: 2
+              }]
+          },
+          options: {
+              indexAxis: 'y',
+              responsive: true,
+              legend: {
+                  display: false
+              }
+          }
+      });
     });
-
-    // Prepare data for Chart.js
-    const returnedLabels = dataTop13return.map(item => item.category_name + ' - ' + item.sku);
-    const returnedQuantities = dataTop13return.map(item => item.returned);
-
-    let chartStatus = Chart.getChart("top13returned");
-    if (chartStatus != undefined) {
-      chartStatus.destroy();
-    }
-    // Get the context of the canvas element we want to select
-    const ctxReturned = document.getElementById('top13returned').getContext('2d');
-
-    // Create the chart
-    const top13returned = new Chart(ctxReturned, {
-        type: 'bar',
-        data: {
-            labels: returnedLabels,
-            datasets: [{
-                label: 'Top 13 retournierte Artikel (nach SKU sortiert)',
-                data: returnedQuantities,
-                backgroundColor: 'rgba(188, 24, 24, 0.2)',
-                borderColor: 'rgb(137, 3, 3)',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            legend: {
-                display: false
-            }
-        }
-    });
-  });
+  }
 
   /***************************************************************************
    *
@@ -131,8 +133,6 @@ $(function() {
     const marketplace = 'zalando';
     let url3 = `/api/v2/core/return-shipments-stats/?marketplace=${marketplace}`
     url3 += `&start=${fromDate}&end=${toDate}`;
-
-    console.log(`url3: ${url3}`);
 
     let resultTop5profit = []
 
@@ -197,15 +197,11 @@ $(function() {
     let url4 = `/api/v2/core/return-shipments-stats/?marketplace=${marketplace}`
     url4 += `&start=${fromDate}&end=${toDate}`;
 
-    console.log(`url4: ${url4}`);
-
     let resultAllCategories = {};
     $.getJSON(url4, function( data ) {
       $.each(data, function(category, articles) {
         let shippedByCategory = 0;
-        // console.log(`category: ${category}`);
         $.each(articles.content, function(idx, article) {
-          // console.log(article);
           shippedByCategory += article.shipped;
         });
         resultAllCategories[category] = shippedByCategory;
@@ -301,7 +297,6 @@ $(function() {
   update();
 
   $( "#updateButton" ).on( "click", function() {
-    console.log("update button clicked diggi");
     update();
   });
 
