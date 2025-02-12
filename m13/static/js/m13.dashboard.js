@@ -129,6 +129,7 @@ $(function() {
   function updateTopReturns (from, to) {
     let dataTop13return = [];
     let url = `/api/sales-stats/top13/return?from=${from}&to=${to}`;
+    console.log(url);
 
     $.getJSON(url, function( data ) {
       $.each( data.results, function( idx, value) {
@@ -179,6 +180,7 @@ $(function() {
     const marketplace = 'zalando';
     let url3 = `/api/v2/core/return-shipments-stats/?marketplace=${marketplace}`
     url3 += `&start=${fromDate}&end=${toDate}`;
+    console.log(`url3: ${url3}`);
 
     let resultTop5profit = []
 
@@ -242,6 +244,7 @@ $(function() {
     const marketplace = 'zalando';
     let url4 = `/api/v2/core/return-shipments-stats/?marketplace=${marketplace}`
     url4 += `&start=${fromDate}&end=${toDate}`;
+    console.log(`url4: ${url4}`);
 
     let resultAllCategories = {};
     $.getJSON(url4, function( data ) {
@@ -340,6 +343,7 @@ $(function() {
   //   marketplace = 'zalando';
   // }
 
+  console.log("m13.dashboard.js loaded -> update()");
   update();
 
   $( "#updateButton" ).on( "click", function() {
