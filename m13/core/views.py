@@ -12,8 +12,18 @@ LOG = logging.getLogger(__name__)
 
 @login_required
 def return_shipments_stats(request):
-    """Overview of all zalando calculator values."""
-    return render(request, "core/return_shipments_stats.html", {})
+    """Overview of 'the calculator'.
+
+    Shows stats about shipped vs returned orderitem ratio over several
+    marketplaces.
+
+    """
+    return render(
+        request,
+        "core/return_shipments_stats.html",
+        {
+            "location": "calculator",
+        })
 
 
 @login_required()

@@ -12,6 +12,8 @@ from .services.orders import fetch_orders
 
 LOG = logging.getLogger(__name__)
 
+LOCATION = "galaxus"
+
 
 @login_required
 def index(request):
@@ -22,7 +24,10 @@ def index(request):
         .select_related("order__delivery_address")[:100]
     )
 
-    context = {"order_items": order_items}
+    context = {
+        "order_items": order_items,
+        "location": LOCATION,
+    }
     return render(request, "galaxus/index.html", context)
 
 
@@ -157,4 +162,11 @@ def import_orders(request):
     """Import orders from Mirapodo via button click"""
     resp_str = fetch_orders()
     # return index(request)
-    return render(request, "galaxus/resp_str.html", {"resp_str": resp_str})
+    return render(
+        request,
+        "galaxus/resp_str.html",
+        {
+            "resp_str": resp_str,
+            "location": LOCATION,
+        }
+    )

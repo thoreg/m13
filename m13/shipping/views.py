@@ -14,6 +14,7 @@ from otto.services.shipments import handle_uploaded_file as otto_handle_upload
 from .forms import UploadFileForm
 
 LOG = logging.getLogger(__name__)
+LOCATION = "shipping"
 
 
 @login_required
@@ -29,7 +30,14 @@ def index(request):
             return HttpResponseRedirect(reverse("upload_shipping_infos_success"))
     else:
         form = UploadFileForm()
-    return render(request, "shipping/index.html", {"form": form})
+    return render(
+        request,
+        "shipping/index.html",
+        {
+            "form": form,
+            "location": LOCATION,
+        }
+    )
 
 
 @login_required
@@ -63,5 +71,6 @@ def upload_shipping_infos_success(request):
         {
             "etsy_shipments": etsy_shipments,
             "otto_shipments": otto_shipments,
+            "location": LOCATION,
         },
     )

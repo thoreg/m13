@@ -40,6 +40,7 @@ from .models import (
 LOG = logging.getLogger(__name__)
 
 MAX_LENGTH_CATEGORY = 18
+LOCATION = "zalando"
 
 
 @login_required
@@ -65,6 +66,7 @@ def price_feed(request):
         "feed_uploads": feed_uploads,
         "form": form,
         "z_factor": z_factor,
+        "location": LOCATION,
     }
     return render(request, "zalando/price_feed.html", ctx)
 
@@ -84,6 +86,7 @@ def index(request):
         "today": timezone.now().strftime("%Y-%m-%d"),
         "order_items": order_items,
         "products": products,
+        "location": LOCATION,
     }
     LOG.info(ctx)
     return render(request, "zalando/index.html", ctx)
@@ -208,7 +211,10 @@ def upload_files(request):
             messages.success(request, msg)
             return redirect(reverse("zalando_finance_upload_files"))
 
-        context = {"msg": "Form is invalid"}
+        context = {
+            "msg": "Form is invalid",
+            "location": LOCATION,
+        }
         return render(request, "zalando/finance/upload.html", context)
     else:
         form = UploadFileForm()
@@ -219,11 +225,19 @@ def upload_files(request):
     return render(
         request,
         "zalando/finance/upload.html",
-        {"file_uploads": file_uploads, "form": form},
+        {
+            "file_uploads": file_uploads,
+            "form": form,
+            "location": LOCATION,
+        },
     )
 
 
 @login_required
 def calculator_v1(request):
     """Overview of all zalando calculator values."""
-    return render(request, "zalando/finance/z_calculator_v1.html", {})
+    return render(
+        request, "zalando/finance/z_calculator_v1.html",
+        {
+            "location": LOCATION,
+        })

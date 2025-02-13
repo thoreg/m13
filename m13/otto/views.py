@@ -18,6 +18,8 @@ from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)
 
+LOCATION = "otto"
+
 
 @login_required
 def index(request):
@@ -33,6 +35,7 @@ def index(request):
     context = {
         "number_of_processable": number_of_processable,
         "order_items": order_items,
+        "location": LOCATION,
     }
     return render(request, "otto/index.html", context)
 
@@ -201,14 +204,25 @@ def upload_tracking_codes(request):
             return HttpResponseRedirect(reverse("otto_upload_tracking_codes_success"))
     else:
         form = UploadFileForm()
-    return render(request, "otto/upload_tracking_codes.html", {"form": form})
+    return render(
+        request,
+        "otto/upload_tracking_codes.html",
+        {
+            "form": form,
+            "location": LOCATION,
+        }
+    )
 
 
 @login_required
 def upload_tracking_codes_success(request):
     shipments = Shipment.objects.all().order_by("-created")[:100]
     return render(
-        request, "otto/upload_tracking_codes_success.html", {"shipments": shipments}
+        request, "otto/upload_tracking_codes_success.html",
+        {
+            "shipments": shipments,
+            "location": LOCATION,
+        }
     )
 
 
@@ -264,6 +278,7 @@ def stats(request):
         sales_revenue_by_status.append(row)
 
     ctx["sales_revenue_by_status"] = sales_revenue_by_status
+    ctx["location"] = LOCATION
     return render(request, "otto/stats.html", {"ctx": ctx})
 
 

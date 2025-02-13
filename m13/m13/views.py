@@ -8,6 +8,8 @@ from django.utils import timezone
 from core.models import Error, Job, Price
 from zalando.models import FeedUpload
 
+LOCATION = "index"
+
 
 def page_not_found_view(request, exception):
     return render(request, "404.html", status=404)
@@ -71,5 +73,6 @@ def index(request):
             "green_jobs": grouped_green_jobs,
             "prices_without_category": prices_without_category,
             "red_jobs": grouped_red_jobs,
+            "location": LOCATION,
         },
     )

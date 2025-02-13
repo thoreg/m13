@@ -14,7 +14,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body {% if location %}class={{ location }}{% endif %}>
   <div id="m13-sidebar" class="sidebar">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
     <a href="/otto/">otto</a>

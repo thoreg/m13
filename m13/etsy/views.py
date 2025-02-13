@@ -32,6 +32,8 @@ M13_ETSY_SHOP_ID = os.getenv("M13_ETSY_SHOP_ID")
 
 DELIVERY_FEE_STANDARD = "DHL Paket"
 
+LOCATION = "etsy"
+
 
 def _render_auth_request_not_found(request):
     ctx = {
@@ -265,6 +267,7 @@ def index(request):
         "number_of_orders": Order.objects.count(),
         "number_of_orderitems": OrderItem.objects.count(),
         "order_items": order_items,
+        "location": LOCATION,
     }
     return render(request, "etsy/index.html", ctx)
 
@@ -278,14 +281,26 @@ def shipments(request):
             return HttpResponseRedirect(reverse("etsy_upload_tracking_codes_success"))
     else:
         form = UploadFileForm()
-    return render(request, "etsy/upload_tracking_codes.html", {"form": form})
+    return render(
+        request,
+        "etsy/upload_tracking_codes.html",
+        {
+            "form": form,
+            "location": LOCATION,
+        }
+    )
 
 
 @login_required
 def upload_tracking_codes_success(request):
     shipments = Shipment.objects.all().order_by("-created")[:100]
     return render(
-        request, "etsy/upload_tracking_codes_success.html", {"shipments": shipments}
+        request,
+        "etsy/upload_tracking_codes_success.html",
+        {
+            "shipments": shipments,
+            "location": LOCATION,
+        }
     )
 
 
