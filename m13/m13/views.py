@@ -8,7 +8,7 @@ from django.utils import timezone
 from core.models import Error, Job, Price
 from zalando.models import FeedUpload
 
-LOCATION = "index"
+LOCATION = "dashboard"
 
 
 def page_not_found_view(request, exception):
