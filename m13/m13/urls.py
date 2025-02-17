@@ -15,7 +15,7 @@ from core.viewsets import (
 from otto.viewsets import OrderItemViewSet as OttoOrderItemsViewSet
 from zalando import viewsets as zalando_viewsets
 
-from .views import index
+from .views import index, jobs
 
 router = routers.DefaultRouter()
 router.register(r"otto/orderitems", OttoOrderItemsViewSet)
@@ -40,6 +40,7 @@ urlpatterns = [
     path("etsy/", include("etsy.urls")),
     path("shipping/", include("shipping.urls")),
     path("core/return-shipments-stats", core_views.return_shipments_stats),
+    path("jobs/", jobs),
     path("", index),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

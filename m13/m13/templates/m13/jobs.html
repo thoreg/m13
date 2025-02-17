@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% for job, values in red_jobs.items %}
+  <h4>{{ job }}</h4>
+  <table>
+  {% for value in values %}
+    <thead>
+      <th>start</th>
+      <th>duration</th>
+      <th>success</th>
+      <th>note</th>
+    </thead>
+    <tr>
+        <td>{{ value.start|date:"Y-m-d:H:i:s" }}</td>
+        <td>{{ value.duration }}</td>
+        <td>
+          <div style="width: 1rem; height: 1rem; background: red; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
+        </td>
+        <td>{{ value.description }}</td>
+    </tr>
+  {% endfor %}
+  </table>
+  {% empty %}
+    <p>Hooray - no failed jobs</p>
+{% endfor %}
+
+{% for error in errors %}
+  <h2>{{ error.msg }}</h2>
+{% empty %}
+  <p>Hooray - no errors</p>
+{% endfor %}
+
+{% for job, values in green_jobs.items %}
+  <div style="float: left; min-height: 350px;">
+    <h4>{{ job }}</h4>
+    <table>
+      <thead>
+        <th>start</th>
+        <th>duration</th>
+        <th>success</th>
+        <th>end</th>
+      </thead>
+      {% for value in values %}
+      <tr>
+          <td>{{ value.start|date:"Y-m-d:H:i:s" }}</td>
+          <td>
+            {% if value.success %}
+              <div style="width: 1rem; height: 1rem; background: green; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
+            {% else %}
+              <div style="width: 1rem; height: 1rem; background: red; border-radius: 50%; text-align: center; vertical-align: middle;"></div>
+            {% endif %}
+          </td>
+          <td>{{ value.success }}</td>
+          <td>{{ value.end|date:"Y-m-d:H:i:s" }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+{% endfor %}
+
+{% endblock %}

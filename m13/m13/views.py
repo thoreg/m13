@@ -8,15 +8,17 @@ from django.utils import timezone
 from core.models import Error, Job, Price
 from zalando.models import FeedUpload
 
-LOCATION = "dashboard"
-
 
 def page_not_found_view(request, exception):
+    """Handler for 404."""
     return render(request, "404.html", status=404)
 
 
 @login_required
 def index(request):
+    """Render the index page which contains the dashboard."""
+    location = "dashboard"
+
     now = timezone.now()
     feed_upload = FeedUpload.objects.latest("created")
 
@@ -73,6 +75,57 @@ def index(request):
             "green_jobs": grouped_green_jobs,
             "prices_without_category": prices_without_category,
             "red_jobs": grouped_red_jobs,
-            "location": LOCATION,
+            "location": location,
+        },
+    )
+
+
+@login_required
+def jobs(request):
+    """Render the /jobs/ overview."""
+    location = "jobs"
+
+    def _group_jobs(jobs):
+        grouped_jobs = {}
+
+        for job in jobs:
+            if job.cmd not in grouped_jobs:
+                grouped_jobs[job.cmd] = []
+
+            duration = 0
+            if job.end:
+                duration = job.end - job.start
+
+            grouped_jobs[job.cmd].append(
+                {
+                    "start": job.start,
+                    "duration": duration,
+                    "success": job.successful,
+                    "end": job.end,
+                    "description": job.description,
+                }
+            )
+
+        for job, result_list in grouped_jobs.items():
+            grouped_jobs[job] = result_list[:5]
+
+        return grouped_jobs
+
+    green_jobs = Job.objects.filter(successful=True).order_by("-start")
+    red_jobs = Job.objects.filter(successful=False).order_by("-start")
+
+    grouped_green_jobs = _group_jobs(green_jobs)
+    grouped_red_jobs = _group_jobs(red_jobs)
+
+    errors = Error.objects.filter(cleared=False)
+
+    return render(
+        request,
+        "m13/jobs.html",
+        {
+            "errors": errors,
+            "green_jobs": grouped_green_jobs,
+            "red_jobs": grouped_red_jobs,
+            "location": location,
         },
     )
