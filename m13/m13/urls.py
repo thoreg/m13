@@ -39,6 +39,7 @@ urlpatterns = [
     path("z/", include("zalando.urls")),
     path("etsy/", include("etsy.urls")),
     path("shipping/", include("shipping.urls")),
+    path("tiktok/", include("tiktok.urls")),
     path("core/return-shipments-stats", core_views.return_shipments_stats),
     path("jobs/", jobs),
     path("", index),
