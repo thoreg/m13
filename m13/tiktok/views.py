@@ -18,7 +18,6 @@ def index(request) -> HttpResponse:
     return render(request, "tiktok/index.html", context)
 
 
-@login_required
 def authcode(request) -> HttpResponse:
     """..."""
     for k, v in request.GET.items():
