@@ -237,7 +237,9 @@ def upload_files(request):
 def calculator_v1(request):
     """Overview of all zalando calculator values."""
     return render(
-        request, "zalando/finance/z_calculator_v1.html",
+        request,
+        "zalando/finance/z_calculator_v1.html",
         {
             "location": LOCATION,
-        })
+        },
+    )

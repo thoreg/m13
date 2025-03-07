@@ -210,7 +210,7 @@ def upload_tracking_codes(request):
         {
             "form": form,
             "location": LOCATION,
-        }
+        },
     )
 
 
@@ -218,11 +218,12 @@ def upload_tracking_codes(request):
 def upload_tracking_codes_success(request):
     shipments = Shipment.objects.all().order_by("-created")[:100]
     return render(
-        request, "otto/upload_tracking_codes_success.html",
+        request,
+        "otto/upload_tracking_codes_success.html",
         {
             "shipments": shipments,
             "location": LOCATION,
-        }
+        },
     )
 
 

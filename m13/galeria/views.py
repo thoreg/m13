@@ -12,11 +12,7 @@ LOCATION = "galeria"
 @login_required
 def index(request):
     """Galeria Index View."""
-    return render(
-        request,
-        "galeria/index.html",
-        {"location": LOCATION}
-    )
+    return render(request, "galeria/index.html", {"location": LOCATION})
 
 
 @login_required

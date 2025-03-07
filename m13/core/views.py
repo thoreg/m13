@@ -23,7 +23,8 @@ def return_shipments_stats(request):
         "core/return_shipments_stats.html",
         {
             "location": "calculator",
-        })
+        },
+    )
 
 
 @login_required()
