@@ -6,7 +6,6 @@ import json
 import logging
 import os
 import time
-from pprint import pformat, pprint
 
 import requests
 
@@ -81,7 +80,7 @@ class StockService:
             LOG.error(resp.json())
             return
 
-        LOG.info(pformat(resp.json()))
+        # LOG.info(pformat(resp.json()))
         return resp.json()["data"]["shops"][0]["cipher"]
 
     def get_products(self, refresh=False, next_page_token=None):
@@ -130,8 +129,6 @@ class StockService:
         if resp.status_code != requests.codes.ok:
             LOG.error(resp.json())
             return
-
-        pprint(resp.json())
 
         resp = resp.json()
         next_page_token = resp["data"]["next_page_token"]
@@ -226,5 +223,3 @@ class StockService:
         if resp.status_code != requests.codes.ok:
             LOG.error(resp.json())
             return
-
-        pprint(resp.json())
