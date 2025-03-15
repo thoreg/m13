@@ -11,6 +11,11 @@ python manage.py dumpdata      \
     -e etsy.StatsOrderItems    \
     -e etsy                    \
     -e admin                   \
+    -e core.SalesStatsTop13    \
+    -e core.SalesStatsReturnTop13 \
+    -e core.SalesVolumeZalando \
+    -v 2                       \
+    --traceback                \
     --indent 2 > ${NOW}-dump.json
 zip ${NOW}-dump.json.zip ${NOW}-dump.json
 echo
