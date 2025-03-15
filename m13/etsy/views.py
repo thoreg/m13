@@ -287,7 +287,7 @@ def shipments(request):
         {
             "form": form,
             "location": LOCATION,
-        }
+        },
     )
 
 
@@ -300,7 +300,7 @@ def upload_tracking_codes_success(request):
         {
             "shipments": shipments,
             "location": LOCATION,
-        }
+        },
     )
 
 

@@ -36,7 +36,7 @@ def index(request):
         {
             "form": form,
             "location": LOCATION,
-        }
+        },
     )
 
 

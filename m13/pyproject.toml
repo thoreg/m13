@@ -1,7 +1,5 @@
 [tool.pytest.ini_options]
-pythonpath = [
-  "."
-]
+pythonpath = ["."]
 
 [pytest]
 # DJANGO_SETTINGS_MODULE = m13.config.develop
@@ -11,6 +9,7 @@ python_files = ["test_*.py"]
 profile = "black"
 
 [tool.ruff]
+# select = ["ALL"]
 line-length = 120
 
 [tool.pylint.format]
@@ -25,14 +24,15 @@ ignore = '.git'
 # Add files or directories matching the regex patterns to the blacklist. The
 # regex matches against base names, not paths.
 ignore-paths = [
-  '^etsy/migrations/.*$',
-  '^galaxus/migrations/.*$',
-  '^otto/migrations/.*$',
-  '^zalando/migrations/.*$',
+    '^etsy/migrations/.*$',
+    '^galaxus/migrations/.*$',
+    '^otto/migrations/.*$',
+    '^zalando/migrations/.*$',
 ]
 
 [tool.pylint."MESSAGES CONTROL"]
 disable = '''logging-fstring-interpolation,
   not-an-iterable,
   missing-module-docstring,
+  missing-class-docstring,
 '''

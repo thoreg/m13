@@ -30,6 +30,7 @@ xmltodict = "*"
 django-ses = "*"
 requests = "*"
 django-pgviews = "*"
+pylint-django = "*"
 
 [dev-packages]
 black = "*"
@@ -54,6 +55,8 @@ jinja2 = "*"
 flask = "*"
 isort = "*"
 ruff = "*"
+django-stubs = {extras = ["compatible-mypy"], version = "*"}
+django-types = "*"
 
 [requires]
 python_version = "3.11.9"

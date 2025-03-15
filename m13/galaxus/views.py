@@ -168,5 +168,5 @@ def import_orders(request):
         {
             "resp_str": resp_str,
             "location": LOCATION,
-        }
+        },
     )
