@@ -4,16 +4,13 @@ from copy import deepcopy
 
 from django.contrib.auth.decorators import login_required
 from django.core import management
-from django.db import connection
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 
-from m13.lib.psql import dictfetchall
-
 from .forms import UploadFileForm
-from .models import OrderItem, Shipment, StatsOrderItems
+from .models import OrderItem, Shipment
 from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)
@@ -225,64 +222,3 @@ def upload_tracking_codes_success(request):
             "location": LOCATION,
         },
     )
-
-
-@login_required
-def stats(request):
-    ctx = {"status_per_month": {}}
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT
-                DATE_TRUNC('month', modified) AS month,
-                fulfillment_status AS status,
-                COUNT(id) AS count,
-                SUM(price_in_cent)::float/100 AS umsatz
-            FROM
-                otto_orderitem
-            GROUP BY
-                month,
-                fulfillment_status
-            ORDER BY
-                month DESC
-        """
-        )
-        result = dictfetchall(cursor)
-        for entry in result:
-            month = entry["month"].strftime("%Y%m")
-            status = entry["status"]
-            if month not in ctx["status_per_month"]:
-                ctx["status_per_month"][month] = {}
-            ctx["status_per_month"][month][status] = entry
-
-        number_orderitems_all = OrderItem.objects.all().count()
-        number_orderitems_return = OrderItem.objects.filter(
-            fulfillment_status="RETURNED"
-        ).count()
-        return_quote = 100 * number_orderitems_return / number_orderitems_all
-        ctx["total"] = {
-            "number_orderitems_all": number_orderitems_all,
-            "number_orderitems_return": number_orderitems_return,
-            "return_quote": return_quote,
-        }
-
-    sales_revenue_by_status = []
-    for month, status_values in ctx["status_per_month"].items():
-        row = [month]
-        for status in ["PROCESSABLE", "SENT", "RETURNED"]:
-            values = status_values.get(status)
-            if values:
-                row.extend([status, values["count"], values["umsatz"]])
-            else:
-                row.extend([status, "-", "-"])
-
-        sales_revenue_by_status.append(row)
-
-    ctx["sales_revenue_by_status"] = sales_revenue_by_status
-    ctx["location"] = LOCATION
-    return render(request, "otto/stats.html", {"ctx": ctx})
-
-
-@login_required
-def stats_orderitems(request):
-    return JsonResponse(list(StatsOrderItems.objects.all().values()), safe=False)

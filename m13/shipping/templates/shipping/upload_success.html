@@ -9,6 +9,31 @@
   <table>
     <tr>
       <td>
+        <h3>_tiktok</h3>
+        <table>
+          <thead>
+            <th class='date'>created_at</th>
+            <th>package_id</th>
+            <th>tracking_info</th>
+            <th>status_code</th>
+          </thead>
+          <tbody>
+            {% for sh in tiktok_shipments %}
+            <tr>
+              <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
+              <td>{{ sh.1 }}</td>
+              <td>{{ sh.2 }}</td>
+              <td>{{ sh.3 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td>No shipments found</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </td>
+      <td>
         <h3>_etsy</h3>
         <table>
           <thead>

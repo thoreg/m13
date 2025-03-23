@@ -10,6 +10,8 @@ from etsy.models import Shipment as EtsyShipment
 from etsy.services.shipments import handle_uploaded_file as etsy_handle_upload
 from otto.models import Shipment as OttoShipment
 from otto.services.shipments import handle_uploaded_file as otto_handle_upload
+from tiktok.models import Shipment as TiktokShipment
+from tiktok.services.shipments import handle_uploaded_file as tiktok_handle_upload
 
 from .forms import UploadFileForm
 
@@ -25,8 +27,12 @@ def index(request):
         if form.is_valid():
             file1 = deepcopy(request.FILES["file"])
             file2 = deepcopy(request.FILES["file"])
+            file3 = deepcopy(request.FILES["file"])
+
             otto_handle_upload(file1)
             etsy_handle_upload(file2)
+            tiktok_handle_upload(file3)
+
             return HttpResponseRedirect(reverse("upload_shipping_infos_success"))
     else:
         form = UploadFileForm()
@@ -65,12 +71,23 @@ def upload_shipping_infos_success(request):
             "response_status_code",
         )[:100]
     )
+    tiktok_shipments = (
+        TiktokShipment.objects.all()
+        .order_by("-created")
+        .values_list(
+            "created",
+            "package_id",
+            "tracking_number",
+            "response_status_code",
+        )[:100]
+    )
     return render(
         request,
         "shipping/upload_success.html",
         {
             "etsy_shipments": etsy_shipments,
             "otto_shipments": otto_shipments,
+            "tiktok_shipments": tiktok_shipments,
             "location": LOCATION,
         },
     )
