@@ -11,7 +11,7 @@ $(function() {
     let toDate = $( "#to" ).val();
 
     if (!fromDate) {
-      fromDate = '2023-01-01';
+      fromDate = '2024-01-01';
       $( "#from" ).val(fromDate)
     }
 
