@@ -69,7 +69,6 @@ OTTO_URLS = [
     "otto_import_orders",
     "otto_upload_tracking_codes_success",
     "otto_upload_tracking_codes",
-    "otto_stats",
     "otto_index",
 ]
 

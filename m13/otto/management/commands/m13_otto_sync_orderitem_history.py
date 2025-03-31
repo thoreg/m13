@@ -88,7 +88,8 @@ class Command(BaseCommand):
             )
             try:
                 response_json = response.json()
-            except:
+            except Exception as e:
+                LOG.error(str(e))
                 LOG.error(response)
                 continue
 
