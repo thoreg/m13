@@ -17,7 +17,7 @@ M13_TIKTOK_APP_SECRET = os.getenv("M13_TIKTOK_APP_SECRET")
 
 TIKTOK_BASE_URL = "https://open-api.tiktokglobalshop.com"
 
-MAX_PAGE_SIZE = 5
+MAX_PAGE_SIZE = 100
 
 LOG = logging.getLogger(__name__)
 
@@ -80,7 +80,9 @@ class StockService:
             LOG.error(resp.json())
             return
 
-        # LOG.info(pformat(resp.json()))
+        from pprint import pformat
+
+        LOG.info(pformat(resp.json()))
         return resp.json()["data"]["shops"][0]["cipher"]
 
     def get_products(self, refresh=False, next_page_token=None):

@@ -4,13 +4,15 @@
 
 {% block content %}
 <div id="main">
-  <h2>
-    Upload Tracking Codes to all marketplaces
-  </h2>
+  <h2>CSV mit Tracking Codes zu TikTok hochladen</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="file" name="file">
     <button type="submit">Upload</button>
   </form>
 </div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'tiktok/footer.html' %}
 {% endblock %}

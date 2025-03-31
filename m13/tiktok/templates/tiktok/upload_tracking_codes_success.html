@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div id="main">
+  <h2>Upload CSV mit Tracking Codes zu TikTok war erfolgreich</h2>
+  <table>
+    <thead>
+      <th class='date'>created_at</th>
+      <th>package_id</th>
+      <th>tracking_info</th>
+      <th>status_code</th>
+      <th>response</th>
+    </thead>
+    <tbody>
+    {% for sh in shipments %}
+      <tr>
+        <td>{{ sh.created|date:"Y/m/d/h:m:s" }}</td>
+        <td>{{ sh.package_id }}</td>
+        <td>{{ sh.tracking_number }}</td>
+        <td>{{ sh.response_status_code }}</td>
+        <td>{{ sh.response }}</td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td>No shipments found</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'tiktok/footer.html' %}
+{% endblock %}

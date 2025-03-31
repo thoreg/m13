@@ -6,12 +6,7 @@ from django.core.management.base import BaseCommand
 from tiktok.lib import download_feed
 from tiktok.services.stock import StockService
 
-M13_TIKTOK_APP_KEY = os.getenv("M13_TIKTOK_APP_KEY")
-M13_TIKTOK_APP_SECRET = os.getenv("M13_TIKTOK_APP_SECRET")
 M13_TIKTOK_FEED = os.getenv("M13_TIKTOK_FEED")
-
-TIKTOK_BASE_URL = "https://open-api.tiktokglobalshop.com"
-TIKTOK_GET_AUTHORIZED_SHOPS = "/authorization/202309/shops"
 
 
 LOG = logging.getLogger(__name__)

@@ -1,1 +1,60 @@
-:)
+{% extends "base.html" %}
+
+{% block header %}
+<div id="header">
+  <form action={% url 'tiktok_import_orders' %}>
+    <button type="submit" class="m13-btn" title="Bestellungen von TikTok importieren">
+      BESTELLUNGEN IMPORTIEREN
+    </button>
+  </form>
+  <form action={% url 'tiktok_orderitems_csv' %}>
+    <button type="submit" class="m13-btn" title="Alle aktuellen Bestellungen als CSV laden">
+      DOWNLOAD BESTELLUNGEN CSV
+    </button>
+  </form>
+  <form action={% url 'tiktok_upload_tracking_codes' %}>
+    <button type="submit" class="m13-btn" title="Tracking Codes zu TikTok hochladen">
+      UPLOAD TRACKING CODES
+    </button>
+  </form>
+</div>
+<div id="header_right">
+  _awaiting_shipment: {{ number_of_awaiting_shipment }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="main">
+    <table>
+        <thead>
+            <th>order_number</th>
+            <th>sku</th>
+            <th>status</th>
+            <th>rts_sla_time</th>
+            <th>product title</th>
+            <th>customer name</th>
+            <th>customer address</th>
+            <th>created</th>
+        </thead>
+        <tbody>
+            {% for oi in order_items %}
+            <tr>
+                <td>{{ oi.order.tiktok_order_id }}</td>
+                <td>{{ oi.sku }}</td>
+                <td>{{ oi.status }}</td>
+                <td>{{ oi.order.rts_sla_time|date:"Y-m-d" }}</td>
+                <td>{{ oi.tiktok_product_name }}</td>
+                <td>
+                    {{ oi.order.delivery_address.first_name }}
+                    {{ oi.order.delivery_address.last_name }}
+                </td>
+                <td>
+                    {{ oi.order.delivery_address.full_address }}
+                </td>
+                <td>{{ oi.created|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

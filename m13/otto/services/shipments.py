@@ -129,7 +129,7 @@ def handle_uploaded_file(csv_file):
     for row in reader:
         # Check if row is considered to be an 'OTTO ROW'
         valid_row = False
-        if row[0].startswith(tuple(ALPHA)) and len(row[0]) == 10:
+        if row and row[0].startswith(tuple(ALPHA)) and len(row[0]) == 10:
             valid_row = True
 
         if not valid_row:
