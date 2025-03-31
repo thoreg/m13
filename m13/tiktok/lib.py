@@ -42,12 +42,13 @@ def get_access_token():
         return
 
     resp_json = resp.json()
-    access_token = resp_json["data"]["access_token"]
-    refresh_token = resp_json["data"]["refresh_token"]
-
-    AuthToken.objects.create(token=access_token, refresh_token=refresh_token)
-
-    return access_token
+    try:
+        access_token = resp_json["data"]["access_token"]
+        refresh_token = resp_json["data"]["refresh_token"]
+        AuthToken.objects.create(token=access_token, refresh_token=refresh_token)
+        return access_token
+    except KeyError:
+        LOG.error(resp_json)
 
 
 def download_feed(download_url: str):
