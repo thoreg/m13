@@ -180,7 +180,7 @@ def orderitems_csv(request):
 
 @login_required
 def import_orders(request):
-    """Import orders from OTTO via button click"""
+    """Import orders from TikTok via button click"""
     order_service = OrderService()
     order_status_list = [choice[0] for choice in Order.Status.choices]
 

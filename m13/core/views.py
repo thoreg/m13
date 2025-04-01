@@ -1,9 +1,12 @@
+import csv
 import logging
 from datetime import date, timedelta
 
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+
+from core.models import Price
 
 from .services.article_stats import get_article_stats
 
@@ -54,3 +57,25 @@ def api_return_shipments_stats(request) -> JsonResponse:
     sorted_article_stats = {i: article_stats[i] for i in article_keys}
 
     return JsonResponse(sorted_article_stats, safe=False)
+
+
+def sku_production_costs(request):
+    """Return the sku production costs."""
+    prices = Price.objects.filter(costs_production__isnull=False).values_list(
+        "sku", "costs_production"
+    )
+
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={
+            "Content-Disposition": 'attachment; filename="m13_production_costs.csv"'
+        },
+    )
+
+    writer = csv.writer(response)
+    writer.writerow(["sku", "costs_production"])
+    for sku, costs in prices:
+        print(f"SKU: {sku}, Production Costs: {costs}")
+        writer.writerow([sku, costs])
+
+    return response

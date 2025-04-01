@@ -13,21 +13,24 @@ from core.viewsets import (
     SalesVolumeZalandoViewSet,
 )
 from otto.viewsets import OrderItemViewSet as OttoOrderItemsViewSet
-from zalando import viewsets as zalando_viewsets
 
 from .views import index, jobs
 
+# from zalando import viewsets as zalando_viewsets
+
+
 router = routers.DefaultRouter()
 router.register(r"otto/orderitems", OttoOrderItemsViewSet)
-router.register(
-    r"zalando/raw-daily-shipement-reports", zalando_viewsets.RawDailyShipmentReportList
-)
+# router.register(
+#     r"zalando/raw-daily-shipement-reports", zalando_viewsets.RawDailyShipmentReportList
+# )
 router.register(r"sales-stats/top13/sales", SalesStatsTop13ViewSet)
 router.register(r"sales-stats/top13/return", SalesStatsTop13ReturnViewSet)
 router.register(r"sales-stats/z/sales-volume", SalesVolumeZalandoViewSet)
 
 urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
+    path("api/v2/t0talrad0m4n1kl4s/", core_views.sku_production_costs),
     path("api/v2/core/return-shipments-stats/", core_views.api_return_shipments_stats),
     path("api/", include(router.urls)),
     path("addi/", include("massadmin.urls")),
