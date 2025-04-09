@@ -39,12 +39,10 @@ def sync_stock():
     headers = _renew_token()
 
     for _chunk in chunk(stock, MAX_CHUNK_SIZE):
-
-        time.sleep(2)
-        LOG.info(f"sync stock for {len(_chunk)} products")
-        payload = []
-
         for product in _chunk:
+            time.sleep(2)
+            payload = []
+
             sku = product["sku"]
             quantity = product["quantity"]
 
@@ -54,24 +52,26 @@ def sync_stock():
 
             payload.append({"quantity": quantity, "sku": sku})
 
-        resp = requests.post(
-            f"{OTTO_QUANTITIES_URL}", headers=headers, json=payload, timeout=60
-        )
-
-        if resp.status_code == requests.codes.unauthorized:
-            headers = _renew_token()
             resp = requests.post(
                 f"{OTTO_QUANTITIES_URL}", headers=headers, json=payload, timeout=60
             )
-            if resp.status_code != requests.codes.ok:
-                LOG.error(f"update sku: {sku} qu: {quantity} failed")
-                LOG.error(f"status_code: {resp.status_code}")
+
+            if resp.status_code == requests.codes.unauthorized:
+                headers = _renew_token()
+                resp = requests.post(
+                    f"{OTTO_QUANTITIES_URL}", headers=headers, json=payload, timeout=60
+                )
+                if resp.status_code == requests.codes.ok:
+                    LOG.info(f"2nd try - sku: {sku} qu: {quantity} updated")
+                else:
+                    LOG.error(f"update sku: {sku} qu: {quantity} failed")
+                    LOG.error(f"status_code: {resp.status_code}")
+                    LOG.error(resp.json())
+                    continue
+
+            elif resp.status_code == requests.codes.ok:
+                LOG.info(f"sku: {sku} qu: {quantity} updated")
+
+            else:
+                LOG.error(f"unexpected status_code: {resp.status_code}")
                 LOG.error(resp.json())
-                continue
-
-        elif resp.status_code == requests.codes.ok:
-            LOG.info(f"sync stock for {len(_chunk)} products - OK")
-
-        else:
-            LOG.error(f"unexpected status_code: {resp.status_code}")
-            LOG.error(resp.json())
