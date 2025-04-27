@@ -25,6 +25,7 @@ def sync_stock():
     Load 200 items to the payload and do the post request
 
     """
+
     def _renew_token():
         token = get_auth_token()
         LOG.info(f"get fresh token: {token}")

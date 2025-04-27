@@ -8,23 +8,32 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='BatchRequest',
+            name="BatchRequest",
             fields=[
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('id', models.CharField(primary_key=True, serialize=False)),
-                ('started', models.DateTimeField(auto_now_add=True)),
-                ('status', models.CharField(max_length=32, null=True)),
-                ('completed', models.DateTimeField(null=True)),
+                (
+                    "created",
+                    django_extensions.db.fields.CreationDateTimeField(
+                        auto_now_add=True, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    django_extensions.db.fields.ModificationDateTimeField(
+                        auto_now=True, verbose_name="modified"
+                    ),
+                ),
+                ("id", models.CharField(primary_key=True, serialize=False)),
+                ("started", models.DateTimeField(auto_now_add=True)),
+                ("status", models.CharField(max_length=32, null=True)),
+                ("completed", models.DateTimeField(null=True)),
             ],
             options={
-                'get_latest_by': 'modified',
-                'abstract': False,
+                "get_latest_by": "modified",
+                "abstract": False,
             },
         ),
     ]
