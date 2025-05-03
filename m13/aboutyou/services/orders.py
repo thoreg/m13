@@ -4,12 +4,12 @@ import logging
 import os
 import time
 from pprint import pprint
+
 import requests
 
-from aboutyou.models import BatchRequest, Order, OrderItem, Address
+from aboutyou.models import Address, BatchRequest, Order, OrderItem
 
 from .common import API_BASE_URL, download_feed, filter_feed
-
 
 ORDERS_URL = f"{API_BASE_URL}/api/v1/orders/"
 BATCH_REQUEST_RESULT_URL = f"{API_BASE_URL}/api/v1/results/stocks"

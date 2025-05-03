@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block header %}
+<div id="header">
+  <form action={% url 'ay_import_orders' %}>
+    <button type="submit" class="m13-btn" title="Bestellungen von OTTO importieren">
+      BESTELLUNGEN IMPORTIEREN
+    </button>
+  </form>
+  <form action={% url 'ay_orderitems_csv' %}>
+    <button type="submit" class="m13-btn" title="Alle aktuellen Bestellungen als CSV laden">
+      DOWNLOAD BESTELLUNGEN CSV
+    </button>
+  </form>
+  <form action={% url 'ay_upload_tracking_codes' %}>
+    <button type="submit" class="m13-btn" title="Tracking Codes zu OTTO hochladen">
+      UPLOAD TRACKING CODES
+    </button>
+  </form>
+</div>
+<div id="header_right">
+  _processable: {{ number_of_processable }}
+</div>
+{% endblock %}
+
+{% block content %}
+  <div id="main">
+    <table>
+      <thead>
+        <th>order_number</th>
+        <th>sku</th>
+        <th>status</th>
+        <th>customer name</th>
+        <th>customer address</th>
+        <th>created</th>
+      </thead>
+      <tbody>
+      {% for oi in order_items %}
+        <tr>
+          <td>{{ oi.order.marketplace_order_id }}</td>
+          <td>{{ oi.sku }}</td>
+          <td>{{ oi.fulfillment_status }}</td>
+          <td>
+            {{ oi.order.delivery_address.first_name }}
+            {{ oi.order.delivery_address.last_name }}
+          </td>
+          <td>
+            {{ oi.order.delivery_address.street }}
+            {{ oi.order.delivery_address.zip_code }}
+            {{ oi.order.delivery_address.city }}
+            {{ oi.order.delivery_address.country_code }}
+          </td>
+          <td>
+            {{ oi.created|date:"Y-m-d H:i:s" }}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

@@ -26,7 +26,6 @@ class Address(TimeStampedModel):
     street = models.CharField(max_length=128)
     title = models.CharField(max_length=32, null=True, blank=True)
     zip_code = models.CharField(max_length=32)
-    email = models.EmailField(null=True, blank=True)
 
 
 class Order(TimeStampedModel):
