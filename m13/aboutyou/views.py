@@ -119,7 +119,7 @@ def orderitems_csv(request):
                     DELIVERY_FEE_PRICE,
                     1,
                     "Versandposition",
-                    f"AY {current_order.marketplace_order_id}",
+                    f"{current_order.marketplace_order_id}",
                     "ay@manufaktur13.de",
                     current_order.created.strftime("%d.%m.%y"),
                 ]
@@ -142,7 +142,7 @@ def orderitems_csv(request):
                 price,
                 1,
                 "Artikel",
-                f"AY {oi.order.marketplace_order_id}",
+                f"{oi.order.marketplace_order_id}",
                 "ay@manufaktur13.de",
                 oi.order.created.strftime("%d.%m.%y"),
             ]
@@ -167,7 +167,7 @@ def orderitems_csv(request):
                 DELIVERY_FEE_PRICE,
                 1,
                 "Versandposition",
-                f"AY {current_order.marketplace_order_id}",
+                f"{current_order.marketplace_order_id}",
                 "ay@manufaktur13.de",
                 current_order.created.strftime("%d.%m.%y"),
             ]
