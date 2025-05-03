@@ -137,7 +137,6 @@ def sync():
                 "price": {
                     "country_code": "DE",
                     "retail_price": float(price),
-                    "sale_price": 1,
                 },
             }
         )
@@ -177,7 +176,3 @@ def sync():
 
         LOG.info(f"waiting for {waiting_time_in_seconds} seconds")
         time.sleep(waiting_time_in_seconds)
-
-    import ipdb
-
-    ipdb.set_trace()
