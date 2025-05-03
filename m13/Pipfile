@@ -31,6 +31,8 @@ django-ses = "*"
 requests = "*"
 django-pgviews = "*"
 pylint-django = "*"
+pytest = "*"
+black = "*"
 
 [dev-packages]
 black = "*"

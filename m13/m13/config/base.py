@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "galaxus",
     "galeria",
     "tiktok",
+    "aboutyou",
 ]
 
 MASSEDIT = {

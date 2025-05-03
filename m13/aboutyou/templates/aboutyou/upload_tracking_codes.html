@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div id="main">
+  <h2>CSV mit Tracking Codes zu ABOUTYOU hochladen</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="file">
+    <button type="submit">Upload</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include 'aboutyou/footer.html' %}
+{% endblock %}
