@@ -142,7 +142,7 @@ def handle_uploaded_file(csv_file):
             return
 
         # Check the result - Wait until processing on AY side is done
-        batch_request_id = response.json()["batchRequestId"]
+        batch_request_id = response["batchRequestId"]
         br, _created = BatchRequest.objects.get_or_create(id=batch_request_id)
 
         for waiting_time_in_seconds in [1, 2, 4, 8, 16, 32]:
