@@ -48,6 +48,7 @@ def get_product_title(sku: str) -> str:
             LOG.error(response.json())
             return "items_error"
 
+        LOG.info(response.json())
         title = response.json()["items"][0]["name"]
         Product.objects.get_or_create(sku=sku, defaults={"product_title": title})
 

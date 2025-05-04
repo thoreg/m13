@@ -1,6 +1,10 @@
 from django.contrib import admin
 
-from .models import Address, Order, OrderItem
+from .models import Address, Order, OrderItem, Product
+
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ("sku", "product_title")
 
 
 class AddressAdmin(admin.ModelAdmin):
@@ -48,3 +52,4 @@ class OrderItemAdmin(admin.ModelAdmin):
 admin.site.register(Address, AddressAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem, OrderItemAdmin)
+admin.site.register(Product, ProductAdmin)
