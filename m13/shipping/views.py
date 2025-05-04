@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from aboutyou.models import Shipment as AboutYouShipment
+from aboutyou.services.shipments import handle_uploaded_file as ay_handle_upload
 from etsy.models import Shipment as EtsyShipment
 from etsy.services.shipments import handle_uploaded_file as etsy_handle_upload
 from otto.models import Shipment as OttoShipment
@@ -28,10 +30,12 @@ def index(request):
             file1 = deepcopy(request.FILES["file"])
             file2 = deepcopy(request.FILES["file"])
             file3 = deepcopy(request.FILES["file"])
+            file4 = deepcopy(request.FILES["file"])
 
             otto_handle_upload(file1)
             etsy_handle_upload(file2)
             tiktok_handle_upload(file3)
+            ay_handle_upload(file4)
 
             return HttpResponseRedirect(reverse("upload_shipping_infos_success"))
     else:
