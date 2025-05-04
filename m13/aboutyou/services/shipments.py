@@ -1,107 +1,90 @@
 """Shipment related code lives here.
 
-POST /v1/shipments gets the following payload
+POST /api/v1/orders/ship
 
 {
-    "trackingKey": {
-        "carrier": "HERMES",
-        "trackingNumber": "H1234567890123456789"
-    },
-    "shipDate": "2019-10-11T07:49:12.642Z",
-    "shipFromAddress": {
-        "city": "Dresden",
-        "countryCode": "DEU",
-        "zipCode": "01067"
-    },
-    "positionItems": [
-        {
-            "positionItemId": "b01b8ad2-a49c-47fc-8ade-8629ec000020",
-            "salesOrderId": "bf43d748-f13d-49ca-b2e2-1824e9000021",
-            "returnTrackingKey": {
-                "carrier": "DHL",
-                "trackingNumber": "577546565072"
-            }
-        },
-        {
-            "positionItemId": "b01b8ad2-a49c-47fc-8ade-8629ec000022",
-            "salesOrderId": "bf43d748-f13d-49ca-b2e2-1824e9000021",
-            "returnTrackingKey": {
-                "carrier": "DHL",
-                "trackingNumber": "577546565072"
-            }
-        }
-    ]
+  "items": [
+    {
+      "order_items": [
+        1
+      ],
+      "carrier_key": "DHL_STD_NATIONAL",
+      "shipment_tracking_key": "123456789",
+      "return_tracking_key": "123456789"
+    }
+  ]
 }
 
 """
 
 import csv
+import json
 import logging
+import os
 import string
+import time
 from datetime import datetime
 from io import TextIOWrapper
 from pprint import pprint
 
 import requests
 
+from aboutyou.models import BatchRequest, Order, Shipment
 from m13.lib import log as mlog
-from otto.common import get_auth_token
-from otto.models import Order, Shipment
+
+from .common import API_BASE_URL
 
 LOG = logging.getLogger(__name__)
 
-ALPHA = string.ascii_letters
-SHIPMENTS_URL = "https://api.otto.market/v1/shipments"
+SHIPMENTS_URL = f"{API_BASE_URL}/api/v1/orders/ship"
+BATCH_REQUEST_RESULT_URL = f"{API_BASE_URL}/api/v1/results/ship-orders"
 
 
-def get_payload(order, tracking_info, carrier, return_shipment_code):
-    """Return the payload for all orderitems of the given order."""
+def get_payload(order, tracking_info, return_shipment_code):
+    """Return the payload for all orderitems of the given order.
+    {
+        "items": [{
+            "order_items": [
+                1
+            ],
+            "carrier_key": "DHL_STD_NATIONAL",
+            "shipment_tracking_key": "123456789",
+            "return_tracking_key": "123456789"
+        }]
+    }
+    """
     LOG.info(order.__dict__)
     LOG.info(order.delivery_address.__dict__)
     for oi in order.orderitem_set.all():
         LOG.info(oi.__dict__)
 
-    data = {
-        "trackingKey": {"carrier": carrier, "trackingNumber": tracking_info},
-        "shipDate": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "shipFromAddress": {
-            "city": order.delivery_address.city,
-            "countryCode": order.delivery_address.country_code,
-            "zipCode": order.delivery_address.zip_code,
-        },
-    }
     order_items = []
     for oi in order.orderitem_set.all():
-        order_items.append(
-            {
-                "positionItemId": oi.position_item_id,
-                "salesOrderId": order.marketplace_order_id,
-                "returnTrackingKey": {
-                    "carrier": carrier,
-                    "trackingNumber": return_shipment_code,
-                },
-            }
-        )
+        order_items.append(oi.position_item_id)
 
-    data["positionItems"] = order_items
-    LOG.info(f"Return data: {data}")
-    return data
-
-
-def do_post(token, order, tracking_info, carrier, return_shipment_code):
-    payload = get_payload(order, tracking_info, carrier, return_shipment_code)
-
-    LOG.info(
-        f"upload for o: {order.marketplace_order_number} t: {tracking_info} c: {carrier}"
+    return json.dumps(
+        {
+            "items": [
+                {
+                    "order_items": order_items,
+                    "carrier_key": "DHL_STD_NATIONAL",
+                    "shipment_tracking_key": tracking_info,
+                    "return_tracking_key": return_shipment_code,
+                }
+            ]
+        }
     )
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json;charset=UTF-8",
-    }
+
+def do_post(headers, order, tracking_info, return_shipment_code):
+    payload = get_payload(order, tracking_info, return_shipment_code)
+
+    LOG.info(f"upload for o: {order.marketplace_order_number} t: {tracking_info}")
 
     pprint(payload)
+    import ipdb
 
+    ipdb.set_trace()
     r = requests.post(
         SHIPMENTS_URL,
         headers=headers,
@@ -123,18 +106,21 @@ def handle_uploaded_file(csv_file):
     request.FILES gives you binary files, but the csv module wants to have
     text-mode files instead.
     """
-    return
-    token = get_auth_token()
+    token = os.getenv("M13_ABOUTYOU_TOKEN")
+    if not token:
+        LOG.error("M13_ABOUTYOU_TOKEN not found")
+        return
+
+    headers = {
+        "X-API-Key": token,
+        "Content-Type": "application/json;charset=UTF-8",
+    }
+
     f = TextIOWrapper(csv_file.file, encoding="latin1")
     reader = csv.reader(f, delimiter=";")
     for row in reader:
-        # Check if row is considered to be an 'OTTO ROW'
-        valid_row = False
-        if row and row[0].startswith(tuple(ALPHA)) and len(row[0]) == 10:
-            valid_row = True
-
-        if not valid_row:
-            LOG.info(f"Skip non otto row: {row}")
+        if not row[0].startswith("ayou-"):
+            LOG.info(f"Skip non ay row: {row}")
             continue
 
         tracking_info = row[3]
@@ -142,30 +128,50 @@ def handle_uploaded_file(csv_file):
             mlog.error(LOG, f"Tracking info not found - row: {row}")
             continue
 
-        order_number = row[0]
+        marketplace_order_id = row[0]
         try:
             order = Order.objects.select_related("delivery_address").get(
-                marketplace_order_number=order_number
+                marketplace_order_id=marketplace_order_id
             )
         except Order.DoesNotExist:
-            mlog.error(LOG, f"Order not found {order_number} - row {row}")
+            mlog.error(LOG, f"Order not found {marketplace_order_id} - row {row}")
             continue
-
-        carrier = "DHL"
 
         return_shipment_code = row[5]
 
-        LOG.info(
-            f"o: {order_number} t: {tracking_info} c: {carrier} rsc: {return_shipment_code}"
-        )
-
         status_code, response = do_post(
-            token, order, tracking_info, carrier, return_shipment_code
+            headers, order, tracking_info, return_shipment_code
         )
+        if status_code != requests.codes.ok:
+            LOG.error(f"update shipping information for {marketplace_order_id}) failed")
+            LOG.error(response.json())
+            return
+
+        # Check the result - Wait until processing on AY side is done
+        batch_request_id = response.json()["batchRequestId"]
+        br, _created = BatchRequest.objects.get_or_create(id=batch_request_id)
+
+        for waiting_time_in_seconds in [1, 2, 4, 8, 16, 32]:
+            response = requests.get(
+                f"{BATCH_REQUEST_RESULT_URL}?batch_request_id={batch_request_id}",
+                headers=headers,
+                timeout=60,
+            )
+            status = response.json()["status"]
+            br.status = status
+            br.save()
+
+            LOG.info(f"batch_request: {br.id} status: {status}")
+
+            if status == "completed":
+                break
+
+            LOG.info(f"waiting for {waiting_time_in_seconds} seconds")
+            time.sleep(waiting_time_in_seconds)
 
         Shipment.objects.create(
             order=order,
-            carrier=carrier,
+            carrier="DHL",
             tracking_info=tracking_info,
             response_status_code=status_code,
             response=response,
