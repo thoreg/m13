@@ -9,16 +9,18 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 
-from core.models import Price, Product
+from aboutyou.services.products import get_product_title
 
 from .forms import UploadFileForm
-from .models import OrderItem, Shipment
+from .models import OrderItem
+from .models import Product as AYProduct
+from .models import Shipment
 from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)
 
-DELIVERY_FEE_STANDARD = "DHL Standard National DE"
-DELIVERY_FEE_PRICE = "3,95"
+DELIVERY_FEE_STANDARD = "DHL Paket (R)"
+DELIVERY_FEE_PRICE = "0"
 
 LOCATION = "aboutyou"
 
@@ -50,26 +52,6 @@ def orderitems_csv(request):
         content_type="text/csv",
         headers={"Content-Disposition": f'attachment; filename="{now_as_str}.csv"'},
     )
-
-    products = Product.objects.all().values_list("ean", "name")
-    products_dict = {entry[0]: entry[1] for entry in products}
-    prices = Price.objects.all().values_list("sku", "ean")
-    prices_dict = {entry[0]: entry[1] for entry in prices}
-
-    def __get_product_title(sku: str, prices_map: dict, products_map: dict) -> str:
-        try:
-            ean = prices_map[sku]
-        except KeyError:
-            LOG.info(f"sku: {sku} not in prices")
-            return "sku_not_in_prices"
-
-        try:
-            title = products_map[ean]
-        except KeyError:
-            LOG.info(f"ean: {ean} not in products")
-            return "ean_not_in_products"
-
-        return title
 
     response.write("\ufeff".encode("utf8"))
     writer = csv.writer(response, delimiter=";")
@@ -138,7 +120,7 @@ def orderitems_csv(request):
                 oi.order.delivery_address.city,
                 oi.order.delivery_address.country_code,
                 oi.sku,
-                __get_product_title(oi.sku, prices_dict, products_dict),
+                get_product_title(oi.sku),
                 price,
                 1,
                 "Artikel",
