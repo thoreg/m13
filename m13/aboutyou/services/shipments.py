@@ -78,14 +78,14 @@ def get_payload(order, tracking_info, return_shipment_code):
 
 def do_post(headers, order, tracking_info, return_shipment_code):
     payload = get_payload(order, tracking_info, return_shipment_code)
-    LOG.info(payload)
+    LOG.info(f"payload: {payload}")
     r = requests.post(
         SHIPMENTS_URL,
         headers=headers,
-        json=payload,
+        data=payload,
     )
 
-    LOG.info(f"upload shipping information() r.status_code: {r.status_code}")
+    LOG.info(f"post - status_code: {r.status_code}")
     LOG.info(r.json())
 
     return r.status_code, r.json()
