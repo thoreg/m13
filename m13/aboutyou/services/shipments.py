@@ -168,5 +168,5 @@ def handle_uploaded_file(csv_file):
             carrier="DHL",
             tracking_info=tracking_info,
             response_status_code=status_code,
-            response=response,
+            response=response.json(),
         )
