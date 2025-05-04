@@ -43,7 +43,7 @@ def get_product_title(sku: str) -> str:
             LOG.error(response.json())
             return "fetching_error"
 
-        if len(response.json()["items"]):
+        if len(response.json()["items"]) > 1:
             LOG.error(f"fetching product ({sku}) unexpected response")
             LOG.error(response.json())
             return "items_error"
