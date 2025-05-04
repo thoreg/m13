@@ -138,7 +138,7 @@ def handle_uploaded_file(csv_file):
         )
         if status_code != requests.codes.ok:
             LOG.error(f"update shipping information for {marketplace_order_id}) failed")
-            LOG.error(response.json())
+            LOG.error(response)
             return
 
         # Check the result - Wait until processing on AY side is done
