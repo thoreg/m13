@@ -53,10 +53,10 @@ def get_payload(order, tracking_info, return_shipment_code):
         }]
     }
     """
-    LOG.info(order.__dict__)
-    LOG.info(order.delivery_address.__dict__)
-    for oi in order.orderitem_set.all():
-        LOG.info(oi.__dict__)
+    # LOG.info(order.__dict__)
+    # LOG.info(order.delivery_address.__dict__)
+    # for oi in order.orderitem_set.all():
+    #     LOG.info(oi.__dict__)
 
     order_items = []
     for oi in order.orderitem_set.all():
@@ -78,13 +78,7 @@ def get_payload(order, tracking_info, return_shipment_code):
 
 def do_post(headers, order, tracking_info, return_shipment_code):
     payload = get_payload(order, tracking_info, return_shipment_code)
-
-    LOG.info(f"upload for o: {order.marketplace_order_number} t: {tracking_info}")
-
-    pprint(payload)
-    import ipdb
-
-    ipdb.set_trace()
+    LOG.info(payload)
     r = requests.post(
         SHIPMENTS_URL,
         headers=headers,
