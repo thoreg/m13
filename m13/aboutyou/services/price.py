@@ -77,9 +77,6 @@ def _get_price(price, factor) -> str:
 
         if price > 200:
             # This should never happen
-            import ipdb
-
-            ipdb.set_trace()
             return "ERROR"
 
 
@@ -118,11 +115,9 @@ def sync():
     items = []
     for sku, _quantity, old_price in sku_quantity_price_map:
         try:
-            # Special overwrite on certain products - just take hard the vk_zalando
-            # without further any further modification
-            core_price = Price.objects.get(sku__iexact=sku, pimped_zalando=True)
-            price = str(core_price.vk_zalando)
-            LOG.debug(f"{sku} - price via pimped_zalando=True : {price}")
+            core_price = Price.objects.get(sku__iexact=sku, vk_aboutyou__isnull=False)
+            price = str(core_price.vk_aboutyou)
+            LOG.debug(f"{sku} - price via overwrite: {price}")
 
         except Price.DoesNotExist:
             _price = float(old_price.replace(",", "."))
