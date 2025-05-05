@@ -69,6 +69,7 @@ class PriceAdmin(MassEditMixin, admin.ModelAdmin):
         "sku",
         "category",
         "vk_zalando",
+        "vk_aboutyou",
         "pimped_zalando",
         "vk_otto",
         "ean",
