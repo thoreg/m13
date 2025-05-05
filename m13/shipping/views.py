@@ -85,10 +85,22 @@ def upload_shipping_infos_success(request):
             "response_status_code",
         )[:100]
     )
+    aboutyou_shipments = (
+        AboutYouShipment.objects.all()
+        .order_by("-created")
+        .values_list(
+            "created",
+            "order__marketplace_order_id",
+            "tracking_info",
+            "response_status_code",
+        )[:100]
+    )
+
     return render(
         request,
         "shipping/upload_success.html",
         {
+            "aboutyou_shipments": aboutyou_shipments,
             "etsy_shipments": etsy_shipments,
             "otto_shipments": otto_shipments,
             "tiktok_shipments": tiktok_shipments,

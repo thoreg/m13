@@ -4,90 +4,111 @@
 
 {% block content %}
 <div id="main">
-  <h2>Upload CSV mit Tracking Codes zu ETSY und OTTO war erfolgreich</h2>
-
+  <h2>Upload CSV mit Tracking Codes zu OTTO, ETSY, TikTok und ABOUTYOU erfolgreich</h2>
+  <iframe id="coding-love-frame" width="400" height="600" style="border:none; float: right;"></iframe>
+  <script>
+    document.getElementById("coding-love-frame").src = "https://thecodinglove.com/random"
+  </script>
+  <h3>_aboutyou</h3>
   <table>
-    <tr>
-      <td>
-        <h3>_tiktok</h3>
-        <table>
-          <thead>
-            <th class='date'>created_at</th>
-            <th>package_id</th>
-            <th>tracking_info</th>
-            <th>status_code</th>
-          </thead>
-          <tbody>
-            {% for sh in tiktok_shipments %}
-            <tr>
-              <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
-              <td>{{ sh.1 }}</td>
-              <td>{{ sh.2 }}</td>
-              <td>{{ sh.3 }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td>No shipments found</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </td>
-      <td>
-        <h3>_etsy</h3>
-        <table>
-          <thead>
-            <th class='date'>created_at</th>
-            <th>marketplace_order_id</th>
-            <th>tracking_info</th>
-            <th>carrier</th>
-            <th>status_code</th>
-          </thead>
-          <tbody>
-            {% for sh in etsy_shipments %}
-            <tr>
-              <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
-              <td>{{ sh.1 }}</td>
-              <td>{{ sh.2 }}</td>
-              <td>{{ sh.3 }}</td>
-              <td>{{ sh.4 }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td>No shipments found</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </td>
-      <td>
-        <h3>_otto</h3>
-        <table>
-          <thead>
-            <th class='date'>created_at</th>
-            <th>marketplace_order_number</th>
-            <th>tracking_info</th>
-            <th>carrier</th>
-            <th>status_code</th>
-          </thead>
-          <tbody>
-            {% for sh in otto_shipments %}
-            <tr>
-              <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
-              <td>{{ sh.1 }}</td>
-              <td>{{ sh.2 }}</td>
-              <td>{{ sh.3 }}</td>
-              <td>{{ sh.4 }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td>No shipments found</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </td>
-    </tr>
+    <thead>
+      <th class='date'>created_at</th>
+      <th>marketplace_order_id</th>
+      <th>tracking_info</th>
+      <th>carrier</th>
+      <th>status_code</th>
+    </thead>
+    <tbody>
+      {% for sh in aboutyou_shipments %}
+      <tr>
+        <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
+        <td>{{ sh.1 }}</td>
+        <td>{{ sh.2 }}</td>
+        <td>{{ sh.3 }}</td>
+        <td>{{ sh.4 }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td>No shipments found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>_tiktok</h3>
+  <table>
+    <thead>
+      <th class='date'>created_at</th>
+      <th>package_id</th>
+      <th>tracking_info</th>
+      <th>status_code</th>
+    </thead>
+    <tbody>
+      {% for sh in tiktok_shipments %}
+      <tr>
+        <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
+        <td>{{ sh.1 }}</td>
+        <td>{{ sh.2 }}</td>
+        <td>{{ sh.3 }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td>No shipments found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>_etsy</h3>
+  <table>
+    <thead>
+      <th class='date'>created_at</th>
+      <th>marketplace_order_id</th>
+      <th>tracking_info</th>
+      <th>carrier</th>
+      <th>status_code</th>
+    </thead>
+    <tbody>
+      {% for sh in etsy_shipments %}
+      <tr>
+        <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
+        <td>{{ sh.1 }}</td>
+        <td>{{ sh.2 }}</td>
+        <td>{{ sh.3 }}</td>
+        <td>{{ sh.4 }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td>No shipments found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>_otto</h3>
+  <table>
+    <thead>
+      <th class='date'>created_at</th>
+      <th>marketplace_order_number</th>
+      <th>tracking_info</th>
+      <th>carrier</th>
+      <th>status_code</th>
+    </thead>
+    <tbody>
+      {% for sh in otto_shipments %}
+      <tr>
+        <td>{{ sh.0|date:"Y/m/d/h:m:s" }}</td>
+        <td>{{ sh.1 }}</td>
+        <td>{{ sh.2 }}</td>
+        <td>{{ sh.3 }}</td>
+        <td>{{ sh.4 }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td>No shipments found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
 </div>
 {% endblock %}
