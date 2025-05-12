@@ -75,7 +75,9 @@ class Price(TimeStampedModel):
     vk_otto = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     pimped_zalando = models.BooleanField(default=False)
     ean = models.CharField(max_length=13, unique=True, null=True, blank=True)
-    vk_aboutyou = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    vk_aboutyou = models.DecimalField(
+        max_digits=6, decimal_places=2, null=True, blank=True
+    )
 
     def __str__(self):
         return f"{self.category} : {self.sku}"
