@@ -100,10 +100,13 @@ def sync():
         return response.json()
 
     resp = _import_orders(ORDERS_URL)
+    LOG.info(resp)
 
     next_url = resp["pagination"]["next"]
     if next_url:
-        LOG.info(f"Next page: {next_url}")
-        _import_orders(f"{API_BASE_URL}{next_url}")
+        while next_url:
+            LOG.info(f"Next page: {next_url}")
+            resp = _import_orders(f"{API_BASE_URL}{next_url}")
+            next_url = resp["pagination"]["next"]
 
     LOG.info("sync_orders finished ...")
