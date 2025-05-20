@@ -1,6 +1,10 @@
 from django.contrib import admin
 
-from .models import Address, Order, OrderItem, Product
+from .models import Address, BatchRequestTrackingInfo, Order, OrderItem, Product
+
+
+class BatchRequestTrackingInfoAdmin(admin.ModelAdmin):
+    list_display = ("id", "status", "started", "tracking_info")
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -53,3 +57,4 @@ admin.site.register(Address, AddressAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem, OrderItemAdmin)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(BatchRequestTrackingInfo, BatchRequestTrackingInfoAdmin)

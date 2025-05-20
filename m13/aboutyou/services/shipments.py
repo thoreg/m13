@@ -29,7 +29,7 @@ from pprint import pprint
 
 import requests
 
-from aboutyou.models import BatchRequest, Order, Shipment
+from aboutyou.models import BatchRequestTrackingInfo, Order, Shipment
 from m13.lib import log as mlog
 
 from .common import API_BASE_URL
@@ -91,6 +91,18 @@ def do_post(headers, order, tracking_info, return_shipment_code):
     return r.status_code, r.json()
 
 
+def __get_headers() -> dict | None:
+    token = os.getenv("M13_ABOUTYOU_TOKEN")
+    if not token:
+        LOG.error("M13_ABOUTYOU_TOKEN not found")
+        return
+
+    return {
+        "X-API-Key": token,
+        "Content-Type": "application/json;charset=UTF-8",
+    }
+
+
 def handle_uploaded_file(csv_file):
     """Handle uploaded csv file and do the POST.
 
@@ -100,15 +112,7 @@ def handle_uploaded_file(csv_file):
     request.FILES gives you binary files, but the csv module wants to have
     text-mode files instead.
     """
-    token = os.getenv("M13_ABOUTYOU_TOKEN")
-    if not token:
-        LOG.error("M13_ABOUTYOU_TOKEN not found")
-        return
-
-    headers = {
-        "X-API-Key": token,
-        "Content-Type": "application/json;charset=UTF-8",
-    }
+    headers = __get_headers()
 
     f = TextIOWrapper(csv_file.file, encoding="latin1")
     reader = csv.reader(f, delimiter=";")
@@ -141,18 +145,36 @@ def handle_uploaded_file(csv_file):
             LOG.error(response)
             return
 
-        # Check the result - Wait until processing on AY side is done
         batch_request_id = response["batchRequestId"]
-        br, _created = BatchRequest.objects.get_or_create(id=batch_request_id)
+        br, created = BatchRequestTrackingInfo.objects.get_or_create(
+            id=batch_request_id,
+            defaults={
+                "tracking_info": tracking_info,
+            })
+        if created:
+            LOG.info(f"batch request created: {br.id} tracking_info: {tracking_info}")
+        else:
+            LOG.info(
+                f"batch request: {br.id} tracking_info: {tracking_info} already known"
+            )
 
+
+def check_batch_requests():
+    """Walk through pending batch requests and check the status."""
+
+    headers = __get_headers()
+
+    brs = BatchRequestTrackingInfo.objects.filter(status=None)
+    for br in brs:
         for waiting_time_in_seconds in [1, 2, 4, 8, 16, 32]:
             response = requests.get(
-                f"{BATCH_REQUEST_RESULT_URL}?batch_request_id={batch_request_id}",
+                f"{BATCH_REQUEST_RESULT_URL}?batch_request_id={br.id}",
                 headers=headers,
                 timeout=60,
             )
             status = response.json()["status"]
             br.status = status
+            br.response = response.json()
             br.save()
 
             LOG.info(f"batch_request: {br.id} status: {status}")
@@ -162,11 +184,3 @@ def handle_uploaded_file(csv_file):
 
             LOG.info(f"waiting for {waiting_time_in_seconds} seconds")
             time.sleep(waiting_time_in_seconds)
-
-        Shipment.objects.create(
-            order=order,
-            carrier="DHL",
-            tracking_info=tracking_info,
-            response_status_code=status_code,
-            response=response.json(),
-        )

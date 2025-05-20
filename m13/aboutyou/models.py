@@ -11,11 +11,21 @@ class BatchRequest(TimeStampedModel):
     completed = models.DateTimeField(null=True)
 
 
-class Address(TimeStampedModel):
-    """We get from otto only shipping and billing addresses.
+class BatchRequestTrackingInfo(TimeStampedModel):
+    """Track batch requests with tracking info."""
 
-    No customer id - no email
-    """
+    id = models.CharField(primary_key=True)
+    started = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=32, null=True)
+    tracking_info = models.CharField(max_length=256, null=True)
+    response = models.JSONField(null=True)
+
+    class Meta:
+        verbose_name_plural = "BatchRequestsTrackingInfo"
+
+
+class Address(TimeStampedModel):
+    """Customer address data."""
 
     addition = models.CharField(max_length=128, null=True, blank=True)
     city = models.CharField(max_length=128)
