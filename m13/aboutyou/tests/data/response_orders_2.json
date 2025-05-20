@@ -1,0 +1,192 @@
+{
+    "items": [
+        {
+            "order_items": [
+                {
+                    "return_tracking_key": "00340434453785281407",
+                    "shipment_tracking_key": "00340433887720018895",
+                    "sku": "DEBUHA-GR-LXL",
+                    "id": 5549,
+                    "product_variant": 18762,
+                    "vat": 19,
+                    "price_without_tax": 2937,
+                    "price_with_tax": 3495,
+                    "custom_data": null,
+                    "status": "returned"
+                },
+                {
+                    "return_trackin g_key": "00340434453785281407",
+                    "shipment_tracking_key": "00340433887720018895",
+                    "sku": "DEBUHA-GR-SM",
+                    "id": 5550,
+                    "product_variant": 18764,
+                    "vat": 19,
+                    "pr ice_without_tax": 2937,
+                    "price_with_tax": 3495,
+                    "custom_data": null,
+                    "status": "returned"
+                }
+            ],
+            "order_number": "ayou-139-323999811",
+            "delivery_document_url": "/ api/v1/orders/ayou-139-323999811/delivery_document",
+            "created_at": "2025-04-26T19:03:28.680Z",
+            "updated_at": "2025-04-26T19:03:30.908Z",
+            "customer_key": "5825 7640",
+            "custom_data": {
+                "fees": {
+                    "requestFailed": true
+                },
+                "device": "android-app",
+                "ipCountry": {
+                    "value": "DE",
+                    "origin": "PROXY"
+                },
+                "userAgent": "Mozilla/5.0 (L inux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/28.0 Chrome/130.0.0.0 Mobile Safari/537.36",
+                "originDevice": "app",
+                "isCheckoutNext ": true,
+                "priceCalculation": "old",
+                "eligiblePromotionIds": [
+                    "680b26aba4dc782b632ad756",
+                    "680908071bfaaf7d47f8f53c",
+                    "680b2561a4dc782b632ad752",
+                    "680a2f27a4dc 782b632abc8e",
+                    "6807b0b7d1fcdcbafa2ccdf6",
+                    "6807148115f8e6ef79a4bf5b",
+                    "6805df5e15f8e6ef79a481dd",
+                    "68011e1715f8e6ef79a39867",
+                    "6800f4a915f8e6ef79a39795",
+                    "67 f7c38415f8e6ef799d6289",
+                    "67f7c04015f8e6ef799d6287",
+                    "67f639a56b99243247386691",
+                    "67f61feb09701a5fc7478062",
+                    "67f6399b6b9924324738668b",
+                    "67f61feb09701a5fc747 8064",
+                    "67f61feb09701a5fc747805e",
+                    "67f6397d6b99243247386685",
+                    "67f61feb09701a5fc7478060"
+                ]
+            },
+            "shop": 1,
+            "carrier_key": "DHL_STD_NATIONAL",
+            "payment_method": " spay_paypal",
+            "billing_street": "Ahornweg 23",
+            "billing_zip_code": "15326",
+            "billing_city": "Podelzig",
+            "billing_country_code": "DE",
+            "billing_recipient_gende r": "m",
+            "billing_recipient_first_name": "Steffi",
+            "billing_recipient_last_name": "Papenberg",
+            "billing_additional": null,
+            "shipping_street": "Ahornweg 23",
+            "shipping_zip_code": "15326",
+            "shipping_city": "Podelzig",
+            "shipping_country_code": "DE",
+            "shipping_additional": null,
+            "shipping_collection_point_key": null,
+            "shipping_collection_point_type": null,
+            "shipping_collection_point_customer_key": null,
+            "shipping_collection_point_description": null,
+            "shipping_recipient_gen der": "m",
+            "shipping_recipient_first_name": "Steffi",
+            "shipping_recipient_last_name": "Papenberg",
+            "currency_code": "EUR",
+            "cost_without_tax": 5874,
+            "cost_wi th_tax": 6990,
+            "shopify_order_id": null,
+            "status": "returned"
+        },
+        {
+            "order_items": [
+                {
+                    "return_tracking_key": "00340434453785281803",
+                    "shipment_tracking_key": "003 40433887720019465",
+                    "sku": "DEBUHA-KH-SM",
+                    "id": 5813,
+                    "product_variant": 18767,
+                    "vat": 19,
+                    "price_without_tax": 2937,
+                    "price_with_tax": 3495,
+                    "custom_data": null,
+                    "status": "shipped"
+                }
+            ],
+            "order_number": "ayou-139-324346556",
+            "delivery_document_url": "/api/v1/orders/ayou-139-324346556/delivery_document",
+            "created_at": "2025-04-29T07:39:19.046Z",
+            "updated_at": "2025-04-29T07:39:21.255Z",
+            "customer_key": "90567176",
+            "custom_data": {
+                "fees": {
+                    "requestFailed": true
+                },
+                "devic e": "mobile-web",
+                "ipCountry": {
+                    "value": "DE",
+                    "origin": "PROXY"
+                },
+                "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1",
+                "originDevice": "mobile",
+                "correlationId": "GA1.1.1710333558.1744728165|69e2ad90-96ac-4078-ad 86-99994f3f96cb",
+                "isCheckoutNext": true,
+                "priceCalculation": "old",
+                "eligiblePromotionIds": [
+                    "68104f00eb8a57cbfe3832d0",
+                    "680f19e7eb8a57cbfe37959c",
+                    "680d86e 8b2d97fe825e737fd",
+                    "680d8314b2d97fe825e73685",
+                    "680d8211b2d97fe825e73679",
+                    "680b2561a4dc782b632ad752",
+                    "680a2f27a4dc782b632abc8e",
+                    "6807b0b7d1fcdcbafa2ccdf6",
+                    "6807148115f8e6ef79a4bf5b",
+                    "68011e1715f8e6ef79a39867",
+                    "67f7c38415f8e6ef799d6289",
+                    "67f7c04015f8e6ef799d6287",
+                    "67f639a56b99243247386691",
+                    "67f61feb09701a5 fc7478062",
+                    "67f6399b6b9924324738668b",
+                    "67f61feb09701a5fc7478064",
+                    "67f61feb09701a5fc747805e",
+                    "67f6397d6b99243247386685",
+                    "67f61feb09701a5fc7478060"
+                ]
+            },
+            "shop": 1,
+            "carrier_key": "DHL_STD_NATIONAL",
+            "payment_method": "spay_klarna_paylater",
+            "billing_street": "Heinrich-Heine-Platz 77a",
+            "billing_zip_code": "30890",
+            "billing_city": "Barsinghausen",
+            "billing_country_code": "DE",
+            "billing_recipient_gender": "m",
+            "billing_recipient_first_name": "Pavel",
+            "billing_recipient_last_name": "Mikolo",
+            "billing_additional": null,
+            "shipping_street": "Heinrich-Heine-Platz 77a",
+            "shipping_zip_code": "30890",
+            "shipping_city": "Barsinghausen",
+            "shipping_country_code": "DE",
+            "shipping_additional": null,
+            "shipping_collection_point_key": null,
+            "shipping_collection_point_type": null,
+            "shipping_collecti on_point_customer_key": null,
+            "shipping_collection_point_description": null,
+            "shipping_recipient_gender": "m",
+            "shipping_recipient_first_name": "Pavel",
+            "shipping_recipient_last_name": "Mikolo",
+            "currency_code": "EUR",
+            "cost_without_tax": 2937,
+            "cost_with_tax": 3495,
+            "shopify_order_id": null,
+            "status": "shipped"
+        }
+    ],
+    "pagination": {
+        "per_page": 2,
+        "page": 2,
+        "pages": 3,
+        "total": 6,
+        "next": "/api/v1/orders/?page=3",
+        "prev": "/api/v1/orders/?page=1"
+    }
+}

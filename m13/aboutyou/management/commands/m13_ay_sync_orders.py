@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
-from aboutyou.services import orders
 from aboutyou.models import Order
+from aboutyou.services import orders
 
 
 class Command(BaseCommand):

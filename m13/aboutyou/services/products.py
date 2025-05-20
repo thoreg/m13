@@ -21,7 +21,7 @@ def get_product_title(sku: str) -> str:
     token = os.getenv("M13_ABOUTYOU_TOKEN")
     if not token:
         LOG.error("M13_ABOUTYOU_TOKEN not found")
-        return
+        raise
 
     headers = {
         "X-API-Key": token,

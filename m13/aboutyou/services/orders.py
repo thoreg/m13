@@ -1,15 +1,11 @@
-import csv
-import json
 import logging
 import os
-import time
-from pprint import pprint
 
 import requests
 
-from aboutyou.models import Address, BatchRequest, Order, OrderItem
+from aboutyou.models import Address, Order, OrderItem
 
-from .common import API_BASE_URL, download_feed, filter_feed
+from .common import API_BASE_URL
 
 ORDERS_URL = f"{API_BASE_URL}/api/v1/orders/"
 BATCH_REQUEST_RESULT_URL = f"{API_BASE_URL}/api/v1/results/stocks"
@@ -17,30 +13,43 @@ BATCH_REQUEST_RESULT_URL = f"{API_BASE_URL}/api/v1/results/stocks"
 LOG = logging.getLogger(__name__)
 
 
+class TokenNotFoundException(Exception):
+    """..."""
+
+
+def download_orders(url, headers) -> tuple[str, list]:
+    """Return the next_url and the list of order entries."""
+    response = requests.get(
+        url,
+        headers=headers,
+        timeout=60,
+    )
+    if response.status_code != requests.codes.ok:
+        LOG.error("fetching orders failed")
+        LOG.error(response.json())
+        return ("", [])
+
+    resp_json = response.json()
+    return (resp_json["pagination"]["next"], resp_json["items"])
+
+
 def sync(order_status: str):
     LOG.info("sync_orders starting ....")
 
-    def _import_orders(url: str) -> dict:
+    def _import_orders(url: str) -> str:
 
         token = os.getenv("M13_ABOUTYOU_TOKEN")
         if not token:
             LOG.error("M13_ABOUTYOU_TOKEN not found")
-            return
+            raise TokenNotFoundException()
 
         headers = {
             "X-API-Key": token,
         }
-        response = requests.get(
-            url,
-            headers=headers,
-            timeout=60,
-        )
-        if response.status_code != requests.codes.ok:
-            LOG.error("fetching orders failed")
-            LOG.error(response.json())
-            return
 
-        for entry in response.json()["items"]:
+        next_url, orders = download_orders(url, headers)
+
+        for entry in orders:
 
             marketplace_order_id = entry.get("order_number")
             status = entry.get("status")
@@ -73,6 +82,7 @@ def sync(order_status: str):
                     "status": Order.Status(status),
                 },
             )
+
             if created:
                 LOG.info(f"Order {marketplace_order_id} imported")
             else:
@@ -99,17 +109,15 @@ def sync(order_status: str):
                     order_item.fulfillment_status = fulfillment_status
                     order_item.save()
 
-        return response.json()
+        return next_url
 
     url = f"{ORDERS_URL}?order_status={order_status}"
-    resp = _import_orders(url)
-    LOG.info(resp)
+    next_url = _import_orders(url)
+    LOG.info(next_url)
 
-    next_url = resp["pagination"]["next"]
     if next_url:
         while next_url:
             LOG.info(f"Next page: {next_url}")
-            resp = _import_orders(f"{API_BASE_URL}{next_url}")
-            next_url = resp["pagination"]["next"]
+            next_url = _import_orders(f"{API_BASE_URL}{next_url}")
 
     LOG.info("sync_orders finished ...")

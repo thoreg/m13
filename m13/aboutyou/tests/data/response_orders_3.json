@@ -1,0 +1,161 @@
+{
+    "items": [
+        {
+            "order_items": [
+                {
+                    "return_tracking_key": "00340434453785281797",
+                    "shipment_tracking_key": "00340433887720019458",
+                    "sku": "DEBUHA-BE-LXL",
+                    "id": 5888,
+                    "prod uct_variant": 18645,
+                    "vat": 19,
+                    "price_without_tax": 2497,
+                    "price_with_tax": 2971,
+                    "custom_data": null,
+                    "status": "shipped"
+                }
+            ],
+            "order_number": "ayou-139-324422228",
+            "delivery_document_url": "/api/v1/orders/ayou-139-324422228/delivery_document",
+            "created_at": "2025-04-29T18:34:08.302Z",
+            "updated_at": "2025-04-29T1 8:34:11.687Z",
+            "customer_key": "89227083",
+            "custom_data": {
+                "fees": {
+                    "requestFailed": true
+                },
+                "device": "mobile-web",
+                "ipCountry": {
+                    "value": "DE",
+                    "origin": "PR OXY"
+                },
+                "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Klarna/25.16.286",
+                "origi nDevice": "mobile",
+                "correlationId": "|undefined",
+                "isCheckoutNext": true,
+                "priceCalculation": "old",
+                "hasCodPaymentFees": true,
+                "eligiblePromotionIds": [
+                    "681 04f00eb8a57cbfe3832d0",
+                    "680f19e7eb8a57cbfe37959c",
+                    "680d86e8b2d97fe825e737fd",
+                    "680d8314b2d97fe825e73685",
+                    "680d8211b2d97fe825e73679",
+                    "680b2561a4dc782b632ad 752",
+                    "680a2f27a4dc782b632abc8e",
+                    "6807b0b7d1fcdcbafa2ccdf6",
+                    "6807148115f8e6ef79a4bf5b",
+                    "68011e1715f8e6ef79a39867",
+                    "67f7c38415f8e6ef799d6289",
+                    "67f7c04015f 8e6ef799d6287",
+                    "67f639a56b99243247386691",
+                    "67f61feb09701a5fc7478062",
+                    "67f6399b6b9924324738668b",
+                    "67f61feb09701a5fc7478064",
+                    "67f61feb09701a5fc747805e",
+                    "6 7f6397d6b99243247386685",
+                    "67f61feb09701a5fc7478060"
+                ]
+            },
+            "shop": 1,
+            "carrier_key": "DHL_STD_NATIONAL",
+            "payment_method": "spay_klarna_paylater",
+            "billing_street": "Friedenstraße 22A",
+            "billing_zip_code": "97526",
+            "billing_city": "Sennfeld",
+            "billing_country_code": "DE",
+            "billing_recipient_gender": "m",
+            "billing_recipient_first_name": "Roberta",
+            "billing_recipient_last_name": "Stoertebecker",
+            "billing_additional": null,
+            "shipping_street": "Friedenstraße 22A",
+            "shipping_zip_code": "97526",
+            "shipping_city": "Sennfeld",
+            "shipping_country_code": "DE",
+            "shipping_additional": null,
+            "shipping_collection_point_key": null,
+            "shipping_collection_point_type": null,
+            "shipping_collection_point_customer_key": null,
+            "shipping_collection_point_description": null,
+            "shipping_recipient_gender": "m",
+            "shipping_recipient_first_name": "Roberta",
+            "shipping_recipient_last_name": "Stoertebecker",
+            "currency_code": "EUR",
+            "cost_without_tax": 2497,
+            "cost_with_tax": 2971,
+            "shopify_order_ id": null,
+            "status": "shipped"
+        },
+        {
+            "order_items": [
+                {
+                    "return_tracking_key": "00340434453785282022",
+                    "shipment_tracking_key": "00340433887720019762",
+                    "sku": "DEB UHA-BE-LXL",
+                    "id": 6176,
+                    "product_variant": 18645,
+                    "vat": 19,
+                    "price_without_tax": 2497,
+                    "price_with_tax": 2971,
+                    "custom_data": null,
+                    "status": "returned"
+                }
+            ],
+            "order_number": "ayou-139-324922738",
+            "delivery_document_url": "/api/v1/orders/ayou-139-324922738/delivery_document",
+            "created_at": "2025-05-02T10:55:52.253 Z",
+            "updated_at": "2025-05-02T10:55:54.862Z",
+            "customer_key": "9685826",
+            "custom_data": {
+                "fees": {
+                    "requestFailed": true
+                },
+                "device": "ios-app",
+                "ipCountry": {
+                    " value": "DE",
+                    "origin": "PROXY"
+                },
+                "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1",
+                "originDevice": "app",
+                "isCheckoutNext": true,
+                "priceCalculation": "old"
+            },
+            "shop": 1,
+            "carrier_key": "DHL_STD_NATIONAL",
+            "payment_method": "spay_klarna_paylater",
+            "billing_street": "Im Sonnenried 18a",
+            "billing_zip_code": "68642",
+            "billing_city": "Bürstadt",
+            "billing_country_code": "DE",
+            "billing_recipient_gender": "m",
+            "billing_recipient_first_name": "Hanna",
+            "billing_recipient_last_name": "Stark",
+            "billing_additional": null,
+            "shipping_street": "Im Sonnenried 18a",
+            "shipping_zip_code": "68642",
+            "shipping_city": "Bürstadt",
+            "shipping_country_code": "DE",
+            "shipping_additional": null,
+            "shipping_co llection_point_key": null,
+            "shipping_collection_point_type": null,
+            "shipping_collection_point_customer_key": null,
+            "shipping_collection_point_description": null,
+            "shipping_recipient_gender": "m",
+            "shipping_recipient_first_name": "Hanna",
+            "shipping_recipient_last_name": "Stark",
+            "currency_code": "EUR",
+            "cost_without_tax": 2497,
+            "cost_with_tax": 2971,
+            "shopify_order_id": null,
+            "status": "returned"
+        }
+    ],
+    "pagination": {
+        "per_page": 2,
+        "page": 3,
+        "pages": 3,
+        "total": 6,
+        "next": null,
+        "prev": "/api/v1/orders/?page=2"
+    }
+}
