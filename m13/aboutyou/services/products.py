@@ -51,8 +51,10 @@ def get_product_title(sku: str) -> str:
         LOG.info(response.json())
 
         style_key = response.json()["items"][0]["style_key"]
+        title = style_key
         name = response.json()["items"][0]["name"]
-        title = f"{style_key} ({name})"
+        if name:
+            title = f"{style_key} ({name})"
         Product.objects.get_or_create(sku=sku, defaults={"product_title": title})
 
     return title
