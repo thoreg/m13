@@ -54,7 +54,6 @@ class Order(TimeStampedModel):
         SHIPPED = "shipped"
         CANCELED = "cancelled"
         RETURNED = "returned"
-        MIXED = "mixed"
 
     status = models.CharField(
         max_length=11,

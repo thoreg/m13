@@ -17,14 +17,16 @@ BATCH_REQUEST_RESULT_URL = f"{API_BASE_URL}/api/v1/results/stocks"
 LOG = logging.getLogger(__name__)
 
 
-def sync():
+def sync(order_status: str):
     LOG.info("sync_orders starting ....")
 
     def _import_orders(url: str) -> dict:
+
         token = os.getenv("M13_ABOUTYOU_TOKEN")
         if not token:
             LOG.error("M13_ABOUTYOU_TOKEN not found")
             return
+
         headers = {
             "X-API-Key": token,
         }
@@ -99,7 +101,8 @@ def sync():
 
         return response.json()
 
-    resp = _import_orders(ORDERS_URL)
+    url = f"{ORDERS_URL}?order_status={order_status}"
+    resp = _import_orders(url)
     LOG.info(resp)
 
     next_url = resp["pagination"]["next"]

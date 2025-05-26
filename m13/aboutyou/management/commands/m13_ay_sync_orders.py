@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from aboutyou.services import orders
+from aboutyou.models import Order
 
 
 class Command(BaseCommand):
@@ -8,4 +9,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         """...."""
-        orders.sync()
+        for order_status in Order.Status:
+            orders.sync(order_status)
