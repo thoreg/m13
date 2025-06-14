@@ -83,5 +83,16 @@ def test_otto_views(client, django_user_model, otto_url):
     client.force_login(user)
 
     r_url = reverse(otto_url)
-    response = client.get(r_url)
-    assert response.status_code == 200
+
+    with (
+        patch(
+            "otto.management.commands.import_orders.get_auth_token",
+            return_value="bogus",
+        ) as _mocked_get_auth_token,
+        patch(
+            "otto.management.commands.import_orders.fetch_orders_by_status",
+            return_value={},
+        ) as _mocked_fetch_orders_by_status,
+    ):
+        response = client.get(r_url)
+        assert response.status_code == 200
