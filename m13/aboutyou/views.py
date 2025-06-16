@@ -72,6 +72,7 @@ def orderitems_csv(request):
             "Anmerkung",
             "EMAIL",
             "Auftragsdatum",
+            "Adresszusatz",
         ]
     )
 
@@ -104,6 +105,7 @@ def orderitems_csv(request):
                     f"{current_order.marketplace_order_id}",
                     "ay@manufaktur13.de",
                     current_order.created.strftime("%d.%m.%y"),
+                    current_order.delivery_address.addition,
                 ]
             )
 
@@ -127,6 +129,7 @@ def orderitems_csv(request):
                 f"{oi.order.marketplace_order_id}",
                 "ay@manufaktur13.de",
                 oi.order.created.strftime("%d.%m.%y"),
+                oi.order.delivery_address.addition,
             ]
         )
 
@@ -152,6 +155,7 @@ def orderitems_csv(request):
                 f"{current_order.marketplace_order_id}",
                 "ay@manufaktur13.de",
                 current_order.created.strftime("%d.%m.%y"),
+                current_order.delivery_address.addition,
             ]
         )
 
