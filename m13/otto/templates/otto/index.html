@@ -19,7 +19,7 @@
   </form>
 </div>
 <div id="header_right">
-  _processable: {{ number_of_processable }}
+  Bestellungen: {{ number_of_processable }}
 </div>
 {% endblock %}
 
@@ -42,7 +42,7 @@
           <td>{{ oi.order.marketplace_order_number }}</td>
           <td>{{ oi.sku }}</td>
           <td>{{ oi.fulfillment_status }}</td>
-          <td>{{ oi.expected_delivery_date|date:"Y-m-d" }}</td>
+          <td>{{ oi.expected_delivery_date|date:"d.m.Y" }}</td>
           <td>{{ oi.product_title }}</td>
           <td>
             {{ oi.order.delivery_address.first_name }}
@@ -56,7 +56,7 @@
             {{ oi.order.delivery_address.country_code }}
           </td>
           <td>
-            {{ oi.created|date:"Y-m-d H:i:s" }}
+            {{ oi.created|date:"d.m.Y H:i:s" }}
           </td>
         </tr>
       {% endfor %}

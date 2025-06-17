@@ -19,7 +19,7 @@
   </form>
 </div>
 <div id="header_right">
-  _processable: {{ number_of_processable }}
+  Bestellungen: {{ number_of_processable }}
 </div>
 {% endblock %}
 
@@ -51,7 +51,7 @@
             {{ oi.order.delivery_address.country_code }}
           </td>
           <td>
-            {{ oi.created|date:"Y-m-d H:i:s" }}
+            {{ oi.created|date:"d.m.Y H:i:s" }}
           </td>
         </tr>
       {% endfor %}
