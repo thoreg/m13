@@ -1,0 +1,183 @@
+{
+    "items": [
+        {
+            "order_items": [
+                {
+                    "return_tracking_key": "00340434453785279848",
+                    "shipment_tracking_key": "00340433887720016969",
+                    "sku": "SS002",
+                    "id": 5305,
+                    "product_variant": 18494,
+                    "vat": 19,
+                    "price_without_tax": 2937,
+                    "price_with_tax": 3495,
+                    "custom_data": null,
+                    "status": "returned"
+                }
+            ],
+            "order_number": "aydn-688-323619572",
+            "delivery_document_url": "/api/v1/orders/aydn-688-323619572/delivery_document",
+            "created_at": "2025-04-24T10:08:55.346Z",
+            "updated_at": "2025-04-24T10:08:57.821Z",
+            "customer_key": "510177",
+            "custom_data": {
+                "fees": {
+                    "requestFailed": true
+                },
+                "device": "desktop-web",
+                "ipCountry": {
+                    "value": "IE",
+                    "origin": "PROXY"
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+                "originDevice": "desktop",
+                "correlationId": "GA1.1.465582237.1741849845|14da307f-cd58-45e3-a52c-8220d1c3d88f",
+                "isCheckoutNext": true,
+                "priceCalculation": "old",
+                "eligiblePromotionIds": [
+                    "6808da451bfaaf7d47f8f3bc",
+                    "67fb10f315f8e6ef799f4ae1",
+                    "6808de041bfaaf7d47f8f43c",
+                    "6807b0b7d1fcdcbafa2ccdf6",
+                    "6807148115f8e6ef79a4bf5b",
+                    "68011e1715f8e6ef79a39867",
+                    "6800f4a915f8e6ef79a39795",
+                    "67fe234715f8e6ef79a22853",
+                    "67f7c38415f8e6ef799d6289",
+                    "67f7c04015f8e6ef799d6287",
+                    "67f639a56b99243247386691",
+                    "67f61feb09701a5fc7478062",
+                    "67f6399b6b9924324738668b",
+                    "67f61feb09701a5fc7478064",
+                    "67f61feb09701a5fc747805e",
+                    "67f6397d6b99243247386685",
+                    "67f61feb09701a5fc7478060"
+                ]
+            },
+            "shop": 3,
+            "carrier_key": "DHL_STD_NATIONAL",
+            "payment_method": "accounting_e2e",
+            "billing_street": "Domstraße 100",
+            "billing_zip_code": "20094",
+            "billing_city": "Hamburg",
+            "billing_country_code": "DE",
+            "billing_recipient_gender": "m",
+            "billing_recipient_first_name": "Karl",
+            "billing_recipient_last_name": "Frans",
+            "billing_additional": "About You SE & Co. KG",
+            "shipping_street": "Domstraße 100",
+            "shipping_zip_code": "20094",
+            "shipping_city": "Hamburg",
+            "shipping_country_code": "DE",
+            "shipping_additional": "About You SE & Co. KG",
+            "shipping_collection_point_key": null,
+            "shipping_collection_point_type": null,
+            "shipping_collection_point_customer_key": null,
+            "shipping_collection_point_description": null,
+            "shipping_recipient_gender": "m",
+            "shipping_recipient_first_name": "Karl",
+            "shipping_recipient_last_name": "Frans",
+            "currency_code": "EUR",
+            "cost_without_tax": 2937,
+            "cost_with_tax": 3495,
+            "shopify_order_id": null,
+            "status": "returned"
+        },
+        {
+            "order_items": [
+                {
+                    "return_tracking_key": "00340434453785281391",
+                    "shipment_tracking_key": "00340433887720018888",
+                    "sku": "DEBUHA-BLU-SM",
+                    "id": 5532,
+                    "product_variant": 18760,
+                    "vat": 19,
+                    "price_without_tax": 2937,
+                    "price_with_tax": 3495,
+                    "custom_data": null,
+                    "status": "open"
+                }
+            ],
+            "order_number": "ayou-139-323979780",
+            "delivery_document_url": "/api/v1/orders/ayou-139-323979780/delivery_document",
+            "created_at": "2025-04-26T17:06:44.303Z",
+            "updated_at": "2025-04-26T17:06:47.110Z",
+            "customer_key": "767856",
+            "custom_data": {
+                "fees": {
+                    "requestFailed": true
+                },
+                "device": "desktop-web",
+                "ipCountry": {
+                    "value": "DE",
+                    "origin": "PROXY"
+                },
+                "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0",
+                "originDevice": "desktop",
+                "correlationId": "GA1.1.560426632.1727447525|5a76f399-0f76-46c1-a44c-ac88fac52bed",
+                "isCheckoutNext": true,
+                "priceCalculation": "old",
+                "eligiblePromotionIds": [
+                    "680b26aba4dc782b632ad756",
+                    "680908071bfaaf7d47f8f53c",
+                    "67ff3ac815f8e6ef79a2b4ed",
+                    "680ae786a4dc782b632ac090",
+                    "680ae000a4dc782b632abe34",
+                    "680adf11a4dc782b632abdfc",
+                    "680b2561a4dc782b632ad752",
+                    "680a2f27a4dc782b632abc8e",
+                    "6807b0b7d1fcdcbafa2ccdf6",
+                    "6807148115f8e6ef79a4b f5b",
+                    "6805df5e15f8e6ef79a481dd",
+                    "68011e1715f8e6ef79a39867",
+                    "6800f4a915f8e6ef79a39795",
+                    "67f7c38415f8e6ef799d6289",
+                    "67f7c04015f8e6ef799d6287",
+                    "67f639a56b9 9243247386691",
+                    "67f61feb09701a5fc7478062",
+                    "67f6399b6b9924324738668b",
+                    "67f61feb09701a5fc7478064",
+                    "67f61feb09701a5fc747805e",
+                    "67f6397d6b99243247386685",
+                    "6 7f61feb09701a5fc7478060"
+                ]
+            },
+            "shop": 1,
+            "carrier_key": "DHL_STD_NATIONAL",
+            "payment_method": "spay_klarna_paylater",
+            "billing_street": "Wintercamp 77",
+            "billing_zip_code": "48653",
+            "billing_city": "Koesfeld",
+            "billing_country_code": "DE",
+            "billing_recipient_gender": "m",
+            "billing_recipient_first_name": "Andreas",
+            "billing_recipient_last_name": "Fuchs",
+            "billing_additional": "940639741",
+            "shipping_street": "Wintercamp 77",
+            "shipping_zip_code": "48653",
+            "shipping_city": "Koesfeld",
+            "shipping_country_code": "DE",
+            "shipping_additional": "940639741",
+            "shipping_collection_point_key": null,
+            "shipping_collection_point_type": null,
+            "shipping_collection_point_customer_key": null,
+            "shipping_collection_point_description": null,
+            "shipping_recipient_gender": "m",
+            "shipping_recipient_first_name": "Andreas",
+            "shipping_recipient_last_name": "Fuchs",
+            "currency_code": "EUR",
+            "cost_without_tax": 2937,
+            "cost_with_tax": 3495,
+            "shopify_order_id": null,
+            "status": "returned"
+        }
+    ],
+    "pagination": {
+        "per_page": 2,
+        "page": 1,
+        "pages": 3,
+        "total": 6,
+        "next": "/api/v1/orders/?page=2",
+        "prev": null
+    }
+}

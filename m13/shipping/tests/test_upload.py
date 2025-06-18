@@ -51,6 +51,9 @@ def test_handle_uploaded_file(client, django_user_model):
 
     with (
         patch(
+            "otto.services.shipments.get_auth_token", return_value="bogus"
+        ) as mocked_get_auth_token,
+        patch(
             "otto.services.shipments.do_post", return_value=(201, {})
         ) as mocked_otto_do_post,
         patch(
@@ -87,3 +90,4 @@ def test_handle_uploaded_file(client, django_user_model):
     assert errors[1]["msg"].startswith("No token found: handle_uploaded_file")
 
     mocked_tiktok_handle_upload.assert_called_once()
+    mocked_get_auth_token.assert_called_once()

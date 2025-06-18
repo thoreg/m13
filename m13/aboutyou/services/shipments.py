@@ -150,7 +150,8 @@ def handle_uploaded_file(csv_file):
             id=batch_request_id,
             defaults={
                 "tracking_info": tracking_info,
-            })
+            },
+        )
         if created:
             LOG.info(f"batch request created: {br.id} tracking_info: {tracking_info}")
         else:
