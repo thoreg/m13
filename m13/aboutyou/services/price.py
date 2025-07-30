@@ -8,6 +8,7 @@ import requests
 from aboutyou.models import BatchRequest
 from core.models import Price
 from m13.lib import log as mlog
+from m13.lib.email import send_error_as_email
 from zalando.models import PriceTool
 
 from .common import API_BASE_URL, download_feed, filter_feed
@@ -146,8 +147,12 @@ def sync():
         timeout=60,
     )
     if response.status_code != requests.codes.ok:
-        LOG.error("stock update failed")
-        LOG.error(response.json())
+        subj = "ay - price update failed"
+        msg = response.json()
+        LOG.error(subj)
+        LOG.error(msg)
+
+        send_error_as_email(subj, msg)
         return
 
     # Check the result - Wait until processing on AY side is done

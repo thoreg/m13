@@ -29,3 +29,18 @@ def send_traceback_as_email(subject, message=None):
         settings.ADMINS[0][1],
         fail_silently=False,
     )
+
+
+def send_error_as_email(subject, message=None):
+    """Send out error message as email."""
+    msg = ""
+    if message:
+        msg += f"\n\n{message}\n\n"
+
+    send_mail(
+        subject,
+        msg,
+        settings.FROM_EMAIL_ADDRESS,
+        settings.ADMINS[0][1],
+        fail_silently=False,
+    )
