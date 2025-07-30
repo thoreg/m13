@@ -8,11 +8,13 @@ import requests
 from aboutyou.models import BatchRequest
 from core.models import Price
 from m13.lib import log as mlog
+from m13.lib.common import chunk
 from m13.lib.email import send_error_as_email
 from zalando.models import PriceTool
 
 from .common import API_BASE_URL, download_feed, filter_feed
 
+MAX_CHUNK_SIZE = 500
 PRICE_URL = f"{API_BASE_URL}/api/v1/products/prices"
 BATCH_REQUEST_RESULT_URL = f"{API_BASE_URL}/api/v1/results/prices"
 
@@ -111,68 +113,71 @@ def sync():
     # Setup data
     original_feed = download_feed()
     sku_quantity_price_map = filter_feed(original_feed)
-    LOG.info(f"len(sku_quantity_price_map): {len(sku_quantity_price_map)}")
+    LOG.info(f"len(sku_quantity_price_map) in total: {len(sku_quantity_price_map)}")
 
-    items = []
-    for sku, _quantity, old_price in sku_quantity_price_map:
-        try:
-            core_price = Price.objects.get(sku__iexact=sku, vk_aboutyou__isnull=False)
-            price = str(core_price.vk_aboutyou)
-            LOG.debug(f"{sku} - price via overwrite: {price}")
+    for sku_quantity_price_map_chunk in chunk(sku_quantity_price_map, MAX_CHUNK_SIZE):
+        items = []
+        for sku, _quantity, old_price in sku_quantity_price_map_chunk:
+            try:
+                core_price = Price.objects.get(
+                    sku__iexact=sku, vk_aboutyou__isnull=False
+                )
+                price = str(core_price.vk_aboutyou)
+                LOG.debug(f"{sku} - price via overwrite: {price}")
 
-        except Price.DoesNotExist:
-            _price = float(old_price.replace(",", "."))
-            LOG.debug(f"_get_price() for {sku} _price: {_price}")
-            price = _get_price(_price, factor)
-            LOG.debug(f"{sku} - price via _get_price() : {price}")
+            except Price.DoesNotExist:
+                _price = float(old_price.replace(",", "."))
+                LOG.debug(f"_get_price() for {sku} _price: {_price}")
+                price = _get_price(_price, factor)
+                LOG.debug(f"{sku} - price via _get_price() : {price}")
 
-        LOG.debug(f"{sku}: {price} -> {price}")
-        items.append(
-            {
-                "sku": sku,
-                "price": {
-                    "country_code": "DE",
-                    "retail_price": float(price),
-                },
-            }
-        )
+            LOG.debug(f"{sku}: {price} -> {price}")
+            items.append(
+                {
+                    "sku": sku,
+                    "price": {
+                        "country_code": "DE",
+                        "retail_price": float(price),
+                    },
+                }
+            )
 
-    data = {"items": items}
+        data = {"items": items}
 
-    # Upload data
-    response = requests.put(
-        PRICE_URL,
-        data=json.dumps(data),
-        headers=headers,
-        timeout=60,
-    )
-    if response.status_code != requests.codes.ok:
-        subj = "ay - price update failed"
-        msg = response.json()
-        LOG.error(subj)
-        LOG.error(msg)
-
-        send_error_as_email(subj, msg)
-        return
-
-    # Check the result - Wait until processing on AY side is done
-    batch_request_id = response.json()["batchRequestId"]
-    br, _created = BatchRequest.objects.get_or_create(id=batch_request_id)
-
-    for waiting_time_in_seconds in [1, 2, 4, 8, 16, 32]:
-        response = requests.get(
-            f"{BATCH_REQUEST_RESULT_URL}?batch_request_id={batch_request_id}",
+        # Upload data
+        response = requests.put(
+            PRICE_URL,
+            data=json.dumps(data),
             headers=headers,
             timeout=60,
         )
-        status = response.json()["status"]
-        br.status = status
-        br.save()
+        if response.status_code != requests.codes.ok:
+            subj = "ay - price update failed"
+            msg = response.json()
+            LOG.error(subj)
+            LOG.error(msg)
 
-        LOG.info(f"batch_request: {br.id} status: {status}")
+            send_error_as_email(subj, msg)
+            return
 
-        if status == "completed":
-            break
+        # Check the result - Wait until processing on AY side is done
+        batch_request_id = response.json()["batchRequestId"]
+        br, _created = BatchRequest.objects.get_or_create(id=batch_request_id)
 
-        LOG.info(f"waiting for {waiting_time_in_seconds} seconds")
-        time.sleep(waiting_time_in_seconds)
+        for waiting_time_in_seconds in [1, 2, 4, 8, 16, 32]:
+            response = requests.get(
+                f"{BATCH_REQUEST_RESULT_URL}?batch_request_id={batch_request_id}",
+                headers=headers,
+                timeout=60,
+            )
+            status = response.json()["status"]
+            br.status = status
+            br.save()
+
+            LOG.info(f"batch_request: {br.id} status: {status}")
+
+            if status == "completed":
+                break
+
+            LOG.info(f"waiting for {waiting_time_in_seconds} seconds")
+            time.sleep(waiting_time_in_seconds)
