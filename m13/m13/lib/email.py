@@ -1,3 +1,4 @@
+import json
 import sys
 import traceback
 
@@ -33,6 +34,9 @@ def send_traceback_as_email(subject, message=None):
 
 def send_error_as_email(subject, message=None):
     """Send out error message as email."""
+    if isinstance(message, dict):
+        message = json.dumps(message)
+
     msg = ""
     if message:
         msg += f"\n\n{message}\n\n"

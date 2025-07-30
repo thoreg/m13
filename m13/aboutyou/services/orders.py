@@ -4,6 +4,7 @@ import os
 import requests
 
 from aboutyou.models import Address, Order, OrderItem
+from m13.lib.email import send_error_as_email
 
 from .common import API_BASE_URL
 
@@ -27,6 +28,7 @@ def download_orders(url, headers) -> tuple[str, list]:
     if response.status_code != requests.codes.ok:
         LOG.error("fetching orders failed")
         LOG.error(response.json())
+        send_error_as_email("AY - Fetching orders failed", response.json())
         return ("", [])
 
     resp_json = response.json()
