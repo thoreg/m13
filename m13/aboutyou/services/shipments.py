@@ -166,8 +166,10 @@ def check_batch_requests():
     headers = __get_headers()
 
     brs = BatchRequestTrackingInfo.objects.filter(status=None)
+
     for br in brs:
-        for waiting_time_in_seconds in [1, 2, 4, 8, 16, 32]:
+        completed = False
+        for waiting_time_in_seconds in [1, 2, 4, 8, 16, 32, 16, 8, 4, 2]:
             response = requests.get(
                 f"{BATCH_REQUEST_RESULT_URL}?batch_request_id={br.id}",
                 headers=headers,
@@ -181,7 +183,11 @@ def check_batch_requests():
             LOG.info(f"batch_request: {br.id} status: {status}")
 
             if status == "completed":
+                completed = True
                 break
 
             LOG.info(f"waiting for {waiting_time_in_seconds} seconds")
             time.sleep(waiting_time_in_seconds)
+
+        if not completed:
+            LOG.error(f"batch_request: {br.id} not completed")
