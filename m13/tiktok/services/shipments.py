@@ -94,9 +94,7 @@ class ShipmentService:
             LOG.error(resp.json())
             return
 
-        from pprint import pformat
-
-        LOG.info(pformat(resp.json()))
+        LOG.info(resp.json())
         return resp.json()["data"]["shops"][0]["cipher"]
 
     def ship_package(self, package_id: str, tracking_number: str):
@@ -150,7 +148,7 @@ class ShipmentService:
         shipment.response = resp.text
         shipment.save()
 
-        LOG.info(pformat(resp.json()))
+        LOG.info(resp.json())
 
 
 def handle_uploaded_file(csv_file):
