@@ -117,7 +117,7 @@ def handle_uploaded_file(csv_file):
     f = TextIOWrapper(csv_file.file, encoding="latin1")
     reader = csv.reader(f, delimiter=";")
     for row in reader:
-        if not row[0].startswith("ayou-"):
+        if not row[0].startswith("ay"):
             LOG.info(f"Skip non ay row: {row}")
             continue
 
