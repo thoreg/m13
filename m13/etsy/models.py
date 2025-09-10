@@ -110,3 +110,11 @@ class StatsOrderItems(models.Model):
     class Meta:
         managed = False
         db_table = "etsy_orderitem_stats"
+
+
+class Listing(TimeStampedModel):
+    sku = models.CharField(max_length=36, unique=True)
+    listing_id = models.CharField(max_length=36, unique=True)
+    quantity = models.PositiveIntegerField()
+    price_in_cent = models.PositiveIntegerField()
+    property_id = models.BigIntegerField(null=True, blank=True)

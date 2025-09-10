@@ -17,7 +17,7 @@ M13_ETSY_GET_AUTH_TOKEN_URL = "https://api.etsy.com/v3/public/oauth/token"
 def get_auth_token():
     """Return new shiny and fresh auth token."""
     try:
-        auth_token = AuthToken.objects.all().order_by("-created")
+        auth_token = AuthToken.objects.all().order_by("-created")[:3]
         if not auth_token:
             raise AuthToken.DoesNotExist()
         refresh_token = auth_token[0].refresh_token
