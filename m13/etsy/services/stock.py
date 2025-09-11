@@ -220,7 +220,10 @@ class EtsyStockSync:
                 #     'sku': 'SM008',
                 #     'status_code': 400
                 # }
-                if resp_json["error"] == "One offering must have quantity greater than 0":
+                if (
+                    resp_json["error"]
+                    == "One offering must have quantity greater than 0"
+                ):
                     inventory_data["products"][0]["offerings"][0]["is_enabled"] = False
                     inventory_data["products"][0]["offerings"][0]["quantity"] = 1
 
@@ -233,7 +236,7 @@ class EtsyStockSync:
                         LOG.error(f"Request failed with status code {resp.status_code}")
                         LOG.error(resp_json)
                         updates_with_issues[sku] = {
-                           "sku": sku,
+                            "sku": sku,
                             "status_code": resp.status_code,
                             "resp_json": resp_json,
                         }
