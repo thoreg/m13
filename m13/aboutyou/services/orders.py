@@ -1,7 +1,9 @@
 import logging
 import os
+from datetime import timedelta
 
 import requests
+from django.utils import timezone
 
 from aboutyou.models import Address, Order, OrderItem
 from m13.lib.email import send_error_as_email
@@ -113,7 +115,9 @@ def sync(order_status: str):
 
         return next_url
 
-    url = f"{ORDERS_URL}?order_status={order_status}"
+    now = timezone.now()
+    datum = now - timedelta(days=14)
+    url = f"{ORDERS_URL}?order_status={order_status}&orders_from={datum}"
     next_url = _import_orders(url)
     LOG.info(next_url)
 
