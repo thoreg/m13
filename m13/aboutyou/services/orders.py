@@ -117,6 +117,7 @@ def sync(order_status: str):
 
     now = timezone.now()
     datum = now - timedelta(days=14)
+    datum = datum.astimezone().replace(microsecond=0).isoformat()
     url = f"{ORDERS_URL}?order_status={order_status}&orders_from={datum}"
     next_url = _import_orders(url)
     LOG.info(next_url)
