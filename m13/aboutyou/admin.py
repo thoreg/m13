@@ -1,16 +1,20 @@
 from django.contrib import admin
+from django.contrib.admin.options import StackedInline
 
 from .models import Address, BatchRequestTrackingInfo, Order, OrderItem, Product
 
 
+@admin.register(BatchRequestTrackingInfo)
 class BatchRequestTrackingInfoAdmin(admin.ModelAdmin):
     list_display = ("id", "started", "status", "started")
 
 
+@admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("sku", "product_title")
 
 
+@admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
     list_display = ("last_name", "first_name", "street", "zip_code")
 
@@ -20,7 +24,15 @@ class AddressAdmin(admin.ModelAdmin):
         return ()  # New object, no readonly fields
 
 
+class OrderItemInline(StackedInline):
+    can_delete = False
+    extra = 0
+    model = OrderItem
+
+
+@admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    inlines = (OrderItemInline,)
     list_display = ("marketplace_order_id", "order_date")
 
     def get_readonly_fields(self, request, obj=None):
@@ -29,6 +41,7 @@ class OrderAdmin(admin.ModelAdmin):
         return ()  # New object, no readonly fields
 
 
+@admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = (
         "sku",
@@ -53,10 +66,3 @@ class OrderItemAdmin(admin.ModelAdmin):
         if obj:  # Editing existing object
             return [f.name for f in self.model._meta.fields]
         return ()  # New object, no readonly fields
-
-
-admin.site.register(Address, AddressAdmin)
-admin.site.register(Order, OrderAdmin)
-admin.site.register(OrderItem, OrderItemAdmin)
-admin.site.register(Product, ProductAdmin)
-admin.site.register(BatchRequestTrackingInfo, BatchRequestTrackingInfoAdmin)
