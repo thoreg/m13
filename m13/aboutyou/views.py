@@ -196,7 +196,6 @@ def upload_tracking_codes_success(request):
         request,
         "aboutyou/upload_tracking_codes_success.html",
         {
-            "shipments": shipments,
             "location": LOCATION,
         },
     )
