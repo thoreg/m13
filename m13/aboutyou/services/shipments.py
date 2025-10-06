@@ -40,7 +40,7 @@ CHUNK_SIZE = 10
 CHUNK_WAITING_TIME_IN_SECONDS = 3
 
 
-def get_payload(order, tracking_info, return_shipment_code):
+def get_payload(order, tracking_info, return_shipment_code) -> dict:
     """Return the payload for all orderitems of the given order.
     {
         "items": [{
@@ -62,29 +62,37 @@ def get_payload(order, tracking_info, return_shipment_code):
     for oi in order.orderitem_set.all():
         order_items.append(oi.position_item_id)
 
-    return json.dumps(
-        {
-            "items": [
-                {
-                    "order_items": order_items,
-                    "carrier_key": "DHL_STD_NATIONAL",
-                    "shipment_tracking_key": tracking_info,
-                    "return_tracking_key": return_shipment_code,
-                }
-            ]
-        }
-    )
+    return {
+        "order_items": order_items,
+        "carrier_key": "DHL_STD_NATIONAL",
+        "shipment_tracking_key": tracking_info,
+        "return_tracking_key": return_shipment_code,
+    }
 
 
-def do_post(headers, order, tracking_info, return_shipment_code):
-    payload = get_payload(order, tracking_info, return_shipment_code)
+# def do_post(headers, order, tracking_info, return_shipment_code):
+#     payload = get_payload(order, tracking_info, return_shipment_code)
+#     LOG.info(f"payload: {payload}")
+#     r = requests.post(
+#         SHIPMENTS_URL,
+#         headers=headers,
+#         data=payload,
+#     )
+
+#     LOG.info(f"post - status_code: {r.status_code}")
+#     LOG.info(r.json())
+
+#     return r.status_code, r.json()
+
+
+def do_post(headers, payload):
+    """Do the actual post request with a list of items."""
     LOG.info(f"payload: {payload}")
     r = requests.post(
         SHIPMENTS_URL,
         headers=headers,
         data=payload,
     )
-
     LOG.info(f"post - status_code: {r.status_code}")
     LOG.info(r.json())
 
@@ -116,6 +124,8 @@ def handle_uploaded_file(csv_file):
 
     f = TextIOWrapper(csv_file.file, encoding="latin1")
     reader = csv.reader(f, delimiter=";")
+
+    payload = []
     for row in reader:
         if not row[0].startswith("ay"):
             LOG.info(f"Skip non ay row: {row}")
@@ -137,28 +147,26 @@ def handle_uploaded_file(csv_file):
 
         return_shipment_code = row[5]
 
-        status_code, response = do_post(
-            headers, order, tracking_info, return_shipment_code
-        )
-        if status_code != requests.codes.ok:
-            LOG.error(f"update shipping information for {marketplace_order_id}) failed")
-            LOG.error(response)
-            return
+        payload.append(get_payload(order, tracking_info, return_shipment_code))
 
-        batch_request_id = response["batchRequestId"]
-        br, created = BatchRequestTrackingInfo.objects.get_or_create(
-            id=batch_request_id,
-            defaults={
-                "tracking_info": tracking_info,
-            },
-        )
-        if created:
-            LOG.info(f"batch request created: {br.id} tracking_info: {tracking_info}")
-        else:
-            LOG.info(
-                f"batch request: {br.id} tracking_info: {tracking_info} already known"
-            )
-        time.sleep(1)
+    payload_data = json.dumps({"items": payload})
+    status_code, response = do_post(headers, payload_data)
+    if status_code != requests.codes.ok:
+        LOG.error(f"update shipping information for {marketplace_order_id}) failed")
+        LOG.error(response)
+        return
+
+    batch_request_id = response["batchRequestId"]
+    br, created = BatchRequestTrackingInfo.objects.get_or_create(
+        id=batch_request_id,
+        defaults={
+            "tracking_info": tracking_info,
+        },
+    )
+    if created:
+        LOG.info(f"batch request created: {br.id} tracking_info: {tracking_info}")
+    else:
+        LOG.info(f"batch request: {br.id} tracking_info: {tracking_info} already known")
 
 
 def check_batch_requests():
