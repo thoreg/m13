@@ -21,15 +21,12 @@ import csv
 import json
 import logging
 import os
-import string
 import time
-from datetime import datetime
 from io import TextIOWrapper
-from pprint import pprint
 
 import requests
 
-from aboutyou.models import BatchRequestTrackingInfo, Order, Shipment
+from aboutyou.models import BatchRequestTrackingInfo, Order
 from m13.lib import log as mlog
 
 from .common import API_BASE_URL
@@ -38,6 +35,9 @@ LOG = logging.getLogger(__name__)
 
 SHIPMENTS_URL = f"{API_BASE_URL}/api/v1/orders/ship"
 BATCH_REQUEST_RESULT_URL = f"{API_BASE_URL}/api/v1/results/ship-orders"
+
+CHUNK_SIZE = 10
+CHUNK_WAITING_TIME_IN_SECONDS = 3
 
 
 def get_payload(order, tracking_info, return_shipment_code):
@@ -116,6 +116,7 @@ def handle_uploaded_file(csv_file):
 
     f = TextIOWrapper(csv_file.file, encoding="latin1")
     reader = csv.reader(f, delimiter=";")
+    count = 0
     for row in reader:
         if not row[0].startswith("ay"):
             LOG.info(f"Skip non ay row: {row}")
@@ -158,6 +159,10 @@ def handle_uploaded_file(csv_file):
             LOG.info(
                 f"batch request: {br.id} tracking_info: {tracking_info} already known"
             )
+
+        count += 1
+        if count % CHUNK_SIZE == 0:
+            time.sleep(CHUNK_WAITING_TIME_IN_SECONDS)
 
 
 def check_batch_requests():
