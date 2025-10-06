@@ -152,16 +152,13 @@ def handle_uploaded_file(csv_file):
     payload_data = json.dumps({"items": payload})
     status_code, response = do_post(headers, payload_data)
     if status_code != requests.codes.ok:
-        LOG.error(f"update shipping information for {marketplace_order_id}) failed")
+        LOG.error("update shipping information failed")
         LOG.error(response)
         return
 
     batch_request_id = response["batchRequestId"]
     br, created = BatchRequestTrackingInfo.objects.get_or_create(
         id=batch_request_id,
-        defaults={
-            "tracking_info": tracking_info,
-        },
     )
     if created:
         LOG.info(f"batch request created: {br.id} tracking_info: {tracking_info}")

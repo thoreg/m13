@@ -4,7 +4,7 @@ from .models import Address, BatchRequestTrackingInfo, Order, OrderItem, Product
 
 
 class BatchRequestTrackingInfoAdmin(admin.ModelAdmin):
-    list_display = ("id", "status", "started", "tracking_info")
+    list_display = ("id", "started", "status", "started")
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -32,11 +32,13 @@ class OrderAdmin(admin.ModelAdmin):
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = (
         "sku",
+        "position_item_id",
         "order_id",
         "order_date",
     )
     search_fields = [
         "sku",
+        "position_item_id",
     ]
 
     @admin.display()

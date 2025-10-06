@@ -12,9 +12,7 @@ from django.utils import timezone
 from aboutyou.services.products import get_product_title
 
 from .forms import UploadFileForm
-from .models import OrderItem
-from .models import Product as AYProduct
-from .models import Shipment
+from .models import BatchRequestTrackingInfo, OrderItem
 from .services.shipments import handle_uploaded_file
 
 LOG = logging.getLogger(__name__)
@@ -191,11 +189,14 @@ def upload_tracking_codes(request):
 
 @login_required
 def upload_tracking_codes_success(request):
-    shipments = Shipment.objects.all().order_by("-created")[:100]
+    batch_req_track_infos = BatchRequestTrackingInfo.objects.all().order_by("-created")[
+        :10
+    ]
     return render(
         request,
         "aboutyou/upload_tracking_codes_success.html",
         {
+            "batch_req_track_infos": batch_req_track_infos,
             "location": LOCATION,
         },
     )

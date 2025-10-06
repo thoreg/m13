@@ -5,9 +5,29 @@
 {% block content %}
 <div id="main">
   <h2>Upload CSV mit Tracking Codes zu ABOUTYOU war erfolgreich</h2>
-  <p>
-    <a href="/addi/aboutyou/batchrequesttrackinginfo/?o=-3">Overview Batch Requests</a>
-  </p>
+  <table>
+    <thead>
+      <th class='date'>created_at</th>
+      <th>started</th>
+      <th>satus</th>
+      <th>response</th>
+    </thead>
+    <tbody>
+    {% for entry in batch_req_track_infos %}
+      <tr>
+        <td style="vertical-align:top; padding-top: 3em;">{{ entry.created|date:"Y/m/d/h:m:s" }}</td>
+        <td style="vertical-align:top; padding-top: 3em;">{{ entry.started }}</td>
+        <td style="vertical-align:top; padding-top: 3em;">{{ entry.status }}</td>
+        <td><pre>{{ entry.response | pprint }}</pre></td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td>No batch request tracking infos found</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  More batch request tracking infos can be found <a href="/addi/aboutyou/batchrequesttrackinginfo/?o=-3">here</a>
 </div>
 {% endblock %}
 

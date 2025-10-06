@@ -17,7 +17,6 @@ class BatchRequestTrackingInfo(TimeStampedModel):
     id = models.CharField(primary_key=True)
     started = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=32, null=True)
-    tracking_info = models.CharField(max_length=256, null=True)
     response = models.JSONField(null=True)
 
     class Meta:
