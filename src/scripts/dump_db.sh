@@ -1,7 +1,7 @@
 #!/bin/bash
 NOW=`date "+%Y%m%dT%H%M%S"`
 DIR=`pwd`
-python manage.py dumpdata      \
+uv run manage.py dumpdata      \
     --natural-foreign          \
     --natural-primary          \
     -e contenttypes            \
