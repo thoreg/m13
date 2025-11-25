@@ -21,6 +21,7 @@ ALLOWED_STARTER = [
 ]
 
 M13_SHOP = "https://www.manufaktur13.de"
+M13_SHOP_INTERN = "/shop/?add-to-cart="
 
 WHITE_LIST = [
     None,
@@ -102,6 +103,9 @@ class Command(BaseCommand):
                 continue
 
             elif href.startswith(M13_SHOP):
+                continue
+
+            elif href.startswith(M13_SHOP_INTERN):
                 continue
 
             else:
