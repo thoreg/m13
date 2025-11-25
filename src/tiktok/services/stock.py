@@ -156,7 +156,7 @@ class StockService:
                             f"sku {seller_sku} already known as {tiktok_product_id}"
                         )
 
-        LOG.info(f'Houston we got {len(resp["data"]["products"])} products')
+        LOG.info(f"Houston we got {len(resp['data']['products'])} products")
 
         if next_page_token:
             LOG.info("Houston we got a next_page_token - going for another round")

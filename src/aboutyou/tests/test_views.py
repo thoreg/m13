@@ -30,6 +30,5 @@ def test_ay_get_views(client, django_user_model, ay_url_data):
             return_value="bogus",
         ) as _mocked_sync,
     ):
-
         response = client.get(r_url)
         assert response.status_code == expected_status_code

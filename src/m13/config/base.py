@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_countries",
     "django_extensions",
-    #"django_ses",
     "django_pgviews",
     "django_filters",
     "rest_framework",

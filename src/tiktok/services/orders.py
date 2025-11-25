@@ -213,7 +213,7 @@ class OrderService:
                         oi_obj.save()
 
         LOG.info(
-            f'order_status: {order_status}: {len(resp["data"]["orders"])} orders received'
+            f"order_status: {order_status}: {len(resp['data']['orders'])} orders received"
         )
 
         if next_page_token:

@@ -45,7 +45,6 @@ def sync(order_status: str):
     LOG.info("sync_orders starting ....")
 
     def _import_orders(url: str) -> str:
-
         token = os.getenv("M13_ABOUTYOU_TOKEN")
         if not token:
             LOG.error("M13_ABOUTYOU_TOKEN not found")
@@ -58,7 +57,6 @@ def sync(order_status: str):
         next_url, orders = download_orders(url, headers)
 
         for entry in orders:
-
             marketplace_order_id = entry.get("order_number")
             status = entry.get("status")
 

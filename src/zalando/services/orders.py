@@ -113,7 +113,7 @@ def process_orderitem(order, oi, delivery_infos):
         },
     )
     LOG.info(
-        f'   iid: {oi["item_id"]} ean: {order_item.ean} created: {created} creation_datetime: {oi["timestamp"]}'
+        f"   iid: {oi['item_id']} ean: {order_item.ean} created: {created} creation_datetime: {oi['timestamp']}"
     )
 
     if not created:

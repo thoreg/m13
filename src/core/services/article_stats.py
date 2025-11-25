@@ -546,7 +546,7 @@ def get_article_stats(
         f"marketplace: {marketplace} start_date: {start_date} end_date: {end_date}"
     )
 
-    match (marketplace.upper()):
+    match marketplace.upper():
         case Marketplace.OTTO:
             return get_article_stats_otto(start_date, end_date)
         case Marketplace.ZALANDO:

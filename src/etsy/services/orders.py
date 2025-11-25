@@ -55,7 +55,7 @@ def process_receipts(data):
             mlog.error(LOG, msg)
             return
 
-    LOG.info(f'count: {data["count"]} number_of_results: {len(data["results"])}')
+    LOG.info(f"count: {data['count']} number_of_results: {len(data['results'])}")
 
     for d in data["results"]:
         process_receipt(d)

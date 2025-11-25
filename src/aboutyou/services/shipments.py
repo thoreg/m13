@@ -152,7 +152,7 @@ def check_batch_requests():
 
     headers = __get_headers()
 
-    brs = BatchRequestTrackingInfo.objects.filter(Q(status=None) | Q(status='pending'))
+    brs = BatchRequestTrackingInfo.objects.filter(Q(status=None) | Q(status="pending"))
 
     for br in brs:
         completed = False

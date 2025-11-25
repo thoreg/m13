@@ -33,7 +33,6 @@ class RequestFailed(Exception):
 
 
 class EtsyStockSync:
-
     def __init__(self):
         self.token = get_auth_token()
         if not self.token:

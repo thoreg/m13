@@ -51,7 +51,6 @@ def test_ay_orders_sync(client, django_user_model):
             side_effect=responses,
         ) as _mocked_sync,
     ):
-
         orders.sync(Order.Status.OPEN)
 
     assert Address.objects.all().count() == 6
