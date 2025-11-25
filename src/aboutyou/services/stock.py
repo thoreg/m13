@@ -54,11 +54,14 @@ def sync():
         )
         if response.status_code != requests.codes.ok:
             subj = "ay - stock update failed"
-            msg = response.json()
-            LOG.error(subj)
-            LOG.error(msg)
+            try:
+                msg = response.json()
+                LOG.error(subj)
+                LOG.error(msg)
+                send_error_as_email(subj, msg)
+            except Exception:
+                send_error_as_email(subj, response.text)
 
-            send_error_as_email(subj, msg)
             return
 
         # Check the result - Wait until processing on AY side is done

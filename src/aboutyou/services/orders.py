@@ -29,8 +29,12 @@ def download_orders(url, headers) -> tuple[str, list]:
     )
     if response.status_code != requests.codes.ok:
         LOG.error("fetching orders failed")
-        LOG.error(response.json())
-        send_error_as_email("AY - Fetching orders failed", response.json())
+        try:
+            LOG.error(response.json())
+        except Exception:
+            LOG.error(response)
+
+        send_error_as_email("AY - Fetching orders failed", response)
         return ("", [])
 
     resp_json = response.json()

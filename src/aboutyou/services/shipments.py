@@ -25,6 +25,7 @@ import time
 from io import TextIOWrapper
 
 import requests
+from django.db.models import Q
 
 from aboutyou.models import BatchRequestTrackingInfo, Order
 from m13.lib import log as mlog
@@ -53,11 +54,6 @@ def get_payload(order, tracking_info, return_shipment_code) -> dict:
         }]
     }
     """
-    # LOG.info(order.__dict__)
-    # LOG.info(order.delivery_address.__dict__)
-    # for oi in order.orderitem_set.all():
-    #     LOG.info(oi.__dict__)
-
     order_items = []
     for oi in order.orderitem_set.all():
         order_items.append(oi.position_item_id)
@@ -68,21 +64,6 @@ def get_payload(order, tracking_info, return_shipment_code) -> dict:
         "shipment_tracking_key": tracking_info,
         "return_tracking_key": return_shipment_code,
     }
-
-
-# def do_post(headers, order, tracking_info, return_shipment_code):
-#     payload = get_payload(order, tracking_info, return_shipment_code)
-#     LOG.info(f"payload: {payload}")
-#     r = requests.post(
-#         SHIPMENTS_URL,
-#         headers=headers,
-#         data=payload,
-#     )
-
-#     LOG.info(f"post - status_code: {r.status_code}")
-#     LOG.info(r.json())
-
-#     return r.status_code, r.json()
 
 
 def do_post(headers, payload):
@@ -171,7 +152,7 @@ def check_batch_requests():
 
     headers = __get_headers()
 
-    brs = BatchRequestTrackingInfo.objects.filter(status=None)
+    brs = BatchRequestTrackingInfo.objects.filter(Q(status=None) | Q(status='pending'))
 
     for br in brs:
         completed = False
@@ -181,14 +162,18 @@ def check_batch_requests():
                 headers=headers,
                 timeout=60,
             )
-            status = response.json()["status"]
-            br.status = status
-            br.response = response.json()
-            br.save()
+            if response.status_code == requests.codes.ok:
+                br.status = response.json()["status"]
+                br.response = response.json()
+                br.save()
+            else:
+                LOG.error(f"batch_request: {br.id} error: {response.status_code}")
+                LOG.error(response.text)
+                continue
 
-            LOG.info(f"batch_request: {br.id} status: {status}")
+            LOG.info(f"batch_request: {br.id} status: {br.status}")
 
-            if status == "completed":
+            if br.status == "completed":
                 completed = True
                 break
 
