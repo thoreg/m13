@@ -8,13 +8,13 @@ clean: ## Delete all bytecode and coverage data
 	rm -rf htmlcov
 
 test: ## Run the tests
-	pytest --import-mode=importlib --ds=m13.config.develop .
+	uv run pytest --import-mode=importlib --ds=m13.config.develop .
 
 testv: ## Run the tests in verbose mode
-	pytest -vv -s --import-mode=importlib --ds=m13.config.develop .
+	uv run pytest -vv -s --import-mode=importlib --ds=m13.config.develop .
 
 test_over: ## Run the tests and overwrite the dumps
-	pytest --overwrite --import-mode=importlib --ds=m13.config.develop .
+	uv run pytest --overwrite --import-mode=importlib --ds=m13.config.develop .
 
 style: ## Run style checks and static code analyzers
 	# ruff .
@@ -29,4 +29,4 @@ check: clean style test
 
 py-cov: ## Run the tests and collect coverage data
 	rm -rf htmlcov
-	pytest --import-mode=importlib --ds=m13.config.develop --cov-report=html --cov=.
+	uv run pytest --import-mode=importlib --ds=m13.config.develop --cov-report=html --cov=.
