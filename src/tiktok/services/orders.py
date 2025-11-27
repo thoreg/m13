@@ -123,7 +123,7 @@ class OrderService:
 
         resp = requests.post(url, headers=headers, params=params, data=body)
         if resp.status_code != requests.codes.ok:
-            LOG.error(resp.json())
+            LOG.error(resp.text)
             return
 
         resp = resp.json()
