@@ -32,7 +32,6 @@ def download_feed():
 def filter_feed(original_lines: list) -> list:
     """Return list of relevant lines which hold information."""
     relevant_lines = []
-    kleiner_null = []
     for line in original_lines:
         sku = line["article_number"]
         quantity = line["quantity"]

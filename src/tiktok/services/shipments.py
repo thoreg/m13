@@ -9,7 +9,6 @@ import os
 import string
 import time
 from io import TextIOWrapper
-from pprint import pformat
 
 import requests
 

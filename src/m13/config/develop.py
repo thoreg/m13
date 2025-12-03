@@ -1,7 +1,7 @@
 import os
 import sys
 
-from .base import *
+from .base import *  # noqa
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -24,9 +24,9 @@ DEBUG = True
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")  # noqa
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "..", "static"),
+    os.path.join(BASE_DIR, "..", "static"),  # noqa
 ]
 
 

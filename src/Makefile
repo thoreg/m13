@@ -22,8 +22,8 @@ style: ## Run style checks and static code analyzers
 	pylint .
 
 format: ## Run formatter
-	isort .
-	black .
+	uv run ruff format
+	uv run ruff check
 
 check: clean style test
 
