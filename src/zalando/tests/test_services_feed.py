@@ -52,9 +52,7 @@ def test_pimp_prices():
     error = Error.objects.get()
     assert error.cleared is False
     assert error.comment is None
-    assert error.msg.startswith(
-        "No price factor found: pimp_prices in "
-    )
+    assert error.msg.startswith("No price factor found: pimp_prices in ")
 
     pt = PriceTool.objects.create(z_factor=1.3, active=True)
     pt.save()

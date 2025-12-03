@@ -1,4 +1,5 @@
 """Upload local database dump to dropbox."""
+
 import dropbox
 import sys
 import os
@@ -9,7 +10,9 @@ from dotenv import load_dotenv
 
 def oauth_dance(DROPBOX_APP_KEY, DROPBOX_APP_SECRET):
     auth_flow = dropbox.DropboxOAuth2FlowNoRedirect(
-        DROPBOX_APP_KEY, DROPBOX_APP_SECRET, token_access_type="offline"  # offline => Refresh-Token
+        DROPBOX_APP_KEY,
+        DROPBOX_APP_SECRET,
+        token_access_type="offline",  # offline => Refresh-Token
     )
     authorize_url = auth_flow.start()
     print("1. Open this url in browser:\n", authorize_url)
@@ -62,7 +65,7 @@ def main():
             f.read(),
             dropbox_path,
             mode=dropbox.files.WriteMode("overwrite"),
-            mute=True, # optional: no notification
+            mute=True,  # optional: no notification
         )
 
     print(f"✅ upload successful {dropbox_path}")

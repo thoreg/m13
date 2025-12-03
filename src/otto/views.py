@@ -25,9 +25,7 @@ def index(request):
         .order_by("-order__order_date")
         .select_related("order__delivery_address")[:100]
     )
-    processable_orderitems = OrderItem.objects.filter(
-        fulfillment_status="PROCESSABLE"
-    )
+    processable_orderitems = OrderItem.objects.filter(fulfillment_status="PROCESSABLE")
     order_ids = set()
     for oi in processable_orderitems:
         order_ids.add(oi.order.marketplace_order_number)
