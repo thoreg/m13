@@ -30,10 +30,13 @@ def index(request):
         .order_by("-order__order_date")
         .select_related("order__delivery_address")[:100]
     )
-    number_of_processable = OrderItem.objects.filter(fulfillment_status="open").count()
+    processable_orderitems = OrderItem.objects.filter(fulfillment_status="open")
+    processable_orders = set()
+    for oi in processable_orderitems:
+        processable_orders.add(oi.order.marketplace_order_id)
 
     context = {
-        "number_of_processable": number_of_processable,
+        "number_of_processable": len(processable_orders),
         "order_items": order_items,
         "location": LOCATION,
     }
