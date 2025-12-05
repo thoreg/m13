@@ -66,18 +66,23 @@ def get_payload(order, tracking_info, return_shipment_code) -> dict:
     }
 
 
-def do_post(headers, payload):
-    """Do the actual post request with a list of items."""
+def do_post(headers, payload) -> tuple[bool, str | dict]:
+    """Do the actual post request with a list of items.
+
+    Return indicator if request was successful or not + response.
+    """
     LOG.info(f"payload: {payload}")
-    r = requests.post(
+    response = requests.post(
         SHIPMENTS_URL,
         headers=headers,
         data=payload,
     )
-    LOG.info(f"post - status_code: {r.status_code}")
-    LOG.info(r.json())
+    if response.status_code != requests.codes.ok:
+        LOG.error("update shipping information failed")
+        LOG.error(response)
+        return False, response.text
 
-    return r.status_code, r.json()
+    return True, response.json()
 
 
 def __get_headers() -> dict | None:
@@ -131,9 +136,9 @@ def handle_uploaded_file(csv_file):
         payload.append(get_payload(order, tracking_info, return_shipment_code))
 
     payload_data = json.dumps({"items": payload})
-    status_code, response = do_post(headers, payload_data)
-    if status_code != requests.codes.ok:
-        LOG.error("update shipping information failed")
+    success, response = do_post(headers, payload_data)
+
+    if not success:
         LOG.error(response)
         return
 
