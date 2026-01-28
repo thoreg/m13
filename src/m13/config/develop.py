@@ -24,11 +24,10 @@ DEBUG = True
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")  # noqa
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # noqa
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "..", "static"),  # noqa
+    os.path.join(BASE_DIR, "static"),  # noqa
 ]
-
 
 LOGGING = {
     "version": 1,

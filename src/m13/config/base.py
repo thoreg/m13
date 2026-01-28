@@ -8,7 +8,11 @@ SECRET_KEY = "django-insecure-9$y#rs))=6kywmqa$6#$3=)x(8-*0$y!le@*ne#+(j*c$f(g=i
 ALLOWED_HOSTS = []
 APPEND_SLASH = True
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR: /Users/thoreg/src/m13/src/m13
+# STATIC_ROOT: /Users/thoreg/src/m13/src/m13/static
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 DEBUG = False
 
@@ -39,6 +43,7 @@ INSTALLED_APPS = [
     "galeria",
     "tiktok",
     "aboutyou",
+    "m13",
 ]
 
 MASSEDIT = {
