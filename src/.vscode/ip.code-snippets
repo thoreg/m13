@@ -1,7 +1,7 @@
 {
 	"ipdb": {
 		"scope": "python",
-		"prefix": "ip",
+		"prefix": "ipd",
 		"body": [
 			"import ipdb; ipdb.set_trace()",
 		],

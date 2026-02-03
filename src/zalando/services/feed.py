@@ -5,6 +5,7 @@ import os
 import sys
 from dataclasses import dataclass
 from typing import NamedTuple
+from copy import deepcopy
 
 import requests
 from django.conf import settings
@@ -151,6 +152,29 @@ price_overwrites = [
     ("52.95", "59.95", "CBBDuffle-OL"),
     ("44.95", "49.95", "SportsBag25-FBM"),
 ]
+
+extra_worst_for_out_of_season_article = {
+    "women-bom-co-xs": {
+        "fake_sku": "women-bom-co-xs-1",
+        "fake_ean": "9501796764646",
+    },
+    "women-bom-co-s": {
+        "fake_sku": "women-bom-co-s-1",
+        "fake_ean": "9509454376477",
+    },
+    "women-bom-co-m": {
+        "fake_sku": "women-bom-co-m-1",
+        "fake_ean": "9508355589344",
+    },
+    "women-bom-co-l": {
+        "fake_sku": "women-bom-co-l-1",
+        "fake_ean": "9508169288839",
+    },
+    "women-bom-co-xl": {
+        "fake_sku": "women-bom-co-xl-1",
+        "fake_ean": "9501138142941",
+    },
+}
 
 FACTOR = None
 SHIPPING_FEE = 3.95
@@ -389,6 +413,15 @@ def pimp_prices(lines):
             row.quantity = 0
 
         pimped_lines.append(row)
+
+        # sonderlocke for out-of-season articles
+        sku = row.article_number
+        if sku in extra_worst_for_out_of_season_article:
+            extra_row = deepcopy(row)
+            extra_article = extra_worst_for_out_of_season_article[sku]
+            extra_row.article_number = extra_article["fake_sku"]
+            extra_row.ean = extra_article["fake_ean"]
+            pimped_lines.append(extra_row)
 
     pimped_file_name = os.path.join(
         settings.MEDIA_ROOT, "pimped", f"{now_as_str()}.csv"
