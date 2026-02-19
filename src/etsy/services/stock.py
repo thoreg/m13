@@ -10,6 +10,8 @@ from etsy.models import Listing
 from m13.lib.zfeed import download_feed, filter_feed
 
 M13_ETSY_API_KEY = os.getenv("M13_ETSY_API_KEY")
+M13_ETSY_SECRET = os.getenv("M13_ETSY_SECRET")
+
 M13_ETSY_SHOP_ID = os.getenv("M13_ETSY_SHOP_ID")
 
 LIMIT = 64
@@ -37,7 +39,7 @@ class EtsyStockSync:
             raise EtsyNoTokenDiggiException("No auth token found")
 
         self.headers = {
-            "x-api-key": M13_ETSY_API_KEY,
+            "x-api-key": f"{M13_ETSY_API_KEY}:{M13_ETSY_SECRET}",
             "authorization": f"Bearer {self.token}",
         }
 

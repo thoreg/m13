@@ -14,6 +14,8 @@ from m13.lib import log as mlog
 LOG = logging.getLogger(__name__)
 
 M13_ETSY_API_KEY = os.getenv("M13_ETSY_API_KEY")
+M13_ETSY_SECRET = os.getenv("M13_ETSY_SECRET")
+
 M13_ETSY_SHOP_ID = os.getenv("M13_ETSY_SHOP_ID")
 
 
@@ -29,7 +31,10 @@ STATUS_MAP = {
 
 def get_receipts(token):
     """Return receipts as json."""
-    headers = {"x-api-key": M13_ETSY_API_KEY, "authorization": f"Bearer {token}"}
+    headers = {
+        "x-api-key": f"{M13_ETSY_API_KEY}:{M13_ETSY_SECRET}",
+        "authorization": f"Bearer {token}"
+    }
     # Take in maximum 100 items from the timerange of the last week
     today_one_week_ago = timezone.now() - datetime.timedelta(days=7)
     min_created = today_one_week_ago.strftime("%s")

@@ -43,6 +43,8 @@ from m13.lib import log as mlog
 LOG = logging.getLogger(__name__)
 
 M13_ETSY_API_KEY = os.getenv("M13_ETSY_API_KEY")
+M13_ETSY_SECRET = os.getenv("M13_ETSY_SECRET")
+
 M13_ETSY_SHOP_ID = os.getenv("M13_ETSY_SHOP_ID")
 
 
@@ -54,7 +56,10 @@ def do_post(token, order, tracking_code, carrier_name):
 
     SHIPMENTS_URL = f"https://openapi.etsy.com/v3/application/shops/{M13_ETSY_SHOP_ID}/receipts/{order.marketplace_order_id}/tracking"
 
-    headers = {"authorization": f"Bearer {token}", "x-api-key": M13_ETSY_API_KEY}
+    headers = {
+        "authorization": f"Bearer {token}",
+        "x-api-key": f"{M13_ETSY_API_KEY}:{M13_ETSY_SECRET}",
+    }
     payload = {"carrier_name": carrier_name, "tracking_code": tracking_code}
 
     r = requests.post(
