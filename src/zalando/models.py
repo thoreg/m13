@@ -14,6 +14,7 @@ class FeedUpload(TimeStampedModel):
     number_of_valid_items = models.PositiveIntegerField()
     path_to_original_csv = models.CharField(max_length=128)
     path_to_pimped_csv = models.CharField(max_length=128)
+    path_to_pp_csv = models.CharField(max_length=128, blank=True, default="")
     z_factor = models.DecimalField(max_digits=3, decimal_places=2)
     validation_result = models.TextField()
 

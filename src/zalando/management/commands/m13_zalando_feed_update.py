@@ -18,6 +18,7 @@ from django.utils import timezone
 from m13.lib.common import monitor
 from zalando.services.feed import (  # validate_feed,
     download_feed,
+    generate_pp_feed,
     pimp_prices,
     save_original_feed,
     upload_pimped_feed,
@@ -57,6 +58,8 @@ class Command(BaseCommand):
 
             dto = save_original_feed(csv_content_as_list)
             pimped_file_name = pimp_prices(dto.lines)
+            pp_file_name = generate_pp_feed(pimped_file_name)
+            LOG.info(f"PP feed available at: {pp_file_name}")
             # validation_result = validate_feed(pimped_file_name)
             validation_result = "no validation done ..."
 
@@ -71,6 +74,7 @@ class Command(BaseCommand):
                 200,
                 dto,
                 validation_result,
+                pp_file_name,
             )
 
         except Exception as exc:

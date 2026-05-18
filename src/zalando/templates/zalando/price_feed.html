@@ -27,6 +27,7 @@
       <th>z_factor</th>
       <th>original_csv</th>
       <th>pimped_csv</th>
+      <th>pp_csv</th>
       <th align="left" style="padding-left: 2em;">validation_result</th>
     </thead>
     <tbody>
@@ -46,6 +47,13 @@
             <a href="/media/{{ f.path_to_pimped_csv|slice:'35:' }}">
                 Link
             </a>
+        </td>
+        <td>
+            {% if f.path_to_pp_csv %}
+                <a href="/media/{{ f.path_to_pp_csv|slice:'35:' }}">Link</a>
+            {% else %}
+                —
+            {% endif %}
         </td>
         <td nowrap>
           {{ f.validation_result|safe }}
