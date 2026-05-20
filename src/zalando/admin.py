@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import RawDailyShipmentReport, TransactionFileUpload
+from .models import OEAWebhookMessage, RawDailyShipmentReport, TransactionFileUpload
 
 
 class PriceToolAdmin(admin.ModelAdmin):
@@ -35,6 +35,13 @@ class RawDailyShipmentReportAdmin(admin.ModelAdmin):
     search_fields = [
         "article_number",
     ]
+
+
+@admin.register(OEAWebhookMessage)
+class OEAWebhookMessageAdmin(admin.ModelAdmin):
+    list_display = ("id", "created", "processed")
+    list_filter = ("processed",)
+    readonly_fields = ("payload", "created", "modified", "processed")
 
 
 admin.site.register(RawDailyShipmentReport, RawDailyShipmentReportAdmin)

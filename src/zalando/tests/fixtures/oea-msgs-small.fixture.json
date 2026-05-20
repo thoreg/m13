@@ -1,0 +1,198 @@
+[
+  {
+    "model": "zalando.oeawebhookmessage",
+    "pk": 1,
+    "fields": {
+      "created": "2021-09-15T09:09:28Z",
+      "modified": "2021-09-15T09:09:28Z",
+      "processed": null,
+      "payload": {
+        "event_id": "aaa-001",
+        "order_id": "order-001",
+        "order_number": "10100000000001",
+        "state": "assigned",
+        "store_id": "001",
+        "timestamp": "2021-09-15T09:09:28.000000Z",
+        "items": [
+          {
+            "item_id": "item-001",
+            "ean": "0781491971001",
+            "article_number": "TEST-001",
+            "currency": "EUR",
+            "price": 24.95,
+            "article_location": "M13",
+            "zalando_article_number": "ZAN-001"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "model": "zalando.oeawebhookmessage",
+    "pk": 2,
+    "fields": {
+      "created": "2021-09-15T10:00:00Z",
+      "modified": "2021-09-15T10:00:00Z",
+      "processed": null,
+      "payload": {
+        "event_id": "aaa-002",
+        "order_id": "order-002",
+        "order_number": "10100000000002",
+        "state": "assigned",
+        "store_id": "001",
+        "timestamp": "2021-09-15T10:00:00.000000Z",
+        "items": [
+          {
+            "item_id": "item-002",
+            "ean": "0781491971002",
+            "article_number": "TEST-002",
+            "currency": "EUR",
+            "price": 49.95,
+            "article_location": "M13",
+            "zalando_article_number": "ZAN-002"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "model": "zalando.oeawebhookmessage",
+    "pk": 3,
+    "fields": {
+      "created": "2021-09-16T08:00:00Z",
+      "modified": "2021-09-16T08:00:00Z",
+      "processed": null,
+      "payload": {
+        "event_id": "aaa-003",
+        "order_id": "order-003",
+        "order_number": "10100000000003",
+        "state": "fulfilled",
+        "store_id": "001",
+        "timestamp": "2021-09-16T08:00:00.000000Z",
+        "customer_billing_address": {
+          "address_line_1": "Teststraße 1",
+          "city": "München",
+          "country_code": "DE",
+          "first_name": "Anna",
+          "last_name": "Muster",
+          "zip_code": "80331"
+        },
+        "delivery_details": {
+          "delivery_carrier_name": "DHL_DE",
+          "delivery_tracking_number": "00340414644690000001",
+          "return_carrier_name": "DHL_DE",
+          "return_tracking_number": "00340414644690000001"
+        },
+        "items": [
+          {
+            "item_id": "item-003",
+            "ean": "0781491971003",
+            "article_number": "TEST-003",
+            "currency": "EUR",
+            "price": 34.95,
+            "article_location": "M13",
+            "zalando_article_number": "ZAN-003"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "model": "zalando.oeawebhookmessage",
+    "pk": 4,
+    "fields": {
+      "created": "2021-09-16T09:00:00Z",
+      "modified": "2021-09-16T09:00:00Z",
+      "processed": null,
+      "payload": {
+        "event_id": "aaa-004",
+        "order_id": "order-004",
+        "order_number": "10100000000004",
+        "state": "fulfilled",
+        "store_id": "001",
+        "timestamp": "2021-09-16T09:00:00.000000Z",
+        "customer_billing_address": {
+          "address_line_1": "Musterweg 42",
+          "city": "Berlin",
+          "country_code": "DE",
+          "first_name": "Max",
+          "last_name": "Beispiel",
+          "zip_code": "10115"
+        },
+        "delivery_details": {
+          "delivery_carrier_name": "DHL_DE",
+          "delivery_tracking_number": "00340414644690000002",
+          "return_carrier_name": "DHL_DE",
+          "return_tracking_number": "00340414644690000002"
+        },
+        "items": [
+          {
+            "item_id": "item-004",
+            "ean": "0781491971004",
+            "article_number": "TEST-004",
+            "currency": "EUR",
+            "price": 59.95,
+            "article_location": "M13",
+            "zalando_article_number": "ZAN-004"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "model": "zalando.oeawebhookmessage",
+    "pk": 5,
+    "fields": {
+      "created": "2021-09-17T10:00:00Z",
+      "modified": "2021-09-17T10:00:00Z",
+      "processed": null,
+      "payload": {
+        "event_id": "aaa-005",
+        "order_id": "order-005",
+        "order_number": "10100000000005",
+        "state": "cancelled",
+        "store_id": "001",
+        "timestamp": "2021-09-17T10:00:00.000000Z",
+        "items": [
+          {
+            "item_id": "item-005",
+            "ean": "0781491971005",
+            "article_number": "TEST-005",
+            "currency": "EUR",
+            "price": 19.95,
+            "article_location": "M13",
+            "zalando_article_number": "ZAN-005"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "model": "zalando.oeawebhookmessage",
+    "pk": 6,
+    "fields": {
+      "created": "2021-09-18T11:00:00Z",
+      "modified": "2021-09-18T11:00:00Z",
+      "processed": null,
+      "payload": {
+        "event_id": "aaa-006",
+        "order_id": "order-006",
+        "order_number": "10100000000006",
+        "state": "returned",
+        "store_id": "001",
+        "timestamp": "2021-09-18T11:00:00.000000Z",
+        "items": [
+          {
+            "item_id": "item-006",
+            "ean": "0781491971006",
+            "article_number": "TEST-006",
+            "currency": "EUR",
+            "price": 29.95,
+            "article_location": "M13",
+            "zalando_article_number": "ZAN-006"
+          }
+        ]
+      }
+    }
+  }
+]

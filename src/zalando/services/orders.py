@@ -133,6 +133,7 @@ def process_new_oea_records():
     unprocessed = OEAWebhookMessage.objects.filter(processed=None)
     for oea_msg in unprocessed:
         entry = oea_msg.payload
+        state = entry["state"].upper()
         order, created = Order.objects.get_or_create(
             marketplace_order_id=entry["order_id"],
             store_id=entry["store_id"],
@@ -141,7 +142,7 @@ def process_new_oea_records():
                 "order_date": entry["timestamp"],
                 "created": entry["timestamp"],
                 "last_modified_date": entry["timestamp"],
-                "status": entry["state"],
+                "status": state,
             },
         )
 
@@ -159,18 +160,18 @@ def process_new_oea_records():
                 f"order.id: {order.id} order - begin"
             )
 
-            # import ipdb; ipdb.set_trace()
-            # if order.last_modified_date > time_str2object(entry['timestamp']):
-            #     LOG.info('\t\tooo - continue')
-            #     mark_as_processed(oea_msg)
-            #     continue
-
-            order.status = entry["state"]
+            order.status = state
             order.last_modified_date = entry["timestamp"]
 
-        # We are done here if order status is just 'assigned
-        if order.status == "assigned":
-            LOG.info("\t\tfulfillment status is assigned - return early")
+        if order.status == "ASSIGNED":
+            LOG.info("\t\tstatus is ASSIGNED - mark as processed and continue")
+            order.save()
+            mark_as_processed(oea_msg)
+            continue
+
+        if order.status in ("CANCELLED", "RETURNED"):
+            LOG.info(f"\t\tstatus is {order.status} - mark as processed and continue")
+            order.save()
             mark_as_processed(oea_msg)
             continue
 

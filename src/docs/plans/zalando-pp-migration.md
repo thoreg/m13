@@ -1,7 +1,7 @@
 # Zalando CR → PP Migration (irisOne QuickConnect)
 
 **Spec:** https://comercus.com/migration.html  
-**Status:** IN PROGRESS — Tasks 1–7 done, Task 8 (Upload) blockiert  
+**Status:** DONE (Phase 1) — Tasks 1–7 abgeschlossen; Task 8 (Upload) blockiert bis irisOne-Zugangsdaten vorliegen  
 **Erstellt:** 2026-05-18  
 **Aktualisiert:** 2026-05-18
 

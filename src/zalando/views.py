@@ -24,6 +24,7 @@ from django.views.decorators.http import require_POST
 from m13.lib import log as mlog
 from m13.lib.file_upload import handle_uploaded_file
 from zalando.models import SalesReportFileUpload
+from zalando.services.orders import process_new_oea_records
 from zalando.services.prices import update_z_factor
 from zalando.services.reports import import_monthly_sales_report
 
@@ -125,6 +126,7 @@ def oea_webhook(request):
 @atomic
 def process_oea_webhook_payload(payload):
     LOG.info(payload)
+    process_new_oea_records()
 
 
 @login_required
