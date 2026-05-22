@@ -29,7 +29,14 @@ HEADERS = {
 }
 
 # Columns expected by irisOne QuickConnect stock import
-IRISONE_COLUMNS = ["store", "ean", "article_number", "price", "retail_price", "quantity"]
+IRISONE_COLUMNS = [
+    "store",
+    "ean",
+    "article_number",
+    "price",
+    "retail_price",
+    "quantity",
+]
 
 
 class IrisOneFeedException(Exception):

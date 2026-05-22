@@ -469,23 +469,29 @@ def generate_pp_feed(pimped_file_name):
         writer = csv.writer(f_out, delimiter=";", quoting=csv.QUOTE_NONNUMERIC)
         for idx, row in enumerate(rows):
             if idx == 0:
-                writer.writerow(row + [
-                    "erp_ean",
-                    "erp_article_number",
-                    "erp_store_article_location",
-                    "classification",
-                ])
+                writer.writerow(
+                    row
+                    + [
+                        "erp_ean",
+                        "erp_article_number",
+                        "erp_store_article_location",
+                        "classification",
+                    ]
+                )
             else:
                 # Columns from pimped feed:
                 # store(0) ean(1) price(2) retail_price(3) quantity(4)
                 # product_number(5) product_name(6) article_number(7)
                 # article_color(8) article_size(9) store_article_location(10)
-                writer.writerow(row + [
-                    row[1],    # erp_ean
-                    row[7],    # erp_article_number
-                    row[10],   # erp_store_article_location
-                    "default",
-                ])
+                writer.writerow(
+                    row
+                    + [
+                        row[1],  # erp_ean
+                        row[7],  # erp_article_number
+                        row[10],  # erp_store_article_location
+                        "default",
+                    ]
+                )
 
     LOG.info(f"PP feed written: {pp_file_name}")
     return pp_file_name

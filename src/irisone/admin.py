@@ -26,6 +26,13 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderLine)
 class OrderLineAdmin(admin.ModelAdmin):
-    list_display = ("line_id", "order", "marketplace_sku", "article_number", "status", "price")
+    list_display = (
+        "line_id",
+        "order",
+        "marketplace_sku",
+        "article_number",
+        "status",
+        "price",
+    )
     list_filter = ("status",)
     search_fields = ("marketplace_sku", "article_number", "line_id")

@@ -49,19 +49,21 @@ def orders_csv(request):
     response.write("﻿".encode("utf8"))
 
     writer = csv.writer(response, delimiter=";")
-    writer.writerow([
-        "booking_id",
-        "order_id",
-        "marketplace",
-        "marketplace_order_id",
-        "order_date",
-        "status",
-        "line_id",
-        "article_number",
-        "sku",
-        "price",
-        "line_status",
-    ])
+    writer.writerow(
+        [
+            "booking_id",
+            "order_id",
+            "marketplace",
+            "marketplace_order_id",
+            "order_date",
+            "status",
+            "line_id",
+            "article_number",
+            "sku",
+            "price",
+            "line_status",
+        ]
+    )
 
     lines = (
         OrderLine.objects.select_related("order")
@@ -71,18 +73,20 @@ def orders_csv(request):
 
     for line in lines:
         order = line.order
-        writer.writerow([
-            order.booking_id,
-            order.order_id,
-            order.marketplace_name,
-            order.marketplace_order_id_1,
-            order.order_date.strftime("%Y-%m-%d %H:%M"),
-            order.status,
-            line.line_id,
-            line.article_number,
-            line.marketplace_sku,
-            line.price,
-            line.status,
-        ])
+        writer.writerow(
+            [
+                order.booking_id,
+                order.order_id,
+                order.marketplace_name,
+                order.marketplace_order_id_1,
+                order.order_date.strftime("%Y-%m-%d %H:%M"),
+                order.status,
+                line.line_id,
+                line.article_number,
+                line.marketplace_sku,
+                line.price,
+                line.status,
+            ]
+        )
 
     return response

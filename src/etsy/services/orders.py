@@ -33,7 +33,7 @@ def get_receipts(token):
     """Return receipts as json."""
     headers = {
         "x-api-key": f"{M13_ETSY_API_KEY}:{M13_ETSY_SECRET}",
-        "authorization": f"Bearer {token}"
+        "authorization": f"Bearer {token}",
     }
     # Take in maximum 100 items from the timerange of the last week
     today_one_week_ago = timezone.now() - datetime.timedelta(days=7)

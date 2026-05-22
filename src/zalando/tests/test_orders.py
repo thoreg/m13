@@ -34,16 +34,26 @@ def test_process_new_oea_records_assigned_no_orderitems():
     """assigned-Event erzeugt Order, aber kein OrderItem und keine Adresse."""
     OEAWebhookMessage.objects.all().delete()
     Order.objects.all().delete()
-    OEAWebhookMessage.objects.create(payload={
-        "event_id": "test-assigned-001",
-        "order_id": "test-order-assigned",
-        "order_number": "99900000000001",
-        "state": "assigned",
-        "store_id": "001",
-        "timestamp": "2021-09-15T09:00:00.000000Z",
-        "items": [{"item_id": "x", "ean": "111", "article_number": "A",
-                   "currency": "EUR", "price": 10.0, "article_location": "M13"}],
-    })
+    OEAWebhookMessage.objects.create(
+        payload={
+            "event_id": "test-assigned-001",
+            "order_id": "test-order-assigned",
+            "order_number": "99900000000001",
+            "state": "assigned",
+            "store_id": "001",
+            "timestamp": "2021-09-15T09:00:00.000000Z",
+            "items": [
+                {
+                    "item_id": "x",
+                    "ean": "111",
+                    "article_number": "A",
+                    "currency": "EUR",
+                    "price": 10.0,
+                    "article_location": "M13",
+                }
+            ],
+        }
+    )
 
     process_new_oea_records()
 
@@ -59,15 +69,17 @@ def test_process_new_oea_records_cancelled_returned_no_orderitems():
     Order.objects.all().delete()
 
     for state, oid in [("cancelled", "test-order-c"), ("returned", "test-order-r")]:
-        OEAWebhookMessage.objects.create(payload={
-            "event_id": f"test-{state}",
-            "order_id": oid,
-            "order_number": f"999{state[:3]}",
-            "state": state,
-            "store_id": "001",
-            "timestamp": "2021-09-17T10:00:00.000000Z",
-            "items": [],
-        })
+        OEAWebhookMessage.objects.create(
+            payload={
+                "event_id": f"test-{state}",
+                "order_id": oid,
+                "order_number": f"999{state[:3]}",
+                "state": state,
+                "store_id": "001",
+                "timestamp": "2021-09-17T10:00:00.000000Z",
+                "items": [],
+            }
+        )
 
     process_new_oea_records()
 

@@ -12,7 +12,9 @@ ALL_STATUSES = ["pending", "opened", "fulfilled"]
 
 
 class Command(BaseCommand):
-    help = "Fetch orders from irisOne API for all statuses (pending, opened, fulfilled)."
+    help = (
+        "Fetch orders from irisOne API for all statuses (pending, opened, fulfilled)."
+    )
 
     @monitor
     def handle(self, *args, **kwargs):

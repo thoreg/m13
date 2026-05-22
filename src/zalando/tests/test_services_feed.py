@@ -1,6 +1,5 @@
 import csv
 import os
-import tempfile
 from unittest.mock import patch
 
 import pytest
@@ -214,15 +213,45 @@ def test_generate_pp_feed(tmp_path):
     # article_color(8) article_size(9) store_article_location(10)
     pimped_csv = tmp_path / "pimped.csv"
     rows = [
-        ["store", "ean", "price", "retail_price", "quantity",
-         "product_number", "product_name", "article_number",
-         "article_color", "article_size", "store_article_location"],
-        ["001", "0781491975489", "44.95", "44.95", "10",
-         "BFShirt-XS-BO", "Boyfriend T-Shirt - XS", "BFShirt-XS-BO",
-         "Schwarz", "XS", "Manufaktur13 - Chop Shop"],
-        ["001", "0781491971771", "69.95", "69.95", "0",
-         "CORJACKET-SAG-XS", "Oversized Cord Jacke - XS", "CORJACKET-SAG-XS",
-         "Grün", "XS", ""],
+        [
+            "store",
+            "ean",
+            "price",
+            "retail_price",
+            "quantity",
+            "product_number",
+            "product_name",
+            "article_number",
+            "article_color",
+            "article_size",
+            "store_article_location",
+        ],
+        [
+            "001",
+            "0781491975489",
+            "44.95",
+            "44.95",
+            "10",
+            "BFShirt-XS-BO",
+            "Boyfriend T-Shirt - XS",
+            "BFShirt-XS-BO",
+            "Schwarz",
+            "XS",
+            "Manufaktur13 - Chop Shop",
+        ],
+        [
+            "001",
+            "0781491971771",
+            "69.95",
+            "69.95",
+            "0",
+            "CORJACKET-SAG-XS",
+            "Oversized Cord Jacke - XS",
+            "CORJACKET-SAG-XS",
+            "Grün",
+            "XS",
+            "",
+        ],
     ]
     with open(pimped_csv, "w", encoding="UTF8") as f:
         writer = csv.writer(f, delimiter=";", quoting=csv.QUOTE_NONNUMERIC)
@@ -248,8 +277,8 @@ def test_generate_pp_feed(tmp_path):
 
     # First data row
     row1 = result[1]
-    assert row1[11] == row1[1]   # erp_ean == ean
-    assert row1[12] == row1[7]   # erp_article_number == article_number
+    assert row1[11] == row1[1]  # erp_ean == ean
+    assert row1[12] == row1[7]  # erp_article_number == article_number
     assert row1[13] == row1[10]  # erp_store_article_location == store_article_location
     assert row1[14] == "default"
 

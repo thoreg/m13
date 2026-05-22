@@ -124,9 +124,7 @@ def import_orders(status=None):
         orders_data = payload.get("data", [])
         meta = payload.get("meta", {})
 
-        LOG.info(
-            f"Page {page}/{meta.get('last_page', '?')}: {len(orders_data)} orders"
-        )
+        LOG.info(f"Page {page}/{meta.get('last_page', '?')}: {len(orders_data)} orders")
 
         for order_data in orders_data:
             order, created = _upsert_order(order_data)

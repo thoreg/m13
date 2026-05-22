@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('zalando', '0043_alter_salesreport_import_reference'),
+        ("zalando", "0043_alter_salesreport_import_reference"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='feedupload',
-            name='path_to_pp_csv',
-            field=models.CharField(blank=True, default='', max_length=128),
+            model_name="feedupload",
+            name="path_to_pp_csv",
+            field=models.CharField(blank=True, default="", max_length=128),
         ),
     ]
