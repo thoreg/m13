@@ -29,7 +29,7 @@ HEADERS = {
 }
 
 # Columns expected by irisOne QuickConnect stock import
-IRISONE_COLUMNS = ["store", "article_number", "price", "retail_price", "quantity"]
+IRISONE_COLUMNS = ["store", "ean", "article_number", "price", "retail_price", "quantity"]
 
 
 class IrisOneFeedException(Exception):
@@ -69,15 +69,16 @@ def _build_irisone_csv(shop_rows, output_path):
                 continue
 
             store = row[0]
+            ean = row[1]
             price = row[2]
             retail_price = row[3]
             quantity = row[4] if row[4] != "" else "0"
             article_number = row[5]
 
-            if not article_number:
+            if not article_number or not ean:
                 continue
 
-            writer.writerow([store, article_number, price, retail_price, quantity])
+            writer.writerow([store, ean, article_number, price, retail_price, quantity])
             count += 1
 
     LOG.info(f"irisOne CSV written: {output_path} ({count} items)")
