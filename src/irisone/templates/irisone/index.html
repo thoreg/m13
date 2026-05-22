@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block header %}
+<div id="header">
+  <form action="{% url 'irisone_feed' %}">
+    <button type="submit" class="m13-btn" title="Feed Uploads">
+      FEED
+    </button>
+  </form>
+  Order CSV >>
+  <form action="{% url 'irisone_orders_csv' %}">
+    <button type="submit" class="m13-btn" title="Alle offenen Bestellungen als CSV">
+      ORDERS CSV
+    </button>
+  </form>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="main">
+  <h2>_last_100_orders</h2>
+  <table>
+    <thead>
+      <th>booking_id</th>
+      <th>marketplace</th>
+      <th>order_id_1</th>
+      <th>order_date</th>
+      <th>status</th>
+      <th>lines</th>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+      <tr>
+        <td>{{ order.booking_id }}</td>
+        <td>{{ order.marketplace_name }}</td>
+        <td>{{ order.marketplace_order_id_1 }}</td>
+        <td>{{ order.order_date|date:"Y-m-d H:i" }}</td>
+        <td>{{ order.status }}</td>
+        <td>{{ order.lines.count }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6">— no orders yet —</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer>
+  <p><a href="{% url 'irisone_index' %}">Return to irisOne index</a></p>
+</footer>
+{% endblock %}
