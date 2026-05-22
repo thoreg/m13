@@ -15,16 +15,24 @@ LOCATION = "irisone"
 
 @login_required
 def index(request):
-    """irisOne dashboard — recent feed uploads and orders."""
-    feed_uploads = FeedUpload.objects.all().order_by("-created")[:10]
-    orders = Order.objects.all().order_by("-order_date").prefetch_related("lines")[:50]
-
+    """irisOne order overview."""
+    orders = Order.objects.all().order_by("-order_date").prefetch_related("lines")[:100]
     ctx = {
-        "feed_uploads": feed_uploads,
         "orders": orders,
         "location": LOCATION,
     }
     return render(request, "irisone/index.html", ctx)
+
+
+@login_required
+def feed(request):
+    """irisOne feed upload overview."""
+    feed_uploads = FeedUpload.objects.all().order_by("-created")[:5]
+    ctx = {
+        "feed_uploads": feed_uploads,
+        "location": LOCATION,
+    }
+    return render(request, "irisone/feed.html", ctx)
 
 
 @login_required

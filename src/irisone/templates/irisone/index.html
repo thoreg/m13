@@ -1,38 +1,25 @@
 {% extends "base.html" %}
 
+{% block header %}
+<div id="header">
+  <form action="{% url 'irisone_feed' %}">
+    <button type="submit" class="m13-btn" title="Feed Uploads">
+      FEED
+    </button>
+  </form>
+  Order CSV >>
+  <form action="{% url 'irisone_orders_csv' %}">
+    <button type="submit" class="m13-btn" title="Alle offenen Bestellungen als CSV">
+      ORDERS CSV
+    </button>
+  </form>
+</div>
+{% endblock %}
+
 {% block content %}
 <div id="main">
-
-  <h2>_irisone_feed_uploads</h2>
-  <p><small>Management command: <code>m13_irisone_feed_upload [--type full|delta]</code></small></p>
-  <table style="width: 100%">
-    <thead>
-      <th>datetime</th>
-      <th>type</th>
-      <th>status_code</th>
-      <th>items</th>
-      <th>csv</th>
-    </thead>
-    <tbody>
-    {% for f in feed_uploads %}
-      <tr>
-        <td>{{ f.created|date:"Y-m-d H:i:s" }}</td>
-        <td>{{ f.feed_type }}</td>
-        <td>{{ f.status_code }}</td>
-        <td>{{ f.number_of_items }}</td>
-        <td><a href="/media/{{ f.path_to_csv }}">Link</a></td>
-      </tr>
-    {% empty %}
-      <tr><td colspan="5">— no uploads yet —</td></tr>
-    {% endfor %}
-    </tbody>
-  </table>
-
-  <hr style="margin: 3em 0; border-top: 1px solid #aaa;">
-
-  <h2>_irisone_orders <a href="{% url 'irisone_orders_csv' %}" style="font-size: 0.7em">[download csv]</a></h2>
-  <p><small>Management command: <code>m13_irisone_import_orders [--status pending|opened|fulfilled]</code></small></p>
-  <table style="width: 100%">
+  <h2>_last_100_orders</h2>
+  <table>
     <thead>
       <th>booking_id</th>
       <th>marketplace</th>
@@ -56,6 +43,11 @@
     {% endfor %}
     </tbody>
   </table>
-
 </div>
+{% endblock %}
+
+{% block footer %}
+<footer>
+  <p><a href="{% url 'irisone_index' %}">Return to irisOne index</a></p>
+</footer>
 {% endblock %}
