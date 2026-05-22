@@ -125,11 +125,13 @@ def upload_feed(feed_type="full"):
             f"Feed upload failed with status {response.status_code}"
         )
 
+    relative_path = os.path.relpath(output_path, settings.MEDIA_ROOT)
+
     feed_upload = FeedUpload.objects.create(
         feed_type=feed_type,
         status_code=response.status_code,
         number_of_items=number_of_items,
-        path_to_csv=output_path,
+        path_to_csv=relative_path,
     )
 
     LOG.info(f"FeedUpload created: {feed_upload.pk}")
