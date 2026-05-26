@@ -77,15 +77,18 @@ def _build_irisone_csv(shop_rows, output_path):
 
             store = row[0]
             ean = row[1]
-            price = row[2]
-            retail_price = row[3]
+            # Shop feed uses German decimal comma; irisOne expects dot.
+            # Semantics: shop price = regular retail price → irisOne retail_price
+            #            shop retail_price = PP/sale price → irisOne price (fallback to shop price)
+            shop_price = row[2].replace(",", ".")
+            shop_retail = row[3].replace(",", ".") if row[3] else shop_price
             quantity = row[4] if row[4] != "" else "0"
             article_number = row[5]
 
             if not article_number or not ean:
                 continue
 
-            writer.writerow([store, ean, article_number, price, retail_price, quantity])
+            writer.writerow([store, ean, article_number, shop_retail, shop_price, quantity])
             count += 1
 
     LOG.info(f"irisOne CSV written: {output_path} ({count} items)")
