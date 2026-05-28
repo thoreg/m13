@@ -38,6 +38,25 @@ IRISONE_COLUMNS = [
     "quantity",
 ]
 
+# Columns for irisOne product data feed (full shop feed + 4 ERP mapping columns)
+IRISONE_PRODUCT_COLUMNS = [
+    "store",
+    "ean",
+    "price",
+    "retail_price",
+    "quantity",
+    "article_number",
+    "article_color",
+    "product_name",
+    "store_article_location",
+    "product_number",
+    "article_size",
+    "erp_ean",
+    "erp_article_number",
+    "erp_store_article_location",
+    "classification",
+]
+
 
 class IrisOneFeedException(Exception):
     pass
@@ -93,6 +112,110 @@ def _build_irisone_csv(shop_rows, output_path):
 
     LOG.info(f"irisOne CSV written: {output_path} ({count} items)")
     return count
+
+
+def _build_irisone_product_csv(shop_rows, output_path):
+    """Transform shop feed into irisOne product data CSV.
+
+    All shop feed columns are included, plus 4 ERP mapping columns:
+    erp_ean, erp_article_number, erp_store_article_location, classification.
+    """
+    count = 0
+    with open(output_path, "w", encoding="UTF-8", newline="") as f:
+        writer = csv.writer(f, delimiter=";", quoting=csv.QUOTE_NONNUMERIC)
+        writer.writerow(IRISONE_PRODUCT_COLUMNS)
+
+        for idx, row in enumerate(shop_rows):
+            if idx == 0:
+                continue
+            if len(row) < 6:
+                LOG.warning(f"Skipping malformed row {idx}: {row}")
+                continue
+
+            store = row[0]
+            ean = row[1]
+            shop_price = row[2].replace(",", ".")
+            shop_retail = row[3].replace(",", ".") if row[3] else shop_price
+            quantity = row[4] if row[4] != "" else "0"
+            article_number = row[5]
+            article_color = row[6] if len(row) > 6 else ""
+            product_name = row[7] if len(row) > 7 else ""
+            store_article_location = row[8] if len(row) > 8 else ""
+            product_number = row[9] if len(row) > 9 else ""
+            article_size = row[10] if len(row) > 10 else ""
+
+            if not article_number or not ean:
+                continue
+
+            writer.writerow([
+                store,
+                ean,
+                shop_retail,             # price = PP/sale price
+                shop_price,              # retail_price = regular price
+                quantity,
+                article_number,
+                article_color,
+                product_name,
+                store_article_location,
+                product_number,
+                article_size,
+                ean,                     # erp_ean
+                article_number,          # erp_article_number
+                store_article_location,  # erp_store_article_location
+                "default",               # classification
+            ])
+            count += 1
+
+    LOG.info(f"irisOne product CSV written: {output_path} ({count} items)")
+    return count
+
+
+def upload_product_feed(feed_type="full"):
+    """Generate and upload a product data feed to irisOne.
+
+    Returns the created FeedUpload instance.
+    """
+    if not IRISONE_API_KEY:
+        raise IrisOneFeedException("Missing environment variable IRISONE_API_KEY")
+
+    shop_rows = download_shop_feed()
+
+    timestamp = timezone.now().strftime("%Y%m%d%H%M")
+    output_dir = os.path.join(settings.MEDIA_ROOT, "irisone", "feeds")
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(
+        output_dir, f"product_import_{feed_type}_{timestamp}.csv"
+    )
+
+    number_of_items = _build_irisone_product_csv(shop_rows, output_path)
+
+    url = (
+        f"{IRISONE_API_BASE_URL}/quickConnect/productImport/"
+        f"product_import_{feed_type}_{timestamp}.csv"
+    )
+
+    with open(output_path, "rb") as f:
+        response = requests.put(url, headers=HEADERS, data=f.read(), timeout=120)
+
+    LOG.info(f"irisOne product feed upload response: {response.status_code} — {url}")
+
+    if response.status_code not in (200, 204):
+        LOG.error(f"Upload failed: {response.status_code} {response.text}")
+        raise IrisOneFeedException(
+            f"Product feed upload failed with status {response.status_code}"
+        )
+
+    relative_path = os.path.relpath(output_path, settings.MEDIA_ROOT)
+
+    feed_upload = FeedUpload.objects.create(
+        feed_type=FeedUpload.FeedType.PRODUCT,
+        status_code=response.status_code,
+        number_of_items=number_of_items,
+        path_to_csv=relative_path,
+    )
+
+    LOG.info(f"FeedUpload (product) created: {feed_upload.pk}")
+    return feed_upload
 
 
 def upload_feed(feed_type="full"):

@@ -27,9 +27,17 @@ def index(request):
 @login_required
 def feed(request):
     """irisOne feed upload overview."""
-    feed_uploads = FeedUpload.objects.all().order_by("-created")[:5]
+    stock_uploads = (
+        FeedUpload.objects.exclude(feed_type=FeedUpload.FeedType.PRODUCT)
+        .order_by("-created")[:5]
+    )
+    product_uploads = (
+        FeedUpload.objects.filter(feed_type=FeedUpload.FeedType.PRODUCT)
+        .order_by("-created")[:5]
+    )
     ctx = {
-        "feed_uploads": feed_uploads,
+        "stock_uploads": stock_uploads,
+        "product_uploads": product_uploads,
         "location": LOCATION,
     }
     return render(request, "irisone/feed.html", ctx)

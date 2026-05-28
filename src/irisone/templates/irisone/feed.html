@@ -12,7 +12,8 @@
 
 {% block content %}
 <div id="main">
-  <h2>_last_5_feed_uploads</h2>
+
+  <h2>_last_5_stock_feed_uploads</h2>
   <table style="width: 100%">
     <thead>
       <th>datetime</th>
@@ -22,7 +23,7 @@
       <th>csv</th>
     </thead>
     <tbody>
-    {% for f in feed_uploads %}
+    {% for f in stock_uploads %}
       <tr>
         <td>{{ f.created|date:"Y-m-d H:i:s" }}</td>
         <td>{{ f.feed_type }}</td>
@@ -35,6 +36,31 @@
     {% endfor %}
     </tbody>
   </table>
+
+  <h2>_last_5_product_feed_uploads</h2>
+  <table style="width: 100%">
+    <thead>
+      <th>datetime</th>
+      <th>type</th>
+      <th>status_code</th>
+      <th>items</th>
+      <th>csv</th>
+    </thead>
+    <tbody>
+    {% for f in product_uploads %}
+      <tr>
+        <td>{{ f.created|date:"Y-m-d H:i:s" }}</td>
+        <td>{{ f.feed_type }}</td>
+        <td>{{ f.status_code }}</td>
+        <td>{{ f.number_of_items }}</td>
+        <td><a href="/media/{{ f.path_to_csv }}">Link</a></td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">— no uploads yet —</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
 </div>
 {% endblock %}
 

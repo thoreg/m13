@@ -8,9 +8,10 @@ class FeedUpload(TimeStampedModel):
     class FeedType(models.TextChoices):
         FULL = "full", "Full"
         DELTA = "delta", "Delta"
+        PRODUCT = "product", "Product"
 
     feed_type = models.CharField(
-        max_length=8, choices=FeedType.choices, default=FeedType.FULL
+        max_length=10, choices=FeedType.choices, default=FeedType.FULL
     )
     status_code = models.PositiveSmallIntegerField()
     number_of_items = models.PositiveIntegerField()
