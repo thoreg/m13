@@ -1,7 +1,7 @@
 """irisOne QuickConnect feed upload service.
 
-Downloads the shop stock/price feed and uploads it to irisOne via:
-  PUT /quickConnect/productImport/stock_import_{type}_{timestamp}.csv
+Stock feed  (every 1h):  PUT /quickConnect/productImport/stock_import_{type}_{timestamp}.csv
+Product feed (every 24h): PUT /quickConnect/productImport/import_full_{timestamp}.csv
 """
 
 import csv
@@ -170,8 +170,8 @@ def _build_irisone_product_csv(shop_rows, output_path):
     return count
 
 
-def upload_product_feed(feed_type="full"):
-    """Generate and upload a product data feed to irisOne.
+def upload_product_feed():
+    """Generate and upload a product data feed to irisOne (every 24h).
 
     Returns the created FeedUpload instance.
     """
@@ -183,15 +183,13 @@ def upload_product_feed(feed_type="full"):
     timestamp = timezone.now().strftime("%Y%m%d%H%M")
     output_dir = os.path.join(settings.MEDIA_ROOT, "irisone", "feeds")
     os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(
-        output_dir, f"product_import_{feed_type}_{timestamp}.csv"
-    )
+    output_path = os.path.join(output_dir, f"import_full_{timestamp}.csv")
 
     number_of_items = _build_irisone_product_csv(shop_rows, output_path)
 
     url = (
         f"{IRISONE_API_BASE_URL}/quickConnect/productImport/"
-        f"product_import_{feed_type}_{timestamp}.csv"
+        f"import_full_{timestamp}.csv"
     )
 
     with open(output_path, "rb") as f:

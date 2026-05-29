@@ -10,21 +10,12 @@ LOG = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Upload product data feed to irisOne QuickConnect (run every 12h)."
-
-    def add_arguments(self, parser):
-        parser.add_argument(
-            "--type",
-            choices=["full", "delta"],
-            default="full",
-            help="Feed type: full (default) or delta",
-        )
+    help = "Upload product data feed to irisOne QuickConnect (run every 24h)."
 
     @monitor
     def handle(self, *args, **kwargs):
-        feed_type = kwargs["type"]
         try:
-            feed_upload = upload_product_feed(feed_type=feed_type)
+            feed_upload = upload_product_feed()
             self.stdout.write(
                 self.style.SUCCESS(
                     f"Product feed uploaded: {feed_upload.number_of_items} items "
