@@ -36,6 +36,7 @@ def _fetch_orders_page(status=None, page=1):
         params["status"] = status
 
     url = f"{IRISONE_API_BASE_URL}/v1/orders"
+    LOG.info(f"GET {url}")
     response = requests.get(url, headers=HEADERS, params=params, timeout=30)
     response.raise_for_status()
     return response.json()

@@ -67,6 +67,7 @@ def download_shop_feed():
     if not IRISONE_FEED_PATH:
         raise IrisOneFeedException("Missing environment variable IRISONE_FEED_PATH")
 
+    LOG.info(f"GET {IRISONE_FEED_PATH}")
     response = requests.get(IRISONE_FEED_PATH, timeout=60)
     response.raise_for_status()
 
@@ -192,10 +193,11 @@ def upload_product_feed():
         f"import_full_{timestamp}.csv"
     )
 
+    LOG.info(f"PUT {url}")
     with open(output_path, "rb") as f:
         response = requests.put(url, headers=HEADERS, data=f.read(), timeout=120)
 
-    LOG.info(f"irisOne product feed upload response: {response.status_code} — {url}")
+    LOG.info(f"PUT {url} -> {response.status_code}")
 
     if response.status_code not in (200, 204):
         LOG.error(f"Upload failed: {response.status_code} {response.text}")
@@ -238,10 +240,11 @@ def upload_feed(feed_type="full"):
         f"stock_import_{feed_type}_{timestamp}.csv"
     )
 
+    LOG.info(f"PUT {url}")
     with open(output_path, "rb") as f:
         response = requests.put(url, headers=HEADERS, data=f.read(), timeout=120)
 
-    LOG.info(f"irisOne feed upload response: {response.status_code} — {url}")
+    LOG.info(f"PUT {url} -> {response.status_code}")
 
     if response.status_code not in (200, 204):
         LOG.error(f"Upload failed: {response.status_code} {response.text}")
