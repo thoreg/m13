@@ -19,7 +19,7 @@ IRISONE_API_BASE_URL = os.getenv(
     "IRISONE_API_BASE_URL", "https://api.io-staging.irisone.io/erp"
 )
 
-HEADERS = {"x-api-key": IRISONE_API_KEY}
+HEADERS = {"x-api-key": IRISONE_API_KEY, "user-agent": "manufaktur13"}
 
 
 class IrisOneOrderException(Exception):

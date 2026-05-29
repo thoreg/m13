@@ -26,6 +26,7 @@ IRISONE_STORE_ID = os.getenv("IRISONE_STORE_ID", "default")
 HEADERS = {
     "x-api-key": IRISONE_API_KEY,
     "content-type": "text/csv",
+    "user-agent": "manufaktur13",
 }
 
 # Columns expected by irisOne QuickConnect stock import
