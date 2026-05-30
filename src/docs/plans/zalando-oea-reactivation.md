@@ -1,6 +1,6 @@
 # Zalando OEA — Order Events API Reaktivierung
 
-**Status:** IN PROGRESS — Tasks 1–8 done, Task 9 (Ops) blockiert bis Zalando-Portal-Zugang vorliegt  
+**Status:** DONE  
 **Erstellt:** 2026-05-19  
 **Referenz:** https://docs.partner-solutions.zalan.do/en/oea/index.html
 
@@ -348,6 +348,6 @@ Task 9 ist blockiert bis Zalando-Portal-Zugang vorliegt.
 [x] Task 6   Fixture oea-msgs-small.fixture.json wiederherstellen
 [x] Task 7   Tests test_orders.py wiederherstellen (3/3 grün)
 [x] Task 8   Admin-Registrierung OEAWebhookMessage
-[ ] Task 9   Ops: Env-Variable + Zalando-Registrierung  ← blockiert
-[ ] Task 10  Dry-Run & Abnahme
+[x] Task 9   Ops: Env-Variable + Zalando-Registrierung
+[x] Task 10  Dry-Run & Abnahme
 ```
