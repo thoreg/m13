@@ -43,6 +43,7 @@ WHITE_LIST = [
     "#slides__5",
     "https://devowl.io/de/wordpress-real-cookie-banner/",
     "#consent-change",
+    "https://x8cghl.subscribepage.io/",
 ]
 
 
