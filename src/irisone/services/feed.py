@@ -54,7 +54,7 @@ IRISONE_PRODUCT_COLUMNS = [
     "article_size",
     "erp_ean",
     "erp_article_number",
-    "erp_store_article_location",
+    "erp_article_location",
     "classification",
 ]
 
@@ -120,7 +120,7 @@ def _build_irisone_product_csv(shop_rows, output_path):
     """Transform shop feed into irisOne product data CSV.
 
     All shop feed columns are included, plus 4 ERP mapping columns:
-    erp_ean, erp_article_number, erp_store_article_location, classification.
+    erp_ean, erp_article_number, erp_article_location, classification.
     """
     count = 0
     with open(output_path, "w", encoding="UTF-8", newline="") as f:
@@ -163,7 +163,7 @@ def _build_irisone_product_csv(shop_rows, output_path):
                 article_size,
                 ean,                     # erp_ean
                 article_number,          # erp_article_number
-                store_article_location,  # erp_store_article_location
+                store_article_location,  # erp_article_location
                 "default",               # classification
             ])
             count += 1

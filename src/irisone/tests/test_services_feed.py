@@ -133,7 +133,7 @@ def test_build_irisone_product_csv_extra_columns(tmp_path):
     assert len(header) == 15
     assert header[11] == "erp_ean"
     assert header[12] == "erp_article_number"
-    assert header[13] == "erp_store_article_location"
+    assert header[13] == "erp_article_location"
     assert header[14] == "classification"
 
     data = rows[0]
